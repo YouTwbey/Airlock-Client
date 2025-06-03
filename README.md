@@ -15,7 +15,7 @@ The classic game mode from *Among Us* has been brought into the third dimension!
 
 ### Sandbox <img src="https://github.com/user-attachments/assets/bab61f89-7084-4e74-9288-9c19e123a35f" alt="emoji" width="50" height="50">
 
-Inspired by *Garry's Mod* and *Among Us*'s Freeplay mode, Sandbox lets you freely roam around any map without waiting for the lobby to fill up. You can also test the aforementioned custom roles with friends this way!
+Inspired by *Garry's Mod* and *Among Us*'s Freeplay mode, Sandbox lets you freely roam around any map without waiting for the lobby to fill up. You can also test the aforementioned custom roles with friends, practice tasks, explore maps, etc using this!
 
 ## Returning Modes
 ### Lights Out <img src="https://github.com/user-attachments/assets/ac1f70ca-6db4-42b1-8353-7fedbd56b5bc" alt="emoji" width="50" height="50">
