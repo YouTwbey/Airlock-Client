@@ -1,0 +1,143 @@
+﻿using AirlockClient.Attributes;
+using HarmonyLib;
+using Il2CppFusion;
+using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Network;
+using UnityEngine;
+using static UnityEngine.Object;
+using AirlockClient.Data.Roles.MoreRoles.Imposter;
+using AirlockClient.Data.Roles.MoreRoles.Crewmate;
+using Il2CppSG.Airlock.Sabotage;
+using Il2CppSG.Airlock.Roles;
+using AirlockClient.Data;
+using AirlockClient.AC;
+
+namespace AirlockClient.Patches
+{
+    [HarmonyPatch(typeof(NetworkedKillBehaviour), nameof(NetworkedKillBehaviour.RPC_TargetedAction))]
+    public class TargetedActionPatch
+    {
+        static Saboteur saboteur;
+
+        public static bool Prefix(NetworkedKillBehaviour __instance, PlayerRef targetedPlayer, PlayerRef perpetrator, ref int action)
+        {
+            PlayerState perp = GameObject.Find("PlayerState (" + perpetrator.PlayerId + ")").GetComponent<PlayerState>();
+            PlayerState target = GameObject.Find("PlayerState (" + targetedPlayer.PlayerId + ")").GetComponent<PlayerState>();
+            SubRole targetSubRole = target.GetComponent<SubRole>();
+            GameRole targetRole = ModdedGamemode.Current.GetTrueRole(target);
+
+            if (saboteur == null) saboteur = FindObjectOfType<Saboteur>();
+
+            if (CurrentMode.IsHosting && !CurrentMode.Modded)
+            {
+                if (!AntiCheat.Instance.VerifyKill(perp, target, action))
+                {
+                    return false;
+                }
+            }
+
+            if (CurrentMode.Modded)
+            {
+                if (CurrentMode.IsHosting)
+                {
+                    if (CurrentMode.Name == "Infection")
+                    {
+                        return true;
+                    }
+
+                    if (ModdedGamemode.Current)
+                    {
+                        ModdedGamemode.Current.OnKill(perp, target, action);
+                    }
+
+                    if (CurrentMode.Name == "Hide N Seek")
+                    {
+                        AntiCheat.Instance.KillPlayerWithAntiCheat(perp, target);
+                        return false;
+                    }
+
+                    if (target.Guarded)
+                    {
+                        __instance.GuardTarget(target);
+                        AntiCheat.Instance.InfectPlayerWithAntiCheat(perp, target);
+
+                        return false;
+                    }
+
+                    foreach (SubRole role in SubRole.All)
+                    {
+                        if (role.PlayerWithRole.PlayerId == perpetrator.PlayerId)
+                        {
+                            if (perp.GetComponent<Vampire>())
+                            {
+                                if (saboteur._sabotageManager.ActiveSabotage)
+                                {
+                                    if (saboteur._sabotageManager.ActiveSabotage.sabotageType == Sabotage.SabotageType.Lights)
+                                    {
+                                        if (targetSubRole != null)
+                                        {
+                                            targetSubRole.OnPlayerDied(perp);
+                                        }
+                                        role.OnPlayerKilled(target);
+                                        role.OnPlayerAction(action);
+                                        return true;
+                                    }
+                                }
+
+                                return false;
+                            }
+
+                            if (perp.GetComponent<Sheriff>())
+                            {
+                                if (targetRole == GameRole.Imposter)
+                                {
+                                    if (targetSubRole != null)
+                                    {
+                                        targetSubRole.OnPlayerDied(perp);
+                                    }
+                                    role.OnPlayerKilled(target);
+                                    role.OnPlayerAction(action);
+                                    return true;
+                                }
+                                else
+                                {
+                                    AntiCheat.Instance.KillPlayerWithAntiCheat(perp, perp);
+                                    return false;
+                                }
+                            }
+
+                            if (perp.GetComponent<Witch>())
+                            {
+                                if (target.GetComponent<Bait>() == null)
+                                {
+                                    if (targetSubRole != null)
+                                    {
+                                        targetSubRole.OnPlayerDied(perp);
+                                    }
+                                }
+                                role.OnPlayerAction(action);
+
+                                return false;
+                            }
+
+                            if (targetSubRole != null)
+                            {
+                                targetSubRole.OnPlayerDied(perp);
+                            }
+
+                            role.OnPlayerKilled(target);
+                            role.OnPlayerAction(action);
+                        }
+                    }
+
+                    if (targetSubRole != null)
+                    {
+                        targetSubRole.OnPlayerDied(perp);
+                    }
+                }
+            }
+
+            return true;
+        }
+    }
+}
