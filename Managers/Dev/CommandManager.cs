@@ -39,6 +39,8 @@ namespace AirlockClient.Managers.Dev
             {
                 foreach (string message in QueuedCommands)
                 {
+                    if (message == null) continue;
+
                     string msg = message;
                     if (message.Contains("UpdateNameTagList"))
                     {
@@ -53,7 +55,7 @@ namespace AirlockClient.Managers.Dev
                         {
                             if (int.TryParse(playerId, out int id))
                             {
-                                PlayerState state = ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[id];
+                                PlayerState state = GameObject.Find("PlayerState (" + id + ")").GetComponent<PlayerState>();
 
                                 string cmd = "COMMAND";
 
@@ -81,6 +83,8 @@ namespace AirlockClient.Managers.Dev
             {
                 foreach (PlayerState user in NameTagChanged.Keys)
                 {
+                    if (user == null) continue;
+
                     if (user.IsSpawned)
                     {
                         if (user.IsConnected)
