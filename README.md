@@ -45,8 +45,6 @@ Modded lobbies are not supported yet.
 
 - Main Artist for Airlock Client
 
-- Playtester
-
 ---
 
 ### AIRLOCK CLIENT IS CURRENTLY IN ALPHA! PLEASE REPORT ANY BUGS TO THE DISCORD!
