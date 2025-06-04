@@ -35,7 +35,7 @@ Modded lobbies are not supported yet.
 
 # Credits
 
-### Youtubey
+### YouTubey
 
 - Airlock Client Creator
 
