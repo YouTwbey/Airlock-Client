@@ -35,7 +35,7 @@ Modded lobbies are not supported yet.
 
 # Credits
 
-### Youtubey
+### YouTubey
 
 - Airlock Client Creator
 
@@ -44,8 +44,6 @@ Modded lobbies are not supported yet.
 ### hzDelta
 
 - Main Artist for Airlock Client
-
-- Playtester
 
 ---
 
