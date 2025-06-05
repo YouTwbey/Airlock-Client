@@ -9,6 +9,7 @@ using AirlockClient.Managers.Debug;
 using UnityEngine.SceneManagement;
 using AirlockClient.Attributes;
 using AirlockClient.Data;
+using System.Text.RegularExpressions;
 
 namespace AirlockClient.AC
 {
@@ -288,7 +289,8 @@ namespace AirlockClient.AC
                 {
                     if (!ColorToName.ContainsValue(player.NetworkName.Value) && player.NetworkName.Value != "Color###")
                     {
-                        if (player.PlayerModerationUsername != "" && !player.PlayerModerationUsername.Contains(player.NetworkName.Value))
+                        string formattedName = Regex.Replace(player.PlayerModerationUsername, @"\d", "");
+                        if (formattedName != "" && !formattedName.Contains(player.NetworkName.Value))
                         {
                             if (player.GetComponent<SubRole>())
                             {
