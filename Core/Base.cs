@@ -78,12 +78,7 @@ namespace AirlockClient.Core
                             FindObjectOfType<UILobbyScreenHandler>().PrivateLobbyPlayerCount = 2;
                             FindObjectOfType<UILobbyScreenHandler>().PublicLobbyPlayerCount = 2;
                         }
-                    }
-                }
-                else
-                {
-                    if (CurrentMode.IsHosting)
-                    {
+
                         SceneStorage.AddComponent<AntiCheat>();
                     }
                 }
