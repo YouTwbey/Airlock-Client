@@ -292,7 +292,7 @@ namespace AirlockClient.AC
                         {
                             if (player.GetComponent<SubRole>())
                             {
-                                if (!player.GetComponent<SubRole>().IsDisplayingRole || player.NetworkName.Value != "DEPUTY")
+                                if (!player.GetComponent<SubRole>().IsDisplayingRole && player.NetworkName.Value != "DEPUTY")
                                 {
                                     Alert(player, "invalid player username", true);
                                 }
