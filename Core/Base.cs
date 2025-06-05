@@ -58,11 +58,6 @@ namespace AirlockClient.Core
 
             if (InGame)
             {
-                if (CurrentMode.IsHosting)
-                {
-                    SceneStorage.AddComponent<AntiCheat>();
-                }
-
                 if (CurrentMode.Modded)
                 {
                     if (CurrentMode.IsHosting)
@@ -83,6 +78,13 @@ namespace AirlockClient.Core
                             FindObjectOfType<UILobbyScreenHandler>().PrivateLobbyPlayerCount = 2;
                             FindObjectOfType<UILobbyScreenHandler>().PublicLobbyPlayerCount = 2;
                         }
+                    }
+                }
+                else
+                {
+                    if (CurrentMode.IsHosting)
+                    {
+                        SceneStorage.AddComponent<AntiCheat>();
                     }
                 }
             }
