@@ -54,7 +54,10 @@ namespace AirlockClient.Managers.Gamemode
 
             foreach (SubRole role in SubRole.All)
             {
-                role.PlayerWithRole.ClearPowerUps();
+                if (role.PlayerWithRole.IsSpawned)
+                {
+                    role.PlayerWithRole.ActivePowerUps = PowerUps.None;
+                }
             }
 
             GameStarted = false;
@@ -77,7 +80,10 @@ namespace AirlockClient.Managers.Gamemode
             foreach (SubRole role in SubRole.All)
             {
                 Listener.Send("HideNSeek_GameEnd", role.PlayerWithRole.PlayerId);
-                role.PlayerWithRole.ClearPowerUps();
+                if (role.PlayerWithRole.IsSpawned)
+                {
+                    role.PlayerWithRole.ActivePowerUps = PowerUps.None;
+                }
             }
 
             if (ShowNametags == false)
