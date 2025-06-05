@@ -381,48 +381,51 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
+            if (CurrentMode.Name != "Hide N Seek")
             {
-                if (TargetActionCheck.ContainsKey(killer))
+                if (State.GameModeStateValue.GameMode == GameModes.Infection)
                 {
-                    DateTime previousKill = TargetActionCheck[killer];
-                    double difference = (DateTime.Now - previousKill).TotalSeconds;
-
-                    if (difference < Kill.TagCooldown.Value - 1)
+                    if (TargetActionCheck.ContainsKey(killer))
                     {
-                        IsCheating = true;
-                    }
-                }
-                else
-                {
-                    TargetActionCheck.Add(killer, DateTime.Now);
-                }
-            }
-            else
-            {
-                if (TargetActionCheck.ContainsKey(killer))
-                {
-                    DateTime previousKill = TargetActionCheck[killer];
-                    double difference = (DateTime.Now - previousKill).TotalSeconds;
+                        DateTime previousKill = TargetActionCheck[killer];
+                        double difference = (DateTime.Now - previousKill).TotalSeconds;
 
-                    if (GetTrueRole(killer) == GameRole.Imposter)
-                    {
-                        if (difference < Kill.KillCooldownVar.Value - 1)
+                        if (difference < Kill.TagCooldown.Value - 1)
                         {
                             IsCheating = true;
                         }
                     }
                     else
                     {
-                        if (difference < Kill.VigilanteKillCooldownVar.Value - 1)
-                        {
-                            IsCheating = true;
-                        }
+                        TargetActionCheck.Add(killer, DateTime.Now);
                     }
                 }
                 else
                 {
-                    TargetActionCheck.Add(killer, DateTime.Now);
+                    if (TargetActionCheck.ContainsKey(killer))
+                    {
+                        DateTime previousKill = TargetActionCheck[killer];
+                        double difference = (DateTime.Now - previousKill).TotalSeconds;
+
+                        if (GetTrueRole(killer) == GameRole.Imposter)
+                        {
+                            if (difference < Kill.KillCooldownVar.Value - 1)
+                            {
+                                IsCheating = true;
+                            }
+                        }
+                        else
+                        {
+                            if (difference < Kill.VigilanteKillCooldownVar.Value - 1)
+                            {
+                                IsCheating = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        TargetActionCheck.Add(killer, DateTime.Now);
+                    }
                 }
             }
 
@@ -433,9 +436,19 @@ namespace AirlockClient.AC
 
             if (action == (int)TargetedAction.Kill)
             {
-                if (killerRole != GameRole.Imposter || targetRole == GameRole.Imposter || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                if (CurrentMode.Name == "Hide N Seek")
                 {
-                    IsCheating = true;
+                    if (killerRole != GameRole.Infected || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                    {
+                        IsCheating = true;
+                    }
+                }
+                else
+                {
+                    if (killerRole != GameRole.Imposter || targetRole == GameRole.Imposter || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                    {
+                        IsCheating = true;
+                    }
                 }
                 
                 if (!IsCheating)
@@ -481,7 +494,7 @@ namespace AirlockClient.AC
                 }
             }
 
-            if (IsCheating == false)
+            if (!IsCheating)
             {
                 TargetActionCheck[killer] = DateTime.Now;
             }
