@@ -29,9 +29,7 @@ Engineers all around the area... Lights dimmed; Impostors lurking. This mode was
 The Zomburittos have breached the Mess Hall! Complete your tasks as quickly as possible before the Zomburittos spread their infection once more!
 
 ## Anti-Cheat
-Airlock Client comes with its own 'Anti-Cheat' for your hosted vanilla lobbies. This prevents those pesky hackers from ruining your fun! 
-
-Modded lobbies are not supported yet.
+Airlock Client comes with its own 'Anti-Cheat' for your hosted lobbies. This prevents those pesky hackers from ruining your fun! 
 
 # Credits
 
