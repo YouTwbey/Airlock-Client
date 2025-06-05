@@ -75,18 +75,24 @@ namespace AirlockClient.AC
             AllowedBodySpawns.Clear();
         }
 
-        public void KillPlayerWithAntiCheat(PlayerState killer, PlayerState target)
+        public static void KillPlayerWithAntiCheat(PlayerState killer, PlayerState target)
         {
-            if (AllowedBodySpawns.Contains(target))
+            if (!Instance)
             {
-                AllowedBodySpawns.Remove(target);
+                FindObjectOfType<NetworkedKillBehaviour>().KillPlayer(FindObjectOfType<AirlockPeer>(), target, killer.PlayerId, false);
+                return;
             }
 
-            AllowedBodySpawns.Add(target);
+            if (Instance.AllowedBodySpawns.Contains(target))
+            {
+                Instance.AllowedBodySpawns.Remove(target);
+            }
+
+            Instance.AllowedBodySpawns.Add(target);
 
             if (!target.Guarded)
             {
-                Kill.KillPlayer(Peer, target, killer.PlayerId, GetTrueRole(killer) == GameRole.Vigilante);
+                Instance.Kill.KillPlayer(Instance.Peer, target, killer.PlayerId, Instance.GetTrueRole(killer) == GameRole.Vigilante);
             }
             else
             {
@@ -94,25 +100,43 @@ namespace AirlockClient.AC
             }
         }
 
-        public void PlayShieldBreakWithAntiCheat(PlayerState killer, PlayerState target)
+        public static void PlayShieldBreakWithAntiCheat(PlayerState killer, PlayerState target)
         {
-            Kill.GuardTarget(target);
-            Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Peer);
+            if (!Instance)
+            {
+                NetworkedKillBehaviour Kill = FindObjectOfType<NetworkedKillBehaviour>();
+                Kill.GuardTarget(target);
+                Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, FindObjectOfType<AirlockPeer>());
+                return;
+            }
+
+            Instance.Kill.GuardTarget(target);
+            Instance.Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Instance.Peer);
         }
 
-        public void InfectPlayerWithAntiCheat(PlayerState killer, PlayerState target)
+        public static void InfectPlayerWithAntiCheat(PlayerState killer, PlayerState target)
         {
-            Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Peer);
+            if (!Instance)
+            {
+                FindObjectOfType<NetworkedKillBehaviour>().InfectPlayer(target, killer.PlayerId, GameRole.Infected, FindObjectOfType<AirlockPeer>());
+                return;
+            }
+
+            Instance.Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Instance.Peer);
         }
 
-        public void ChangeIsAliveWithAntiCheat(PlayerState player, bool isAlive)
+        public static void ChangeIsAliveWithAntiCheat(PlayerState player, bool isAlive)
         {
             player.IsAlive = isAlive;
         }
 
-        public void ChangeHatWithAntiCheat(PlayerState player, int hatId)
+        public static void ChangeHatWithAntiCheat(PlayerState player, int hatId)
         {
-            PreviousHat.Add(player, hatId);
+            if (Instance)
+            {
+                Instance.PreviousHat.Add(player, hatId);
+            }
+
             player.HatId = hatId;
         }
 

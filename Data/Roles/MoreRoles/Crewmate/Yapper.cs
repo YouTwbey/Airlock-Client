@@ -6,6 +6,7 @@ using Il2CppSG.Airlock.Network;
 using System.Collections;
 using UnityEngine;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.AC;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -51,9 +52,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 
             if (PlayerWithRole && PlayerWithRole.IsAlive && PlayerWithRole.MicrophoneOutput <= 0.1f)
             {
-                NetworkedKillBehaviour killer = FindObjectOfType<NetworkedKillBehaviour>();
-                AirlockPeer peer = FindObjectOfType<AirlockPeer>();
-                killer.KillPlayer(peer, PlayerWithRole, PlayerWithRole.PlayerId, false);
+                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
             }
 
             isCheckInProgress = false;

@@ -52,14 +52,13 @@ namespace AirlockClient.Patches
 
                     if (CurrentMode.Name == "Hide N Seek")
                     {
-                        AntiCheat.Instance.KillPlayerWithAntiCheat(perp, target);
+                        AntiCheat.KillPlayerWithAntiCheat(perp, target);
                         return false;
                     }
 
                     if (target.Guarded)
                     {
-                        __instance.GuardTarget(target);
-                        AntiCheat.Instance.InfectPlayerWithAntiCheat(perp, target);
+                        AntiCheat.PlayShieldBreakWithAntiCheat(perp, target);
 
                         return false;
                     }
@@ -101,7 +100,7 @@ namespace AirlockClient.Patches
                                 }
                                 else
                                 {
-                                    AntiCheat.Instance.KillPlayerWithAntiCheat(perp, perp);
+                                    AntiCheat.KillPlayerWithAntiCheat(perp, perp);
                                     return false;
                                 }
                             }

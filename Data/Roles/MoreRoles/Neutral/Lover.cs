@@ -1,4 +1,5 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockClient.AC;
+using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
@@ -54,7 +55,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         public override void OnPlayerDied(PlayerState killer)
         {
-            FindObjectOfType<NetworkedKillBehaviour>().KillPlayer(FindObjectOfType<AirlockPeer>(), otherLover.PlayerWithRole, killer.PlayerId, false);
+            AntiCheat.KillPlayerWithAntiCheat(killer, otherLover.PlayerWithRole);
         }
 
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
@@ -86,7 +87,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         public override void OnPlayerDied(PlayerState killer)
         {
-            FindObjectOfType<NetworkedKillBehaviour>().KillPlayer(FindObjectOfType<AirlockPeer>(), mainLover.PlayerWithRole, killer.PlayerId, false);
+            AntiCheat.KillPlayerWithAntiCheat(killer, mainLover.PlayerWithRole);
         }
 
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)

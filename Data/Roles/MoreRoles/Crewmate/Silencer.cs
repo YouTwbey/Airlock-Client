@@ -4,6 +4,7 @@ using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using Il2CppSG.Airlock.Network;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.AC;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -33,7 +34,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             {
                 if (PlayerWithRole.MicrophoneOutput >= 0.5f && PlayerWithRole.IsAlive)
                 {
-                    FindObjectOfType<NetworkedKillBehaviour>().KillPlayer(FindObjectOfType<AirlockPeer>(), PlayerWithRole, PlayerWithRole.PlayerId, false);
+                    AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
                     if (ModdedGameStateManager.Instance.state.InVotingState())
                     {
                         ModdedGameStateManager.Instance.state.VoteManager.RPC_Vote(PlayerWithRole.PlayerId, PlayerWithRole.PlayerId);

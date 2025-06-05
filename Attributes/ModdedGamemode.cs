@@ -11,7 +11,6 @@ namespace AirlockClient.Attributes
         public static ModdedGamemode Current;
         public GameStateManager State;
         public RoleManager Role;
-        public NetworkedKillBehaviour Kill;
         public VoteManager Vote;
 
         void Awake()
@@ -21,7 +20,6 @@ namespace AirlockClient.Attributes
                 Current = this;
                 Current.State = FindObjectOfType<GameStateManager>();
                 Current.Role = FindObjectOfType<RoleManager>();
-                Current.Kill = FindObjectOfType<NetworkedKillBehaviour>();
                 Current.Vote = FindObjectOfType<VoteManager>();
             }
             else

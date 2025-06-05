@@ -58,14 +58,14 @@ namespace AirlockClient.Managers.Gamemode
                         {
                             if (state.HatId != chef)
                             {
-                                AntiCheat.Instance.ChangeHatWithAntiCheat(state, chef);
+                                AntiCheat.ChangeHatWithAntiCheat(state, chef);
                             }
                         }
                         else
                         {
                             if (state.HatId != buritto)
                             {
-                                AntiCheat.Instance.ChangeHatWithAntiCheat(state, buritto);
+                                AntiCheat.ChangeHatWithAntiCheat(state, buritto);
                             }
                         }
                     }

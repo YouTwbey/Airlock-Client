@@ -53,16 +53,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                         {
                             if (player.PState.IsAlive)
                             {
-                                AntiCheat.Instance.KillPlayerWithAntiCheat(PlayerWithRole, player.PState);
+                                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, player.PState);
                             }
                         }
                     }
                 }
 
-                if (AntiCheat.Instance)
-                {
-                    AntiCheat.Instance.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
-                }
+                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
 
                 canExplode = false;
             }
