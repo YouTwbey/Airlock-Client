@@ -73,12 +73,7 @@ namespace AirlockClient.Patches
                                 {
                                     if (saboteur._sabotageManager.ActiveSabotage.sabotageType == Sabotage.SabotageType.Lights)
                                     {
-                                        if (targetSubRole != null)
-                                        {
-                                            targetSubRole.OnPlayerDied(perp);
-                                        }
-                                        role.OnPlayerKilled(target);
-                                        role.OnPlayerAction(action);
+                                        perp.GetComponent<Vampire>().DelayedKill(target, action);
                                         return true;
                                     }
                                 }

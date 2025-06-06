@@ -1,7 +1,11 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockClient.AC;
+using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
+using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using System.Collections;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -14,11 +18,29 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Vampire",
-            Description = "Only kill @ dark",
+            Description = "Delayed Kills",
             AC_Description = "You can only kill others when the lights are out.",
             Team = GameTeam.Imposter,
             Amount = 1
         };
+
+        public void DelayedKill(PlayerState target, int action)
+        {
+            MelonCoroutines.Start(DoDelayedKill(target, action));
+        }
+
+        IEnumerator DoDelayedKill(PlayerState target, int action)
+        {
+            yield return new WaitForSeconds(10);
+            AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+            if (target.GetComponent<SubRole>() != null)
+            {
+                target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
+            }
+
+            OnPlayerKilled(target);
+            OnPlayerAction(action);
+        }
 
         void Start()
         {
