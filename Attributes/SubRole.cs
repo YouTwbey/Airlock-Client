@@ -14,6 +14,11 @@ namespace AirlockClient.Attributes
 
         void OnDestroy()
         {
+            if (ModdedGamemode.Current)
+            {
+                ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+            }
+
             OnRoleRemoved();
             All.Remove(this);
         }
@@ -21,6 +26,12 @@ namespace AirlockClient.Attributes
         void Awake()
         {
             PlayerWithRole = GetComponent<PlayerState>();
+
+            if (ModdedGamemode.Current)
+            {
+                ModdedGamemode.Current.AssignedRoles.Add(PlayerWithRole, this);
+            }
+
             OnPlayerRecievedRole();
             All.Add(this);
 

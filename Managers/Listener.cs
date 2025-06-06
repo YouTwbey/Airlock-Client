@@ -20,12 +20,14 @@ namespace AirlockClient.Managers
     {
         public static Listener Instance;
         public static AudioSource Listener_SeekerMusic;
+        public AirlockNetworkRunner Runner;
 
         void Start()
         {
             if (Instance == null)
             {
                 Instance = this;
+                Runner = FindObjectOfType<AirlockNetworkRunner>();
             }
             else
             {
@@ -123,30 +125,36 @@ namespace AirlockClient.Managers
 
             if (CurrentMode.IsHosting)
             {
-                if (FindObjectOfType<AirlockNetworkRunner>())
+                if (Instance)
                 {
-                    FindObjectOfType<AirlockNetworkRunner>().SendReliableDataToPlayer(client, data);
+                    Instance.Runner.SendReliableDataToPlayer(client, data);
                 }
             }
             else
             {
-                FindObjectOfType<AirlockNetworkRunner>().SendReliableDataToServer(data);
+                if (Instance)
+                {
+                    Instance.Runner.SendReliableDataToServer(data);
+                }
             }
         }
 
         public static void Send(string message, bool includeSelf = false)
         {
-            foreach (var player in FindObjectOfType<AirlockNetworkRunner>().ActivePlayers.ToArray())
+            if (Instance)
             {
-                if (player.PlayerId != 9)
+                foreach (var player in Instance.Runner.ActivePlayers.ToArray())
                 {
-                    Send(message, player);
-                }
-                else
-                {
-                    if (includeSelf)
+                    if (player.PlayerId != 9)
                     {
                         Send(message, player);
+                    }
+                    else
+                    {
+                        if (includeSelf)
+                        {
+                            Send(message, player);
+                        }
                     }
                 }
             }

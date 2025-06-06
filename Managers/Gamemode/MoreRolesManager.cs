@@ -15,6 +15,7 @@ namespace AirlockClient.Managers.Gamemode
     {
         public override void OnAssignRoles()
         {
+            AssignedRoles.Clear();
             foreach (SubRole role in SubRole.All)
             {
                 Destroy(role);

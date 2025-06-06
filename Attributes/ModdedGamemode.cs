@@ -2,13 +2,13 @@
 using Il2CppSystem.Collections.Generic;
 using Il2CppSG.Airlock;
 using UnityEngine;
-using Il2CppSG.Airlock.Network;
 
 namespace AirlockClient.Attributes
 {
     public class ModdedGamemode : MonoBehaviour
     {
         public static ModdedGamemode Current;
+        public Dictionary<PlayerState, SubRole> AssignedRoles = new Dictionary<PlayerState, SubRole>();
         public GameStateManager State;
         public RoleManager Role;
         public VoteManager Vote;

@@ -2,7 +2,6 @@
 using AirlockClient.Managers;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
-using Il2CppSG.Airlock.Network;
 using System.Collections;
 using UnityEngine;
 using AirlockClient.Managers.Gamemode;

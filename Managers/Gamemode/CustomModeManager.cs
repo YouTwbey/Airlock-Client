@@ -4,6 +4,8 @@ using UnityEngine;
 using Il2CppSG.Airlock.Localization;
 using System.Collections.Generic;
 using AirlockClient.Managers.Debug;
+using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -24,6 +26,16 @@ namespace AirlockClient.Managers.Gamemode
         }
 
         public static List<string> RegisteredCustomModes = new List<string>();
+        public static Dictionary<string, Dictionary<string, GameModes>> QueuedCustomModes = new Dictionary<string, Dictionary<string, GameModes>>();
+
+        void Update()
+        {
+            if (QueuedCustomModes.Count != 0)
+            {
+                CreateMode(QueuedCustomModes.Keys.ToList()[0], QueuedCustomModes.Values.ToList()[0].Keys.ToList()[0], QueuedCustomModes.Values.ToList()[0].Values.ToList()[0]);
+                QueuedCustomModes.Remove(QueuedCustomModes.Keys.ToList()[0]);
+            }
+        }
 
         public void CreateMode(string name, string description, GameModes useGamemodeScript = GameModes.NotSet, Sprite image = null)
         {
@@ -91,7 +103,6 @@ namespace AirlockClient.Managers.Gamemode
                 newMode.ModeNameKey = new UserString();
                 newMode.ModeNameKey.DefaultValue = newMode.ModeName;
                 newMode.ModeNameKey.FormattedPreview = newMode.ModeName;
-
                 newMode.ModeDescriptionKey = new UserString();
                 newMode.ModeDescriptionKey.DefaultValue = description;
                 newMode.ModeDescriptionKey.FormattedPreview = description;

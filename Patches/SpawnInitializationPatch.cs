@@ -17,7 +17,10 @@ namespace AirlockClient.Patches
             {
                 if (CurrentMode.IsHosting)
                 {
-                    Listener.Send("JoinedModdedLobby", __instance.PState.PlayerId);
+                    if (Listener.Instance && __instance.PState.PlayerId != 9)
+                    {
+                        Listener.Send("JoinedModdedLobby", __instance.PState.PlayerId);
+                    }
 
                     if (CurrentMode.Name == "Sandbox")
                     {
@@ -36,11 +39,17 @@ namespace AirlockClient.Patches
                         }
                     }
 
-                    CommandManager.Instance.CheckAuthorityForNameTag(__instance.PState);
-                    CommandManager.Instance.requiresUpdate = true;
+                    if (CommandManager.Instance)
+                    {
+                        CommandManager.Instance.CheckAuthorityForNameTag(__instance.PState);
+                        CommandManager.Instance.requiresUpdate = true;
+                    }
                 }
 
-                PetManager.Instance.AssignDebugPet(__instance);
+                if (PetManager.Instance)
+                {
+                    PetManager.Instance.AssignDebugPet(__instance);
+                }
             }
         }
     }

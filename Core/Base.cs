@@ -13,6 +13,9 @@ using AirlockClient.Managers.Dev;
 using Il2CppInterop.Runtime;
 using AirlockClient.AC;
 using Il2CppSG.Airlock.UI;
+using System.Collections.Generic;
+using System.Linq;
+using Harmony;
 
 namespace AirlockClient.Core
 {
@@ -22,6 +25,13 @@ namespace AirlockClient.Core
         bool bonusMapsAdded = false;
         public static GameObject SceneStorage;
         public static string SceneName = "";
+
+        // Optimizations
+        static List<HostPrivateMenu> hostingMenu = new List<HostPrivateMenu>();
+        static List<GamemodeSelectionMenu> selectModeMenus = new List<GamemodeSelectionMenu>();
+        static List<TitleMenu> titleMenus = new List<TitleMenu>();
+        static List<MenuManager> menus = new List<MenuManager>();
+        static GameObject makePublic;
 
         public override void OnInitializeMelon()
         {
@@ -54,6 +64,11 @@ namespace AirlockClient.Core
             {
                 CurrentMode.IsHosting = false;
                 SceneStorage.AddComponent<CustomModeManager>();
+
+                hostingMenu = FindObjectsOfType<HostPrivateMenu>(true).ToList();
+                selectModeMenus = FindObjectsOfType<GamemodeSelectionMenu>(true).ToList();
+                titleMenus = FindObjectsOfType<TitleMenu>(true).ToList();
+                menus = FindObjectsOfType<MenuManager>(true).ToList();
             }
 
             if (InGame)
@@ -95,52 +110,71 @@ namespace AirlockClient.Core
         {
             if (SceneName == "Title")
             {
-                if (GameObject.Find("Host Private Menu") && CurrentMode.IsHosting == false)
+                if (CurrentMode.IsHosting == false)
                 {
                     CurrentMode.IsHosting = GameObject.Find("Host Private Menu");
                 }
 
                 if (!titleScreenFormat)
                 {
-                    if (FindObjectOfType<GamemodeSelectionMenu>())
+                    foreach (GamemodeSelectionMenu selectModeMenu in selectModeMenus)
                     {
-                        FindObjectOfType<GamemodeSelectionMenu>()._modeLayout.ChildHeight = 30;
-                        FindObjectOfType<GamemodeSelectionMenu>()._modeLayout.SetHeight(125);
-                        titleScreenFormat = true;
+                        if (selectModeMenu != null)
+                        {
+                            if (selectModeMenu.gameObject.active)
+                            {
+                                if (selectModeMenu._modeLayout != null)
+                                {
+                                    selectModeMenu._modeLayout.ChildHeight = 30;
+                                    selectModeMenu._modeLayout.SetHeight(125);
+                                    titleScreenFormat = true;
+                                }
+                            }
+                        }
                     }
                 }
 
-                if (FindObjectOfType<TitleMenu>() && !bonusMapsAdded)
+                if (!bonusMapsAdded)
                 {
                     titleScreenFormat = false;
-                    if (GameObject.Find("UI/MainMenuVR /Menus/TitleMenu/Title"))
-                    {
-                        GameObject.Find("UI/MainMenuVR /Menus/TitleMenu/Title").GetComponent<SpriteRenderer>().sprite = StorageManager.Logo;
-                        GameObject.Find("UI/MainMenuVR /Menus/TitleMenu/Title").transform.localScale = new Vector3(0.75f, 1, 1);
-                    }
-                    else if (GameObject.Find("UI/MainMenu3D/Menus/TitleMenu/Title"))
-                    {
-                        GameObject.Find("UI/MainMenu3D/Menus/TitleMenu/Title").GetComponent<SpriteRenderer>().sprite = StorageManager.Logo;
-                        GameObject.Find("UI/MainMenu3D/Menus/TitleMenu/Title").transform.localScale = new Vector3(0.75f, 1, 1);
-                    }
 
-                    //FindObjectOfType<GamemodeSelectionMenu>(true)._mapInfoCollection._activeModesAndMaps.Maps.Add("Mess Hall"); devs removed mess hall
-                    CustomModeManager.Instance.CreateMode("More Roles", "Social deduction gameplay, with tons of extra roles");
-                    CustomModeManager.Instance.CreateMode("Hide N Seek", "Survive the time limit before the imposter takes everyone out", GameModes.Infection);
-                    CustomModeManager.Instance.CreateMode("Sandbox", "Practice killing, doing tasks or just have fun");
-                    CustomModeManager.Instance.CreateMode("Lights Out", "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut);
-                    CustomModeManager.Instance.CreateMode("Infection", "The zomburritos have returned to spread the infection", GameModes.Infection);
-                    //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
-                    //CustomModeManager.Instance.CreateMode("Dum Justice", "The vigilante has returned to restore justice", GameModes.Vigilante);
-                    //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);
-
-                    if (!WelcomeMessageShown)
+                    foreach (TitleMenu title in titleMenus)
                     {
-                        FindObjectOfType<MenuManager>().ShowRetrySignInPopup(WelcomeMessage, "CLOSE");
-                        WelcomeMessageShown = true;
-                    }
+                        if (title != null)
+                        {
+                            if (title.gameObject.active && title.transform.Find("Title"))
+                            {
+                                title.transform.Find("Title").GetComponent<SpriteRenderer>().sprite = StorageManager.Logo;
+                                title.transform.Find("Title").transform.localScale = new Vector3(0.75f, 1, 1);
 
-                    bonusMapsAdded = true;
+                                foreach (MenuManager menu in menus)
+                                {
+                                    if (CustomModeManager.Instance && menu.gameObject.activeSelf)
+                                    {
+                                        //FindObjectOfType<GamemodeSelectionMenu>(true)._mapInfoCollection._activeModesAndMaps.Maps.Add("Mess Hall"); devs removed mess hall
+                                        CustomModeManager.QueuedCustomModes.Add("More Roles", new Dictionary<string, GameModes> { { "Social deduction gameplay, with tons of extra roles", GameModes.NotSet } });
+                                        CustomModeManager.QueuedCustomModes.Add("Hide N Seek", new Dictionary<string, GameModes> { { "Survive the time limit before the imposter takes everyone out", GameModes.Infection } });
+                                        CustomModeManager.QueuedCustomModes.Add("Sandbox", new Dictionary<string, GameModes> { { "Practice killing, doing tasks or just have fun", GameModes.NotSet } });
+                                        CustomModeManager.QueuedCustomModes.Add("Lights Out", new Dictionary<string, GameModes> { { "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut } });
+                                        CustomModeManager.QueuedCustomModes.Add("Infection", new Dictionary<string, GameModes> { { "The zomburritos have returned to spread the infection", GameModes.Infection } });
+                                        //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
+                                        //CustomModeManager.Instance.CreateMode("Dum Justice", "The vigilante has returned to restore justice", GameModes.Vigilante);
+                                        //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);
+
+                                        bonusMapsAdded = true;
+                                    }
+                                }
+
+                                if (!WelcomeMessageShown)
+                                {
+                                    FindObjectOfType<MenuManager>().ShowRetrySignInPopup(WelcomeMessage, "CLOSE");
+                                    WelcomeMessageShown = true;
+                                }
+
+                                bonusMapsAdded = true;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -148,9 +182,19 @@ namespace AirlockClient.Core
             {
                 if (CurrentMode.Modded && CurrentMode.IsHosting)
                 {
-                    if (GameObject.Find("MakePublic_Button"))
+                    if (makePublic)
                     {
-                        GameObject.Find("MakePublic_Button").SetActive(false);
+                        if (makePublic.active)
+                        {
+                            makePublic.SetActive(false);
+                        }
+                    }
+                    else
+                    {
+                        if (GameObject.Find("MakePublic_Button"))
+                        {
+                            makePublic = GameObject.Find("MakePublic_Button");
+                        }
                     }
                 }
             }

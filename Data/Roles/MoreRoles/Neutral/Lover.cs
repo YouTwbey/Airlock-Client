@@ -3,7 +3,6 @@ using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
