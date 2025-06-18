@@ -230,6 +230,38 @@ namespace AirlockClient.Managers.Gamemode
                     Sheriff.Data.Amount = 0;
                 }
             }
+            if (GUI.Button(new Rect(0, 700, 200, 50), "Armorer: " + Armorer.Data.Amount))
+            {
+                Armorer.Data.Amount++;
+                if (Armorer.Data.Amount == 11)
+                {
+                    Armorer.Data.Amount = 0;
+                }
+            }
+            if (GUI.Button(new Rect(0, 750, 200, 50), "Assassin: " + Assassin.Data.Amount))
+            {
+                Assassin.Data.Amount++;
+                if (Assassin.Data.Amount == 11)
+                {
+                    Assassin.Data.Amount = 0;
+                }
+            }
+            if (GUI.Button(new Rect(0, 800, 200, 50), "Poisoner: " + Poisoner.Data.Amount))
+            {
+                Poisoner.Data.Amount++;
+                if (Poisoner.Data.Amount == 11)
+                {
+                    Poisoner.Data.Amount = 0;
+                }
+            }
+            if (GUI.Button(new Rect(0, 850, 200, 50), "Troll: " + Troll.Data.Amount))
+            {
+                Troll.Data.Amount++;
+                if (Troll.Data.Amount == 11)
+                {
+                    Troll.Data.Amount = 0;
+                }
+            }
         }
     }
 }
