@@ -30,7 +30,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyKill(perp, target, action))
+                if (!AntiCheat.Instance.VerifyKill(perp, target, action, RpcData.Info))
                 {
                     return false;
                 }
@@ -114,6 +114,13 @@ namespace AirlockClient.Patches
                                 return false;
                             }
 
+                            if (perp.GetComponent<Poisoner>())
+                            {
+                                role.OnPlayerKilled(target);
+                                role.OnPlayerAction(action);
+                                return false;
+                            }
+
                             if (targetSubRole != null)
                             {
                                 targetSubRole.OnPlayerDied(perp);
@@ -121,6 +128,22 @@ namespace AirlockClient.Patches
 
                             role.OnPlayerKilled(target);
                             role.OnPlayerAction(action);
+                        }
+                        else if (role.PlayerWithRole.PlayerId == target.PlayerId)
+                        {
+                            Armorer armorer = target.GetComponent<Armorer>();
+                            if (armorer)
+                            {
+                                if (armorer.HasTakenHit)
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    armorer.HasTakenHit = true;
+                                    return false;
+                                }
+                            }
                         }
                     }
 

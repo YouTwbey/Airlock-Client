@@ -49,15 +49,19 @@ namespace AirlockClient.Managers.Gamemode
             if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(normalCrewmates, Yapper.Data.Amount));
             if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(normalCrewmates, GuardianAngel.Data.Amount));
             if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(normalCrewmates, Sheriff.Data.Amount));
+            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(normalCrewmates, Armorer.Data.Amount));
 
             if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(imposters, Bomber.Data.Amount));
             if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(imposters, Janitor.Data.Amount));
             if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(imposters, Vampire.Data.Amount));
             if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(imposters, Witch.Data.Amount));
+            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(imposters, Poisoner.Data.Amount));
+            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(imposters, Assassin.Data.Amount));
 
             if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(normalCrewmates, Executioner.Data.Amount));
             if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(normalCrewmates, Jester.Data.Amount));
             if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(normalCrewmates, Lover.Data.Amount));
+            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(normalCrewmates, Troll.Data.Amount));
 
             System.Random rng3 = new System.Random();
             roleAssignments = roleAssignments.OrderBy(_ => rng3.Next()).ToList();

@@ -141,11 +141,18 @@ namespace AirlockClient.AC
             player.HatId = hatId;
         }
 
-        public bool VerifyBodyReport(PlayerState reporter, PlayerState bodyReported)
+        public bool VerifyBodyReport(PlayerState reporter, PlayerState bodyReported, RpcInfo info)
         {
+            int sender = info.Source;
             bool IsCheating = false;
             NetworkedBody body = GameObject.Find("NetworkedBody (" + bodyReported.PlayerId + ")").GetComponent<NetworkedBody>();
             float distance = (body.transform.position - reporter.LocomotionPlayer.RigidbodyPosition).magnitude;
+
+            if (reporter.PlayerId != sender)
+            {
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of body report rpc", true);
+                return false;
+            }
 
             if (State.GameModeStateValue.GameMode == GameModes.Infection)
             {
@@ -182,11 +189,18 @@ namespace AirlockClient.AC
             return !IsCheating;
         }
 
-        public bool VerifyMeeting(PlayerState caller)
+        public bool VerifyMeeting(PlayerState caller, RpcInfo info)
         {
+            int sender = info.Source;
             bool IsCheating = false;
             int TotalMeetings = Button._emergencyMeetingsVar.Value;
             float distance = (caller.LocomotionPlayer.RigidbodyPosition - Button.transform.position).magnitude;
+
+            if (caller.PlayerId != sender)
+            {
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of meeting rpc", true);
+                return false;
+            }
 
             if (!caller.IsAlive)
             {
@@ -223,7 +237,7 @@ namespace AirlockClient.AC
             return !IsCheating;
         }
 
-        public bool VerifySpawnBody(PlayerState body, NetworkRigidbodyObsolete rb)
+        public bool VerifySpawnBody(PlayerState body, NetworkRigidbodyObsolete rb, RpcInfo info)
         {
             bool IsCheating = false;
 
@@ -343,9 +357,17 @@ namespace AirlockClient.AC
             }
         }
 
-        public bool VerifyVent(PlayerState venter)
+        public bool VerifyVent(PlayerState venter, RpcInfo info)
         {
+            int sender = info.Source;
+
             bool IsCheating = false;
+
+            if (venter.PlayerId != sender)
+            {
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of vent rpc", true);
+                return false;
+            }
 
             if (State.GameModeStateValue.GameMode == GameModes.Infection)
             {
@@ -370,9 +392,16 @@ namespace AirlockClient.AC
             return !IsCheating;
         }
 
-        public bool VerifyKill(PlayerState killer, PlayerState target, int action)
+        public bool VerifyKill(PlayerState killer, PlayerState target, int action, RpcInfo info)
         {
+            int sender = info.Source;
             bool IsCheating = false;
+
+            if (killer.PlayerId != sender)
+            {
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of kill rpc", true);
+                return false;
+            }
 
             float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition).magnitude;
             GameRole killerRole = GetTrueRole(killer);

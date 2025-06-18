@@ -92,7 +92,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyBodyReport(caller, bodyFound))
+                if (!AntiCheat.Instance.VerifyBodyReport(caller, bodyFound, RpcData.Info))
                 {
                     return false;
                 }
@@ -124,7 +124,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyMeeting(caller))
+                if (!AntiCheat.Instance.VerifyMeeting(caller, RpcData.Info))
                 {
                     return false;
                 }

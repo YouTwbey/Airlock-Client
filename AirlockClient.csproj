@@ -30,6 +30,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -211,10 +212,13 @@
     <Compile Include="Data\Roles\HideNSeek\Imposter\Seeker.cs" />
     <Compile Include="Data\Roles\Infection\Crewmate\Chef.cs" />
     <Compile Include="Data\Roles\Infection\Imposter\Zomburitto.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Armorer.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Bait.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\GuardianAngel.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Sheriff.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Assassin.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Bomber.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Poisoner.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Vampire.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
@@ -225,6 +229,7 @@
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Silencer.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Yapper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Lover.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Troll.cs" />
     <Compile Include="Handlers\PetHandler.cs" />
     <Compile Include="Managers\Dev\CommandManager.cs" />
     <Compile Include="Managers\Gamemode\ContainmentManager.cs" />
@@ -251,6 +256,7 @@
     <Compile Include="Patches\ReliableDataPatch.cs" />
     <Compile Include="Patches\ReplayPatch.cs" />
     <Compile Include="Patches\RequestPowerupPatch.cs" />
+    <Compile Include="Patches\RPCRecievedPatch.cs" />
     <Compile Include="Patches\SetHeightPatch.cs" />
     <Compile Include="Patches\ShowDeathCutscenePatch.cs" />
     <Compile Include="Patches\ShowEjectedPatch.cs" />
