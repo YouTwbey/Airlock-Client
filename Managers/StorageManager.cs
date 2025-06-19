@@ -1,6 +1,7 @@
 ﻿using AirlockClient.Managers.Debug;
 using Il2CppInterop.Runtime;
 using MelonLoader.Utils;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -41,11 +42,12 @@ namespace AirlockClient.Managers
         public static void LoadAllAssets()
         {
             string bundleLocation = MelonEnvironment.UserDataDirectory + "\\airlockclient";
-            if (File.Exists(bundleLocation))
+
+            if (File.Exists(bundleLocation) && Bundle == null)
             {
                 Bundle = AssetBundle.LoadFromFile(bundleLocation);
 
-                if (Bundle)
+                if (Bundle != null)
                 {
                     Logo = LoadSprite("Logo");
                     ModStamp = LoadSprite("ModStamp");
