@@ -1,21 +1,20 @@
-﻿using AirlockClient.Data;
+﻿using AirlockClient.AC;
+using AirlockClient.Data;
 using AirlockClient.Managers;
+using AirlockClient.Managers.Dev;
+using AirlockClient.Managers.Gamemode;
+using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.UI.TitleScreen;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
-using UnityEngine;
-using static UnityEngine.Object;
-using static AirlockClient.Data.Info;
-using AirlockClient.Managers.Gamemode;
-using AirlockClient.Managers.Dev;
-using Il2CppInterop.Runtime;
-using AirlockClient.AC;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.UI;
+using Il2CppSG.Airlock.UI.TitleScreen;
+using MelonLoader;
 using System.Collections.Generic;
 using System.Linq;
-using Harmony;
+using UnityEngine;
+using static AirlockClient.Data.Info;
+using static UnityEngine.Object;
 
 namespace AirlockClient.Core
 {
@@ -69,6 +68,39 @@ namespace AirlockClient.Core
                 selectModeMenus = FindObjectsOfType<GamemodeSelectionMenu>(true).ToList();
                 titleMenus = FindObjectsOfType<TitleMenu>(true).ToList();
                 menus = FindObjectsOfType<MenuManager>(true).ToList();
+
+                TransitionSpace polusScene = null;
+                foreach (TransitionSpace space in Resources.FindObjectsOfTypeAll<TransitionSpace>())
+                {
+                    if (space.name.Contains("Polus"))
+                    {
+                        polusScene = Instantiate(space.gameObject).GetComponent<TransitionSpace>();
+                    }
+                }
+
+                if (polusScene)
+                {
+                    polusScene._someoneWasEjected.gameObject.SetActive(true);
+                    Destroy(GameObject.Find("OrbitingCrewmates"));
+
+                    foreach (Transform obj in polusScene.GetComponentsInChildren<Transform>(true))
+                    {
+                        switch (obj.name)
+                        {
+                            case "TheaterSpace":
+                                obj.gameObject.SetActive(false);
+                                break;
+
+                            case "P_EjectionScene_01":
+                                obj.gameObject.SetActive(false);
+                                break;
+
+                            case "SM_EndGame_01":
+                                obj.gameObject.SetActive(true);
+                                break;
+                        }
+                    }
+                }
             }
 
             if (InGame)
