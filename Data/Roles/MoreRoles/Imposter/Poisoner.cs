@@ -17,7 +17,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Poisoner",
-            Description = "Delayed kills",
+            Description = "20 Sec Delay",
             AC_Description = "A poisoner's kills are delayed by 10 seconds.",
             Team = GameTeam.Imposter,
             Amount = 1
@@ -35,7 +35,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         IEnumerator DelayedKill(PlayerState target)
         {
-            yield return new WaitForSeconds(10);
+            yield return new WaitForSeconds(20);
 
             if (target.GetComponent<SubRole>())
             {

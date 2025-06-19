@@ -18,8 +18,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Vampire",
-            Description = "Delayed Kills",
-            AC_Description = "You can only kill others when the lights are out.",
+            Description = "10 Sec Delay",
+            AC_Description = "Your kills are delayed by 10 seconds.",
             Team = GameTeam.Imposter,
             Amount = 1
         };
