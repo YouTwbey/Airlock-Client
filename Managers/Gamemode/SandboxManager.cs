@@ -231,6 +231,8 @@ namespace AirlockClient.Managers.Gamemode
             GUILayout.BeginArea(new Rect(10, 10, 350, 800), "Sandbox Menu", GUI.skin.window);
             scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(390), GUILayout.Height(680));
 
+            GUILayout.Label("LOBBY CODE: " + ModdedGamemode.Current.State.GameSession.SessionName);
+
             // Player ID Input
             GUILayout.Label("Enter Player ID:");
             string playerIdStr = GUILayout.TextField(playerIdInput.ToString(), GUILayout.Width(100));
