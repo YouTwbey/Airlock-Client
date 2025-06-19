@@ -1,4 +1,5 @@
 ﻿using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Managers.Debug
 {
@@ -14,9 +15,14 @@ namespace AirlockClient.Managers.Debug
             MelonLogger.Warning(message);
         }
 
-        public static void Error(string message)
+        public static void Error(string message, bool crash = false)
         {
             MelonLogger.Error(message);
+
+            if (crash)
+            {
+                Application.Quit();
+            }
         }
 
         public static void Debug_Log(string message)

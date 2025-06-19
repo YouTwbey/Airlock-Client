@@ -1,13 +1,12 @@
 ﻿using AirlockClient.Managers.Debug;
-using Il2CppInterop.Runtime;
 using MelonLoader.Utils;
-using System.Collections;
 using System.IO;
 using UnityEngine;
+using static UnityEngine.Object;
 
 namespace AirlockClient.Managers
 {
-    public class StorageManager : MonoBehaviour
+    public static class StorageManager
     {
         // MainData
         public static AssetBundle Bundle;
@@ -41,60 +40,102 @@ namespace AirlockClient.Managers
 
         public static void LoadAllAssets()
         {
+            if (Bundle != null)
+            {
+                if (Logo == null)
+                {
+                    Logo = LoadSprite("airlockclient/main/logo.png");
+                    ModStamp = LoadSprite("airlockclient/main/modstamp.png");
+                    AirlockClient_UI = LoadGameObject("airlockclient/main/airlockclient_ui.prefab");
+
+                    MoreRolesIcon = LoadSprite("airlockclient/icons/moreroles.png");
+                    HideNSeekIcon = LoadSprite("airlockclient/icons/hidenseek.png");
+                    FreeRoamIcon = LoadSprite("airlockclient/icons/freeroam.png");
+                    LightsOutIcon = LoadSprite("airlockclient/icons/lightsout.png");
+                    InfectedIcon = LoadSprite("airlockclient/icons/infected.png");
+                    ContainmentIcon = LoadSprite("airlockclient/icons/containment.png");
+                    SheriffIcon = LoadSprite("airlockclient/icons/sheriff.png");
+
+                    DangerMeter0 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/0.png");
+                    DangerMeter1 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/1.png");
+                    DangerMeter2 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/2.png");
+                    DangerMeter3 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/3.png");
+                    DangerMeter4 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/4.png");
+                    DangerMeter5 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/5.png");
+                    DangerMusic0 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/0.wav");
+                    DangerMusic1 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/1.wav");
+                    DangerMusic2 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/2.wav");
+                    DangerMusic3 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/3.wav");
+                    DangerMusic4 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/4.wav");
+                    DangerMusic5 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/5.wav");
+                    SeekerMusic = LoadAudio("airlockclient/gamemodes/hidenseek/seeker.mp3");
+                }
+                return;
+            }
+
             string bundleLocation = MelonEnvironment.UserDataDirectory + "\\airlockclient";
 
-            if (File.Exists(bundleLocation) && Bundle == null)
+            if (File.Exists(bundleLocation))
             {
                 Bundle = AssetBundle.LoadFromFile(bundleLocation);
 
                 if (Bundle != null)
                 {
-                    Logo = LoadSprite("Logo");
-                    ModStamp = LoadSprite("ModStamp");
-                    AirlockClient_UI = LoadGameObject("AirlockClient_UI");
+                    Logo = LoadSprite("airlockclient/main/logo.png");
+                    ModStamp = LoadSprite("airlockclient/main/modstamp.png");
+                    AirlockClient_UI = LoadGameObject("airlockclient/main/airlockclient_ui.prefab");
 
-                    MoreRolesIcon = LoadSprite("MoreRoles");
-                    HideNSeekIcon = LoadSprite("HideNSeek");
-                    FreeRoamIcon = LoadSprite("FreeRoam");
-                    LightsOutIcon = LoadSprite("LightsOut");
-                    InfectedIcon = LoadSprite("Infection");
-                    ContainmentIcon = LoadSprite("Containment");
-                    SheriffIcon = LoadSprite("Sheriff");
+                    MoreRolesIcon = LoadSprite("airlockclient/icons/moreroles.png");
+                    HideNSeekIcon = LoadSprite("airlockclient/icons/hidenseek.png");
+                    FreeRoamIcon = LoadSprite("airlockclient/icons/freeroam.png");
+                    LightsOutIcon = LoadSprite("airlockclient/icons/lightsout.png");
+                    InfectedIcon = LoadSprite("airlockclient/icons/infected.png");
+                    ContainmentIcon = LoadSprite("airlockclient/icons/containment.png");
+                    SheriffIcon = LoadSprite("airlockclient/icons/sheriff.png");
 
-                    DangerMeter0 = LoadSprite("0");
-                    DangerMeter1 = LoadSprite("1");
-                    DangerMeter2 = LoadSprite("2");
-                    DangerMeter3 = LoadSprite("3");
-                    DangerMeter4 = LoadSprite("4");
-                    DangerMeter5 = LoadSprite("5");
-                    DangerMusic0 = LoadAudio("0");
-                    DangerMusic1 = LoadAudio("1");
-                    DangerMusic2 = LoadAudio("2");
-                    DangerMusic3 = LoadAudio("3");
-                    DangerMusic4 = LoadAudio("4");
-                    DangerMusic5 = LoadAudio("5");
-                    SeekerMusic = LoadAudio("Seeker");
+                    DangerMeter0 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/0.png");
+                    DangerMeter1 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/1.png");
+                    DangerMeter2 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/2.png");
+                    DangerMeter3 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/3.png");
+                    DangerMeter4 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/4.png");
+                    DangerMeter5 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/5.png");
+                    DangerMusic0 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/0.wav");
+                    DangerMusic1 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/1.wav");
+                    DangerMusic2 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/2.wav");
+                    DangerMusic3 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/3.wav");
+                    DangerMusic4 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/4.wav");
+                    DangerMusic5 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/5.wav");
+                    SeekerMusic = LoadAudio("airlockclient/gamemodes/hidenseek/seeker.mp3");
                 }
                 else
                 {
-                    Logging.Error("Airlock Client Assets failed to load! Mod may not work as intended.");
+                    Logging.Error("Airlock Client Assets failed to load!", true);
                 }
+            }
+            else
+            {
+                Logging.Error("Airlock Client Assets is missing from this location: " + bundleLocation, true);
             }
         }
 
         static Sprite LoadSprite(string name)
         {
-            return (Sprite)Bundle.Load(name, Il2CppType.Of<Sprite>());
+            return Load<Sprite>(name);
         }
 
         static GameObject LoadGameObject(string name)
         {
-            return (GameObject)Bundle.Load(name, Il2CppType.Of<GameObject>());
+            return Load<GameObject>(name);
         }
 
         static AudioClip LoadAudio(string name)
         {
-            return (AudioClip)Bundle.Load(name, Il2CppType.Of<AudioClip>());
+            return Load<AudioClip>(name);
+        }
+
+        static T Load<T>(string name) where T : Object
+        {
+            return Bundle.LoadAsset<T>("assets/" + name);
         }
     }
 }

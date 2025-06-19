@@ -57,7 +57,6 @@ namespace AirlockClient.Core
             ModStamp.CreateModStamp();
 
             SceneStorage.transform.position = new Vector3(1000, 1000, 1000);
-            SceneStorage.AddComponent<StorageManager>();
 
             if (SceneName == "Title")
             {
