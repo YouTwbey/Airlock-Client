@@ -9,6 +9,7 @@ using AirlockClient.Attributes;
 using Il2CppSG.Airlock.Minigames;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static AirlockClient.Managers.Gamemode.MoreRolesManager;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -44,24 +45,6 @@ namespace AirlockClient.Managers.Gamemode
             {
                 State.Runner.Despawn(FindObjectOfType<EmergencyButton>().Object, true);
             }
-        }
-
-        public enum SubGameRole
-        {
-            Bait,
-            GuardianAngel,
-            Magician,
-            Mayor,
-            Sheriff,
-            Silencer,
-            Yapper,
-            Bomber,
-            Janitor,
-            Vampire,
-            Witch,
-            Executioner,
-            Jester,
-            Lover
         }
 
         public void AssignPowerUp(PlayerState player, PowerUps powerUp)
@@ -197,7 +180,7 @@ namespace AirlockClient.Managers.Gamemode
         private int playerIdInput = 0;
         private int taskAmount = 1;
 
-        private SandboxManager.SubGameRole selectedSubRole;
+        private SubGameRole selectedSubRole;
         private GameRole selectedGameRole;
         private PowerUps selectedPowerUp;
 
@@ -241,8 +224,8 @@ namespace AirlockClient.Managers.Gamemode
             GUILayout.Space(10);
 
             GUILayout.Label("Assign SubRole:");
-            selectedSubRoleIndex = DrawEnumSelectionGrid<SandboxManager.SubGameRole>(selectedSubRoleIndex);
-            selectedSubRole = (SandboxManager.SubGameRole)selectedSubRoleIndex;
+            selectedSubRoleIndex = DrawEnumSelectionGrid<SubGameRole>(selectedSubRoleIndex);
+            selectedSubRole = (SubGameRole)selectedSubRoleIndex;
             if (GUILayout.Button("Assign SubRole"))
             {
                 AssignRole(GetPlayerStateById(playerIdInput), selectedSubRole);

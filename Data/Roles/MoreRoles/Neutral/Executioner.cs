@@ -29,13 +29,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             List<int> validIds = new List<int>();
 
-            foreach (PlayerState player in FindObjectsOfType<PlayerState>())
+            foreach (PlayerState player in ((MoreRolesManager)ModdedGamemode.Current).Crewmates)
             {
-                if (player.IsConnected && player != PlayerWithRole && player.GetComponent<Jester>() == null && ModdedGamemode.Current.GetTrueRole(PlayerWithRole) != GameRole.Imposter)
+                if (player.IsConnected && player != PlayerWithRole)
                 {
                     validIds.Add(player.PlayerId);
                 }
             }
+
+            if (validIds.Count == 0) Destroy(this);
 
             playerToVoteOut = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
             MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, playerToVoteOut.NetworkName.Value));

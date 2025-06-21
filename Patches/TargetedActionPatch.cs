@@ -69,15 +69,7 @@ namespace AirlockClient.Patches
                         {
                             if (perp.GetComponent<Vampire>())
                             {
-                                if (saboteur._sabotageManager.ActiveSabotage)
-                                {
-                                    if (saboteur._sabotageManager.ActiveSabotage.sabotageType == Sabotage.SabotageType.Lights)
-                                    {
-                                        perp.GetComponent<Vampire>().DelayedKill(target, action);
-                                        return true;
-                                    }
-                                }
-
+                                perp.GetComponent<Vampire>().DelayedKill(target, action);
                                 return false;
                             }
 

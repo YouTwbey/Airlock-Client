@@ -163,6 +163,10 @@
     <Reference Include="Unity.InputSystem.ForUI">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
     </Reference>

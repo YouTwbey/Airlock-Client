@@ -3,65 +3,181 @@ using AirlockClient.Data;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
+using Il2CppFusion.Protocol;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
+using Il2CppTMPro;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace AirlockClient.Managers.Gamemode
 {
     public class MoreRolesManager : ModdedGamemode
     {
+        public enum SubGameRole
+        {
+            Bait,
+            GuardianAngel,
+            Magician,
+            Mayor,
+            Sheriff,
+            Silencer,
+            Yapper,
+            Bomber,
+            Janitor,
+            Vampire,
+            Witch,
+            Executioner,
+            Jester,
+            Lover,
+            Armorer,
+            Assassin,
+            Poisoner,
+            Troll
+        }
+
+        static readonly Dictionary<SubGameRole, SubRoleData> SubRoleToData = new Dictionary<SubGameRole, SubRoleData>
+        {
+            { SubGameRole.Bait, Bait.Data },
+            { SubGameRole.GuardianAngel, GuardianAngel.Data },
+            { SubGameRole.Magician, Magician.Data },
+            { SubGameRole.Mayor, Mayor.Data },
+            { SubGameRole.Sheriff , Sheriff.Data },
+            { SubGameRole.Silencer, Silencer.Data },
+            { SubGameRole.Yapper, Yapper.Data },
+            { SubGameRole.Bomber, Bomber.Data },
+            { SubGameRole.Janitor, Janitor.Data },
+            { SubGameRole.Vampire, Vampire.Data },
+            { SubGameRole.Witch, Witch.Data },
+            { SubGameRole.Executioner, Executioner.Data },
+            { SubGameRole.Jester, Jester.Data },
+            { SubGameRole.Lover, Lover.Data },
+            { SubGameRole.Armorer, Armorer.Data },
+            { SubGameRole.Assassin, Assassin.Data },
+            { SubGameRole.Poisoner, Poisoner.Data },
+            { SubGameRole.Troll, Troll.Data },
+        };
+
+        GameObject UI;
+        void Start()
+        {
+            UI = Instantiate(StorageManager.AirlockClient_UI);
+            SetupUI();
+        }
+
+        void Update()
+        {
+            if (!State.InLobbyState())
+            {
+                if (UI.activeSelf)
+                {
+                    UI.SetActive(false);
+                }
+                return;
+            }
+
+            if (Keyboard.current.leftAltKey.wasPressedThisFrame)
+            {
+                UI.SetActive(!UI.activeSelf);
+            }
+        }
+
+        void SetupUI()
+        {
+            GameObject Template = UI.transform.Find("MoreRoles").Find("BG").Find("Roles").Find("ROLE_TEMPLATE").gameObject;
+
+            foreach (SubGameRole subrole in System.Enum.GetValues(typeof(SubGameRole)))
+            {
+                GameObject RoleSetting = Instantiate(Template, Template.transform.parent);
+                RoleSetting.name = "ROLE_" + subrole.ToString();
+
+                Button decrease = RoleSetting.transform.Find("Decrease").gameObject.GetComponent<Button>();
+                Button increase = RoleSetting.transform.Find("Increase").gameObject.GetComponent<Button>();
+                TextMeshProUGUI roleName = RoleSetting.transform.Find("RoleName").gameObject.GetComponent<TextMeshProUGUI>();
+                TextMeshProUGUI amount = RoleSetting.transform.Find("Amount").gameObject.GetComponent<TextMeshProUGUI>();
+
+                roleName.text = subrole.ToString();
+                amount.text = "(1)";
+
+                decrease.onClick.AddListener((UnityAction)(() =>
+                {
+                    ChangeRoleAmount(amount, subrole, -1);
+                }));
+
+                increase.onClick.AddListener((UnityAction)(() =>
+                {
+                    ChangeRoleAmount(amount, subrole, 1);
+                }));
+            }
+
+            Template.SetActive(false);
+            UI.SetActive(false);
+        }
+
+        void ChangeRoleAmount(TextMeshProUGUI subRoleAmount, SubGameRole role, int changeBy)
+        {
+            SubRoleData data = SubRoleToData[role];
+            data.Amount += changeBy;
+
+            subRoleAmount.text = data.Amount.ToString();
+        }
+
+        public List<PlayerState> Crewmates = new List<PlayerState>();
+        public List<PlayerState> Imposters = new List<PlayerState>();
         public override void OnAssignRoles()
         {
             AssignedRoles.Clear();
+            Crewmates.Clear();
+            Imposters.Clear();
+
             foreach (SubRole role in SubRole.All)
             {
                 Destroy(role);
             }
 
-            List<PlayerState> normalCrewmates = new List<PlayerState>();
-            List<PlayerState> imposters = new List<PlayerState>();
-
             foreach (PlayerState player in FindObjectsOfType<PlayerState>())
             {
                 if (GetTrueRole(player) == GameRole.Crewmember)
                 {
-                    normalCrewmates.Add(player);
+                    Crewmates.Add(player);
                 }
                 if (GetTrueRole(player) == GameRole.Imposter)
                 {
-                    imposters.Add(player);
+                    Imposters.Add(player);
                 }
             }
             System.Random rng1 = new System.Random();
-            normalCrewmates = normalCrewmates.OrderBy(_ => rng1.Next()).ToList();
+            Crewmates = Crewmates.OrderBy(_ => rng1.Next()).ToList();
             System.Random rng2 = new System.Random();
-            imposters = imposters.OrderBy(_ => rng2.Next()).ToList();
+            Imposters = Imposters.OrderBy(_ => rng2.Next()).ToList();
 
             List<System.Action> roleAssignments = new List<System.Action>();
 
-            if (Bait.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bait>(normalCrewmates, Bait.Data.Amount));
-            if (Magician.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Magician>(normalCrewmates, Magician.Data.Amount));
-            if (Mayor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Mayor>(normalCrewmates, Mayor.Data.Amount));
-            if (Silencer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Silencer>(normalCrewmates, Silencer.Data.Amount));
-            if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(normalCrewmates, Yapper.Data.Amount));
-            if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(normalCrewmates, GuardianAngel.Data.Amount));
-            if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(normalCrewmates, Sheriff.Data.Amount));
-            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(normalCrewmates, Armorer.Data.Amount));
+            if (Bait.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bait>(Crewmates, Bait.Data.Amount));
+            if (Magician.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Magician>(Crewmates, Magician.Data.Amount));
+            if (Mayor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Mayor>(Crewmates, Mayor.Data.Amount));
+            if (Silencer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Silencer>(Crewmates, Silencer.Data.Amount));
+            if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(Crewmates, Yapper.Data.Amount));
+            if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(Crewmates, GuardianAngel.Data.Amount));
+            if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(Crewmates, Sheriff.Data.Amount));
+            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(Crewmates, Armorer.Data.Amount));
 
-            if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(imposters, Bomber.Data.Amount));
-            if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(imposters, Janitor.Data.Amount));
-            if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(imposters, Vampire.Data.Amount));
-            if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(imposters, Witch.Data.Amount));
-            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(imposters, Poisoner.Data.Amount));
-            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(imposters, Assassin.Data.Amount));
+            if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(Imposters, Bomber.Data.Amount));
+            if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(Imposters, Janitor.Data.Amount));
+            if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(Imposters, Vampire.Data.Amount));
+            if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(Imposters, Witch.Data.Amount));
+            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(Imposters, Poisoner.Data.Amount));
+            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(Imposters, Assassin.Data.Amount));
 
-            if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(normalCrewmates, Executioner.Data.Amount));
-            if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(normalCrewmates, Jester.Data.Amount));
-            if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(normalCrewmates, Lover.Data.Amount));
-            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(normalCrewmates, Troll.Data.Amount));
+            if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(Crewmates, Executioner.Data.Amount));
+            if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(Crewmates, Jester.Data.Amount));
+            if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(Crewmates, Lover.Data.Amount));
+            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(Crewmates, Troll.Data.Amount));
 
             System.Random rng3 = new System.Random();
             roleAssignments = roleAssignments.OrderBy(_ => rng3.Next()).ToList();
@@ -95,6 +211,7 @@ namespace AirlockClient.Managers.Gamemode
                 if (roleToChange != GameRole.NotSet)
                 {
                     Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                    Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
                 }
                 yield return new WaitForSeconds(2);
                 if (string.IsNullOrEmpty(additional))
@@ -111,156 +228,6 @@ namespace AirlockClient.Managers.Gamemode
                 }
                 Player.NetworkName = ogName;
                 Role.IsDisplayingRole = false;
-            }
-        }
-
-        void OnGUI()
-        {
-            if (!State.InLobbyState()) return;
-
-            if (GUI.Button(new Rect(0, 0, 200, 50), "Bait: " + Bait.Data.Amount))
-            {
-                Bait.Data.Amount++;
-                if (Bait.Data.Amount == 11)
-                {
-                    Bait.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 50, 200, 50), "G_Angel: " + GuardianAngel.Data.Amount))
-            {
-                GuardianAngel.Data.Amount++;
-                if (GuardianAngel.Data.Amount == 11)
-                {
-                    GuardianAngel.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 100, 200, 50), "Magician: " + Magician.Data.Amount))
-            {
-                Magician.Data.Amount++;
-                if (Magician.Data.Amount == 11)
-                {
-                    Magician.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 150, 200, 50), "Mayor: " + Mayor.Data.Amount))
-            {
-                Mayor.Data.Amount++;
-                if (Mayor.Data.Amount == 11)
-                {
-                    Mayor.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 200, 200, 50), "Silencer: " + Silencer.Data.Amount))
-            {
-                Silencer.Data.Amount++;
-                if (Silencer.Data.Amount == 11)
-                {
-                    Silencer.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 250, 200, 50), "Yapper: " + Yapper.Data.Amount))
-            {
-                Yapper.Data.Amount++;
-                if (Yapper.Data.Amount == 11)
-                {
-                    Yapper.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 300, 200, 50), "Bomber: " + Bomber.Data.Amount))
-            {
-                Bomber.Data.Amount++;
-                if (Bomber.Data.Amount == 11)
-                {
-                    Bomber.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 350, 200, 50), "Janitor: " + Janitor.Data.Amount))
-            {
-                Janitor.Data.Amount++;
-                if (Janitor.Data.Amount == 11)
-                {
-                    Janitor.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 400, 200, 50), "Vampire: " + Vampire.Data.Amount))
-            {
-                Vampire.Data.Amount++;
-                if (Vampire.Data.Amount == 11)
-                {
-                    Vampire.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 450, 200, 50), "Witch: " + Witch.Data.Amount))
-            {
-                Witch.Data.Amount++;
-                if (Witch.Data.Amount == 11)
-                {
-                    Witch.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 500, 200, 50), "Executioner: " + Executioner.Data.Amount))
-            {
-                Executioner.Data.Amount++;
-                if (Executioner.Data.Amount == 11)
-                {
-                    Executioner.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 550, 200, 50), "Jester: " + Jester.Data.Amount))
-            {
-                Jester.Data.Amount++;
-                if (Jester.Data.Amount == 11)
-                {
-                    Jester.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 600, 200, 50), "Lover: " + Lover.Data.Amount))
-            {
-                Lover.Data.Amount++;
-                if (Lover.Data.Amount == 11)
-                {
-                    Lover.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 650, 200, 50), "Sheriff: " + Sheriff.Data.Amount))
-            {
-                Sheriff.Data.Amount++;
-                if (Sheriff.Data.Amount == 11)
-                {
-                    Sheriff.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 700, 200, 50), "Armorer: " + Armorer.Data.Amount))
-            {
-                Armorer.Data.Amount++;
-                if (Armorer.Data.Amount == 11)
-                {
-                    Armorer.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 750, 200, 50), "Assassin: " + Assassin.Data.Amount))
-            {
-                Assassin.Data.Amount++;
-                if (Assassin.Data.Amount == 11)
-                {
-                    Assassin.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 800, 200, 50), "Poisoner: " + Poisoner.Data.Amount))
-            {
-                Poisoner.Data.Amount++;
-                if (Poisoner.Data.Amount == 11)
-                {
-                    Poisoner.Data.Amount = 0;
-                }
-            }
-            if (GUI.Button(new Rect(0, 850, 200, 50), "Troll: " + Troll.Data.Amount))
-            {
-                Troll.Data.Amount++;
-                if (Troll.Data.Amount == 11)
-                {
-                    Troll.Data.Amount = 0;
-                }
             }
         }
     }
