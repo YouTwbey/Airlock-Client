@@ -54,7 +54,10 @@ namespace AirlockClient.Core
             SceneStorage = new GameObject("AirlockClient_" + SceneName);
             bonusMapsAdded = false;
 
-            ModStamp.CreateModStamp();
+            if (SceneName != "Boot")
+            {
+                ModStamp.CreateModStamp();
+            }
 
             SceneStorage.transform.position = new Vector3(1000, 1000, 1000);
 

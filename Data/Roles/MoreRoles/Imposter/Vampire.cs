@@ -32,14 +32,19 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         IEnumerator DoDelayedKill(PlayerState target, int action)
         {
             yield return new WaitForSeconds(10);
-            AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
-            if (target.GetComponent<SubRole>() != null)
-            {
-                target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
-            }
 
-            OnPlayerKilled(target);
-            OnPlayerAction(action);
+            if (!ModdedGamemode.Current.State.InVotingState())
+            {
+                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+
+                if (target.GetComponent<SubRole>() != null)
+                {
+                    target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
+                }
+
+                OnPlayerKilled(target);
+                OnPlayerAction(action);
+            }
         }
 
         void Start()

@@ -17,7 +17,7 @@ namespace AirlockClient.Patches
         {
             if (modeSelect.ModeInfo.ModeName.StartsWith("<size=0>MODDED</size><color=yellow>"))
             {
-                if (modeSelect.ModeIcon.gameObject.transform.Find("Icon(Clone)") == null)
+                if (modeSelect.ModeIcon.gameObject.transform.Find("ModdedIcon") == null)
                 {
                     GameObject modeIcon = Instantiate(modeSelect.ModeIcon.gameObject, modeSelect.ModeIcon.transform.parent);
                     modeSelect.ModeIcon.transform.position = new Vector3(1000, 1000, 1000);
@@ -60,6 +60,8 @@ namespace AirlockClient.Patches
                     {
                         rend.sprite = StorageManager.ModStamp;
                     }
+
+                    modeIcon.name = "ModdedIcon";
                 }
             }
         }

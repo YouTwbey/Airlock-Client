@@ -1,5 +1,4 @@
-﻿using AirlockClient.Data;
-using Il2CppFusion;
+﻿using Il2CppFusion;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.UI;
 using System.Collections.Generic;
@@ -43,38 +42,46 @@ namespace AirlockClient.Managers.Dev
             {
                 foreach (string message in QueuedCommands)
                 {
-                    if (message == null) continue;
-
                     string msg = message;
                     if (message.Contains("UpdateNameTagList"))
                     {
                         msg = message.Replace("UpdateNameTagList_[", "");
                         msg = msg.Replace("]", "");
 
-                        string[] playerIds = msg.Split(',');
-
-                        Instance.NameTagChanged.Clear();
-
-                        foreach (string playerId in playerIds)
+                        if (msg.Contains(","))
                         {
-                            if (int.TryParse(playerId, out int id))
+                            string[] playerIds = msg.Split(',');
+
+                            Instance.NameTagChanged.Clear();
+
+                            foreach (string playerId in playerIds)
                             {
-                                PlayerState state = GameObject.Find("PlayerState (" + id + ")").GetComponent<PlayerState>();
-
-                                string cmd = "COMMAND";
-
-                                if (Instance.IsVIP(state))
+                                if (int.TryParse(playerId, out int id))
                                 {
-                                    cmd = "ADMIN" + cmd;
-                                }
-                                else
-                                {
-                                    cmd = "DEV" + cmd;
-                                }
+                                    PlayerState state = GameObject.Find("PlayerState (" + id + ")").GetComponent<PlayerState>();
 
-                                cmd += "_ApplyNametag";
+                                    if (Instance.IsVIP(state))
+                                    {
+                                        ApplyNametag(state, true);
+                                    }
+                                    else
+                                    {
+                                        ApplyNametag(state);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            PlayerState state = GameObject.Find("PlayerState (" + msg + ")").GetComponent<PlayerState>();
 
-                                Instance.HandleCommand(cmd, id);
+                            if (Instance.IsVIP(state))
+                            {
+                                ApplyNametag(state, true);
+                            }
+                            else
+                            {
+                                ApplyNametag(state);
                             }
                         }
                     }
@@ -87,8 +94,6 @@ namespace AirlockClient.Managers.Dev
             {
                 foreach (PlayerState user in NameTagChanged.Keys)
                 {
-                    if (user == null) continue;
-
                     if (user.IsSpawned)
                     {
                         if (user.IsConnected)
@@ -107,9 +112,6 @@ namespace AirlockClient.Managers.Dev
 
                             user.LocomotionPlayer.OnNetworkNameChange(NameTagChanged[user]);
                             user.LocomotionPlayer.SetNameTagName(NameTagChanged[user]);
-                            //if (user.LocomotionPlayer._nameTag._storedName.Contains(user.NetworkName.Value))
-                            //{
-                            //}
                         }
                         else
                         {
@@ -223,29 +225,32 @@ namespace AirlockClient.Managers.Dev
 
         public void ApplyNametag(PlayerState player, bool isAdmin = false)
         {
-            if (isAdmin)
+            if (!NameTagChanged.ContainsKey(player))
             {
-                if (!IsVIP(player)) return;
-            }
-            else
-            {
-                if (!IsDeveloper(player)) return;
-            }
+                if (isAdmin)
+                {
+                    if (!IsVIP(player)) return;
+                }
+                else
+                {
+                    if (!IsDeveloper(player)) return;
+                }
 
-            FindObjectOfType<UINameTagsDrawer>(true)._nametagCharacterLimit = 999999;
-            string newName = "";
+                FindObjectOfType<UINameTagsDrawer>(true)._nametagCharacterLimit = 999999;
+                string newName = "";
 
-            if (isAdmin)
-            {
-                newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(player.NetworkName.Value);
-            }
-            else
-            {
-                newName = "<color=blue><b>[DEV]</b></color> " + ApplyRainbow(player.NetworkName.Value);
-            }
+                if (isAdmin)
+                {
+                    newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(player.NetworkName.Value);
+                }
+                else
+                {
+                    newName = "<color=blue><b>[DEV]</b></color> " + ApplyRainbow(player.NetworkName.Value);
+                }
 
-            NameTagChanged.Add(player, newName);
-            requiresUpdate = true;
+                NameTagChanged.Add(player, newName);
+                requiresUpdate = true;
+            }
         }
 
         static string HSVToHex(float h, float s = 1f, float v = 1f)

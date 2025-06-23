@@ -36,8 +36,9 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="AirlockAPI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\Plugins\AirlockAPI.dll</HintPath>
+    <Reference Include="AirlockAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\Mods\AirlockAPI.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
@@ -274,6 +275,9 @@
     <Compile Include="Patches\VentPatch.cs" />
     <Compile Include="Patches\VotePatch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\airlockclientdata" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -37,12 +37,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             yield return new WaitForSeconds(20);
 
-            if (target.GetComponent<SubRole>())
+            if (!ModdedGamemode.Current.State.InVotingState())
             {
-                target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
-            }
+                if (target.GetComponent<SubRole>())
+                {
+                    target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
+                }
 
-            AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+            }
         }
     }
 }
