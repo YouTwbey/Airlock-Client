@@ -1,5 +1,5 @@
-﻿using AirlockClient.AC;
-using AirlockClient.Data;
+﻿using AirlockAPI.Data;
+using AirlockClient.AC;
 using HarmonyLib;
 using Il2CppSG.Airlock.Network;
 

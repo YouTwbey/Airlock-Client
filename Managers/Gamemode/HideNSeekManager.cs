@@ -8,6 +8,8 @@ using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using Il2CppSG.Airlock.Sabotage;
 using UnityEngine.Audio;
 using Il2CppSG.Airlock.Network;
+using AirlockAPI.Attributes;
+using static AirlockAPI.Managers.NetworkManager;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -65,6 +67,62 @@ namespace AirlockClient.Managers.Gamemode
             AllowSabotagesToBeTurnedOff = false;
         }
 
+        public static void RPC_GameEnd()
+        {
+            SendRpc("GameEnd");
+        }
+
+        [AirlockRpc("GameEnd", RpcTarget.All, RpcCaller.Host)]
+        public static void GameEnd()
+        {
+            DangerMeterManager.DeInit();
+            AudioSource SeekMusic = ((HideNSeekManager)Current).SeekerMusic;
+
+            if (SeekMusic)
+            {
+                SeekMusic.Stop();
+            }
+        }
+
+        public static void RPC_SetSeeker(int playerId, bool isSeeker, int seekerId = -1)
+        {
+            SendRpc("SetSeeker", -1, playerId, isSeeker, seekerId);
+        }
+
+        [AirlockRpc("SetSeeker", RpcTarget.All, RpcCaller.Host)]
+        public static void SetSeeker(int playerId, bool isSeeker, int seekerId = -1)
+        {
+            if (!isSeeker)
+            {
+                if (Current.State.SpawnManager.Avatars[seekerId])
+                {
+                    DangerMeterManager.Init(Current.State.SpawnManager.Avatars[seekerId].TaskPlayer.transform);
+                }
+
+                AudioSource SeekMusic = ((HideNSeekManager)Current).SeekerMusic;
+
+                if (SeekMusic == null)
+                {
+                    SeekMusic = new GameObject("LISTENER_SeekerMusic").AddComponent<AudioSource>();
+                    SeekMusic.clip = StorageManager.SeekerMusic;
+                    SeekMusic.volume = 0.2f;
+                    SeekMusic.loop = true;
+
+                    foreach (AudioMixerGroup group in Resources.FindObjectsOfTypeAll<AudioMixerGroup>())
+                    {
+                        if (group.name == "Music")
+                        {
+                            SeekMusic.outputAudioMixerGroup = group;
+                        }
+                    }
+                }
+
+                SeekMusic.Play();
+
+                return;
+            }
+        }
+
         public override void OnGameEnd(GameTeam teamThatWon)
         {
             State._gamemodeTimerCurrent = 0;
@@ -77,9 +135,10 @@ namespace AirlockClient.Managers.Gamemode
             SeekerMusic.Stop();
             FindObjectOfType<SabotageManager>().RPC_EndSabotage(false);
 
+            RPC_GameEnd();
+
             foreach (SubRole role in SubRole.All)
             {
-                Listener.Send("HideNSeek_GameEnd", role.PlayerWithRole.PlayerId);
                 if (role.PlayerWithRole.IsSpawned)
                 {
                     role.PlayerWithRole.ActivePowerUps = PowerUps.None;
@@ -119,11 +178,11 @@ namespace AirlockClient.Managers.Gamemode
                     {
                         if (GetTrueRole(player.PlayerWithRole) == GameRole.Infected)
                         {
-                            Listener.Send("HideNSeek_PlayerIsSeeker_", player.PlayerWithRole.PlayerId);
+                            RPC_SetSeeker(player.PlayerWithRole.PlayerId, true, seeker.PlayerWithRole.PlayerId);
                         }
                         else
                         {
-                            Listener.Send("HideNSeek_PlayerIsHider_" + seeker.PlayerWithRole.PlayerId.ToString(), player.PlayerWithRole.PlayerId);
+                            RPC_SetSeeker(player.PlayerWithRole.PlayerId, false);
                         }
 
                         NetworkedLocomotionPlayer loco = player.PlayerWithRole.LocomotionPlayer;

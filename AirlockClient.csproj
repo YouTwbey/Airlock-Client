@@ -36,6 +36,9 @@
     <Reference Include="0Harmony">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="AirlockAPI">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\Plugins\AirlockAPI.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -213,7 +216,6 @@
     <Compile Include="Attributes\SubRole.cs" />
     <Compile Include="Attributes\SubRoleData.cs" />
     <Compile Include="Core\Base.cs" />
-    <Compile Include="Data\CurrentMode.cs" />
     <Compile Include="Data\Enums.cs" />
     <Compile Include="Data\Info.cs" />
     <Compile Include="Data\Roles\HideNSeek\Crewmate\Hider.cs" />
@@ -241,7 +243,6 @@
     <Compile Include="Handlers\PetHandler.cs" />
     <Compile Include="Managers\Dev\CommandManager.cs" />
     <Compile Include="Managers\Gamemode\ContainmentManager.cs" />
-    <Compile Include="Managers\Gamemode\CustomModeManager.cs" />
     <Compile Include="Managers\Gamemode\DangerMeterManager.cs" />
     <Compile Include="Managers\Gamemode\SandboxManager.cs" />
     <Compile Include="Managers\Debug\Logging.cs" />
@@ -249,7 +250,6 @@
     <Compile Include="Managers\Gamemode\InfectionManager.cs" />
     <Compile Include="Managers\Gamemode\LightsOutManager.cs" />
     <Compile Include="Managers\Gamemode\RoundUpManager.cs" />
-    <Compile Include="Managers\Listener.cs" />
     <Compile Include="Managers\ModdedGameStateManager.cs" />
     <Compile Include="Managers\ModStamp.cs" />
     <Compile Include="Managers\PetManager.cs" />
@@ -261,7 +261,6 @@
     <Compile Include="Patches\FixSabotagePatch.cs" />
     <Compile Include="Patches\IncrementTaskPatch.cs" />
     <Compile Include="Patches\OnModeSelectPatch.cs" />
-    <Compile Include="Patches\ReliableDataPatch.cs" />
     <Compile Include="Patches\ReplayPatch.cs" />
     <Compile Include="Patches\RequestPowerupPatch.cs" />
     <Compile Include="Patches\RPCRecievedPatch.cs" />

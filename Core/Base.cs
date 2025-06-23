@@ -1,8 +1,8 @@
-﻿using AirlockClient.AC;
-using AirlockClient.Data;
+﻿using AirlockAPI.Data;
+using AirlockAPI.Managers;
+using AirlockClient.AC;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
-using AirlockClient.Managers.Gamemode;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSG.Airlock;
@@ -61,7 +61,6 @@ namespace AirlockClient.Core
             if (SceneName == "Title")
             {
                 CurrentMode.IsHosting = false;
-                SceneStorage.AddComponent<CustomModeManager>();
 
                 hostingMenu = FindObjectsOfType<HostPrivateMenu>(true).ToList();
                 selectModeMenus = FindObjectsOfType<GamemodeSelectionMenu>(true).ToList();
@@ -180,14 +179,14 @@ namespace AirlockClient.Core
 
                                 foreach (MenuManager menu in menus)
                                 {
-                                    if (CustomModeManager.Instance && menu.gameObject.activeSelf)
+                                    if (menu.gameObject.activeSelf)
                                     {
                                         //FindObjectOfType<GamemodeSelectionMenu>(true)._mapInfoCollection._activeModesAndMaps.Maps.Add("Mess Hall"); devs removed mess hall
-                                        CustomModeManager.QueuedCustomModes.Add("More Roles", new Dictionary<string, GameModes> { { "Social deduction gameplay, with tons of extra roles", GameModes.NotSet } });
-                                        CustomModeManager.QueuedCustomModes.Add("Hide N Seek", new Dictionary<string, GameModes> { { "Survive the time limit before the imposter takes everyone out", GameModes.Infection } });
-                                        CustomModeManager.QueuedCustomModes.Add("Sandbox", new Dictionary<string, GameModes> { { "Practice killing, doing tasks or just have fun", GameModes.NotSet } });
-                                        CustomModeManager.QueuedCustomModes.Add("Lights Out", new Dictionary<string, GameModes> { { "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut } });
-                                        CustomModeManager.QueuedCustomModes.Add("Infection", new Dictionary<string, GameModes> { { "The zomburritos have returned to spread the infection", GameModes.Infection } });
+                                        GamemodeManager.AddMode("More Roles", "Social deduction gameplay, with tons of extra roles", GameModes.NotSet);
+                                        GamemodeManager.AddMode("Hide N Seek", "Survive the time limit before the imposter takes everyone out", GameModes.Infection);
+                                        GamemodeManager.AddMode("Sandbox", "Practice killing, doing tasks or just have fun", GameModes.NotSet);
+                                        GamemodeManager.AddMode("Lights Out", "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut);
+                                        GamemodeManager.AddMode("Infection", "The zomburritos have breached mess hall", GameModes.Infection);
                                         //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
                                         //CustomModeManager.Instance.CreateMode("Dum Justice", "The vigilante has returned to restore justice", GameModes.Vigilante);
                                         //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);

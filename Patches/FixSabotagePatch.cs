@@ -1,5 +1,5 @@
 ﻿using AirlockClient.Attributes;
-using AirlockClient.Data;
+using AirlockAPI.Data;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
 using Il2CppSG.Airlock.Sabotage;
@@ -16,7 +16,7 @@ namespace AirlockClient.Patches
                 return ((HideNSeekManager)ModdedGamemode.Current).AllowSabotagesToBeTurnedOff;
             }
 
-            if (CurrentMode.Name == "Cintainment")
+            if (CurrentMode.Name == "Containment")
             {
                 ((ContainmentManager)ModdedGamemode.Current).OnRepairedSabotage();
             }

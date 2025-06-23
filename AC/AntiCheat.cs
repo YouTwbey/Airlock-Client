@@ -8,8 +8,8 @@ using Il2CppFusion;
 using AirlockClient.Managers.Debug;
 using UnityEngine.SceneManagement;
 using AirlockClient.Attributes;
-using AirlockClient.Data;
 using System.Text.RegularExpressions;
+using AirlockAPI.Data;
 
 namespace AirlockClient.AC
 {

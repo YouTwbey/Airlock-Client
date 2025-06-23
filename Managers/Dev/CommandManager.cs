@@ -6,6 +6,10 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
+using AirlockAPI.Attributes;
+using static AirlockAPI.Managers.NetworkManager;
+using AirlockAPI.Data;
+using Il2CppSG.Airlock.Network;
 
 namespace AirlockClient.Managers.Dev
 {
@@ -13,7 +17,7 @@ namespace AirlockClient.Managers.Dev
     {
         public static List<string> QueuedCommands = new List<string>();
         public static CommandManager Instance;
-        public static Dictionary<string, string> AuthorityUsers = new Dictionary<string, string> {
+        public static readonly Dictionary<string, string> AuthorityUsers = new Dictionary<string, string> {
             {"a70176d5cf6a8aabcc555badf5eb6ccc9d1004d4d35c73975eeaaf33df6ef936", "owner"},
             {"1a66e8559c6c5d986f38f0f68d79e081cf779198aa068674300d53cb410730a5", "admin"}
         };
@@ -129,28 +133,64 @@ namespace AirlockClient.Managers.Dev
                 Instance.requiresUpdate = false;
                 string command = "UpdateNameTagList_[";
 
-                foreach (PlayerState user in Instance.NameTagChanged.Keys)
+                if (Instance.NameTagChanged.Keys.Count == 1)
                 {
-                    command += user.PlayerId + ",";
+                    foreach (PlayerState user in Instance.NameTagChanged.Keys)
+                    {
+                        command += user.PlayerId;
+                    }
+                }
+                else
+                {
+                    foreach (PlayerState user in Instance.NameTagChanged.Keys)
+                    {
+                        command += user.PlayerId + ",";
+                    }
                 }
 
                 command += "]";
-                Listener.Send(command);
+
+                SendRpc("SendUpdatedNameTagList", command);
             }
         }
 
-        public static void RPC_ApplyDeveloperNameTag(int id)
+        [AirlockRpc("SendUpdatedNameTagList", RpcTarget.AllInclusive, RpcCaller.Host)]
+        public static void SendUpdatedNameTagList(string cmd)
         {
-            string command = "DEVCOMMAND_ApplyNametag";
-
-            Instance.HandleCommand(command, id);
+            QueuedCommands.Add(cmd);
         }
 
-        public static void RPC_ApplyAdminNameTag(int id)
+        public static void RPC_ApplyDeveloperNameTag(int playerId)
         {
-            string command = "ADMINCOMMAND_ApplyNametag";
+            SendRpc("ApplyDevNameTag", -1, playerId);
+        }
 
-            Instance.HandleCommand(command, id);
+        [AirlockRpc("ApplyDevNameTag", RpcTarget.AllInclusive, RpcCaller.Host)]
+        public static void ApplyDeveloperNameTag(int playerId)
+        {
+            Instance.ApplyNametag(ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[playerId], false);
+        }
+
+        public static void RPC_ApplyAdminNameTag(int playerId)
+        {
+            SendRpc("ApplyAdminNameTag", -1, playerId);
+        }
+
+        [AirlockRpc("ApplyAdminNameTag", RpcTarget.AllInclusive, RpcCaller.Host)]
+        public static void ApplyAdminNameTag(int playerId)
+        {
+            Instance.ApplyNametag(ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[playerId], true);
+        }
+
+        public static void RPC_SendCommand(string cmd)
+        {
+            SendRpc("SendCommand", cmd);
+        }
+
+        [AirlockRpc("SendCommand", RpcTarget.Host, RpcCaller.All)]
+        public static void SendCommand(string cmd, AirlockRpcInfo info)
+        {
+            Instance.HandleCommand(cmd, info.Sender);
         }
 
         public static bool CheckAuthoryValidation(PlayerState player)
@@ -169,13 +209,29 @@ namespace AirlockClient.Managers.Dev
             }
         }
 
-        public void ApplyMatID(PlayerState player, int id)
+        public static void RPC_ApplyMatID(int playerId, int id)
         {
-            player.LocomotionPlayer.SetInstancedMatColorID(id);
+            SendRpc("ApplyMatID", -1, playerId, id);
+        }
+
+        [AirlockRpc("ApplyMatID", RpcTarget.AllInclusive, RpcCaller.Host)]
+        public static void ApplyMatID(int playerId, int id)
+        {
+            NetworkedLocomotionPlayer player = ModdedGameStateManager.Instance.state.SpawnManager.Avatars[playerId];
+            player.SetInstancedMatColorID(id);
         }
 
         public void ApplyNametag(PlayerState player, bool isAdmin = false)
         {
+            if (isAdmin)
+            {
+                if (!IsVIP(player)) return;
+            }
+            else
+            {
+                if (!IsDeveloper(player)) return;
+            }
+
             FindObjectOfType<UINameTagsDrawer>(true)._nametagCharacterLimit = 999999;
             string newName = "";
 
@@ -230,11 +286,11 @@ namespace AirlockClient.Managers.Dev
                 {
                     if (cmd.Contains("ApplyNametag"))
                     {
-                        ApplyNametag(caller);
+                        RPC_ApplyDeveloperNameTag(sender.PlayerId);
                     }
                     if (cmd.Contains("SetMatID"))
                     {
-                        ApplyMatID(caller, int.Parse(cmd.Replace("_SetMatID_", "")));
+                        RPC_ApplyMatID(sender.PlayerId, int.Parse(cmd.Replace("_SetMatID_", "")));
                     }
                 }
 
@@ -242,7 +298,7 @@ namespace AirlockClient.Managers.Dev
                 {
                     if (cmd.Contains("ApplyNametag"))
                     {
-                        ApplyNametag(caller, true);
+                        RPC_ApplyAdminNameTag(sender.PlayerId);
                     }
                 }
             }

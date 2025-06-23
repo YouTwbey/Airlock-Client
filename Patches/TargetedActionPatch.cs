@@ -9,8 +9,8 @@ using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using Il2CppSG.Airlock.Sabotage;
 using Il2CppSG.Airlock.Roles;
-using AirlockClient.Data;
 using AirlockClient.AC;
+using AirlockAPI.Data;
 
 namespace AirlockClient.Patches
 {

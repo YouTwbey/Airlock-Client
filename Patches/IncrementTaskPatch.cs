@@ -1,5 +1,5 @@
-﻿using AirlockClient.Attributes;
-using AirlockClient.Data;
+﻿using AirlockAPI.Data;
+using AirlockClient.Attributes;
 using HarmonyLib;
 using Il2CppSG.Airlock;
 

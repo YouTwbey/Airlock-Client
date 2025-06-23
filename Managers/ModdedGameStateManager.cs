@@ -1,11 +1,16 @@
-﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock;
-using UnityEngine;
-using Il2CppSG.Airlock.Roles;
-using System.Collections.Generic;
+﻿using AirlockAPI.Attributes;
+using AirlockAPI.Data;
+using AirlockClient.Attributes;
+using AirlockClient.Core;
 using AirlockClient.Data;
 using AirlockClient.Managers.Debug;
+using AirlockClient.Managers.Dev;
+using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Settings;
+using System.Collections.Generic;
+using UnityEngine;
+using static AirlockAPI.Managers.NetworkManager;
 
 namespace AirlockClient.Managers
 {
@@ -14,6 +19,18 @@ namespace AirlockClient.Managers
         public static ModdedGameStateManager Instance;
         public GameStateManager state;
         QueuedWin queuedWin;
+
+        public static void RPC_JoinedModdedGame(int playerId)
+        {
+            SendRpc("JoinedModdedGame", playerId);
+        }
+
+        [AirlockRpc("JoinedModdedGame", RpcTarget.All, RpcCaller.Host)]
+        public static void JoinedModdedGame()
+        {
+            Base.SceneStorage.AddComponent<PetManager>();
+            Base.SceneStorage.AddComponent<CommandManager>();
+        }
 
         void Start()
         {

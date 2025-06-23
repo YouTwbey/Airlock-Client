@@ -1,5 +1,5 @@
-﻿using AirlockClient.Attributes;
-using AirlockClient.Data;
+﻿using AirlockAPI.Data;
+using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
@@ -17,10 +17,7 @@ namespace AirlockClient.Patches
             {
                 if (CurrentMode.IsHosting)
                 {
-                    if (Listener.Instance && __instance.PState.PlayerId != 9)
-                    {
-                        Listener.Send("JoinedModdedLobby", __instance.PState.PlayerId);
-                    }
+                    if (__instance.PState.PlayerId != 9) ModdedGameStateManager.RPC_JoinedModdedGame(__instance.PState.PlayerId); 
 
                     if (CurrentMode.Name == "Sandbox")
                     {
@@ -46,10 +43,7 @@ namespace AirlockClient.Patches
                     }
                 }
 
-                if (PetManager.Instance)
-                {
-                    PetManager.Instance.AssignDebugPet(__instance);
-                }
+                if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
             }
         }
     }

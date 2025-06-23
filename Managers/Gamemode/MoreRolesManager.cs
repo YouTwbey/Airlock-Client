@@ -1,9 +1,8 @@
 ﻿using AirlockClient.Attributes;
-using AirlockClient.Data;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
-using Il2CppFusion.Protocol;
+using AirlockClient.Managers.Debug;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using Il2CppTMPro;
@@ -11,9 +10,11 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using AirlockAPI.Attributes;
+using static AirlockAPI.Managers.NetworkManager;
+using AirlockAPI.Data;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -62,6 +63,21 @@ namespace AirlockClient.Managers.Gamemode
             { SubGameRole.Poisoner, Poisoner.Data },
             { SubGameRole.Troll, Troll.Data },
         };
+
+        public static void RPC_SendSubRole(int playerId, string role)
+        {
+            SendRpc("SendSubRole", playerId, role);
+        }
+
+        [AirlockRpc("SendSubRole", RpcTarget.All, RpcCaller.Host)]
+        public static void SendSubRole(string role)
+        {
+            if (System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role) != null)
+            {
+                SubRoleData roleData = (SubRoleData)System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role).GetField("Data").GetValue(null);
+                Logging.Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
+            }
+        }
 
         GameObject UI;
         void Start()
@@ -151,6 +167,7 @@ namespace AirlockClient.Managers.Gamemode
                     Imposters.Add(player);
                 }
             }
+
             System.Random rng1 = new System.Random();
             Crewmates = Crewmates.OrderBy(_ => rng1.Next()).ToList();
             System.Random rng2 = new System.Random();
@@ -202,7 +219,7 @@ namespace AirlockClient.Managers.Gamemode
             if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
             {
                 Role.IsDisplayingRole = true;
-                Listener.Send("MoreRoles_RecievedRole_" + Data.Name, Player.PlayerId);
+                RPC_SendSubRole(Player.PlayerId, Data.Name);
                 string ogName = Player.NetworkName.Value;
                 yield return new WaitForSeconds(1);
                 Player.NetworkName = "WMWMWMWMWMWMWMWM";

@@ -3,9 +3,9 @@ using Il2CppFusion;
 using Il2CppSG.Airlock;
 using HarmonyLib;
 using UnityEngine;
-using AirlockClient.Data;
 using AirlockClient.Managers.Gamemode;
 using AirlockClient.AC;
+using AirlockAPI.Data;
 
 namespace AirlockClient.Patches
 {
