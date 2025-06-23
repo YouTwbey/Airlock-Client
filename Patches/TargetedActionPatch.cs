@@ -4,10 +4,8 @@ using Il2CppFusion;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
 using UnityEngine;
-using static UnityEngine.Object;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
-using Il2CppSG.Airlock.Sabotage;
 using Il2CppSG.Airlock.Roles;
 using AirlockClient.AC;
 using AirlockAPI.Data;
@@ -17,16 +15,12 @@ namespace AirlockClient.Patches
     [HarmonyPatch(typeof(NetworkedKillBehaviour), nameof(NetworkedKillBehaviour.RPC_TargetedAction))]
     public class TargetedActionPatch
     {
-        static Saboteur saboteur;
-
         public static bool Prefix(NetworkedKillBehaviour __instance, PlayerRef targetedPlayer, PlayerRef perpetrator, ref int action)
         {
             PlayerState perp = GameObject.Find("PlayerState (" + perpetrator.PlayerId + ")").GetComponent<PlayerState>();
             PlayerState target = GameObject.Find("PlayerState (" + targetedPlayer.PlayerId + ")").GetComponent<PlayerState>();
             SubRole targetSubRole = target.GetComponent<SubRole>();
             GameRole targetRole = ModdedGamemode.Current.GetTrueRole(target);
-
-            if (saboteur == null) saboteur = FindObjectOfType<Saboteur>();
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
@@ -65,6 +59,9 @@ namespace AirlockClient.Patches
 
                     foreach (SubRole role in SubRole.All)
                     {
+                        if (role == null) continue;
+                        if (role.PlayerWithRole == null) continue;
+
                         if (role.PlayerWithRole.PlayerId == perpetrator.PlayerId)
                         {
                             if (perp.GetComponent<Vampire>())
