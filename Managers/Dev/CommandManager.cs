@@ -90,38 +90,6 @@ namespace AirlockClient.Managers.Dev
                 QueuedCommands.Clear();
             }
 
-            if (NameTagChanged.Count != 0)
-            {
-                foreach (PlayerState user in NameTagChanged.Keys)
-                {
-                    if (user.IsSpawned)
-                    {
-                        if (user.IsConnected)
-                        {
-                            string newName = "";
-
-                            if (IsVIP(user))
-                            {
-                                newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(user.NetworkName.Value);
-                            }
-                            else
-                            {
-                                newName = "<color=blue><b>[DEV]</b></color> " + ApplyRainbow(user.NetworkName.Value);
-                            }
-                            NameTagChanged[user] = newName;
-
-                            user.LocomotionPlayer.OnNetworkNameChange(NameTagChanged[user]);
-                            user.LocomotionPlayer.SetNameTagName(NameTagChanged[user]);
-                        }
-                        else
-                        {
-                            NameTagChanged.Remove(user);
-                            requiresUpdate = true;
-                        }
-                    }
-                }
-            }
-
             if (requiresUpdate)
             {
                 RPC_SendUpdatedNameTagList();
