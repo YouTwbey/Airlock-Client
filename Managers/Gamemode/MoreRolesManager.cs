@@ -82,7 +82,7 @@ namespace AirlockClient.Managers.Gamemode
         GameObject UI;
         void Start()
         {
-            UI = Instantiate(StorageManager.AirlockClient_UI);
+            //UI = Instantiate(StorageManager.AirlockClient_UI);
             //SetupUI();
         }
 
