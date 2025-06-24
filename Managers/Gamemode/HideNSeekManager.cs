@@ -145,14 +145,9 @@ namespace AirlockClient.Managers.Gamemode
                 }
             }
 
-            if (ShowNametags == false)
+            foreach (SubRole player in SubRole.All)
             {
-                foreach (SubRole player in SubRole.All)
-                {
-                    NetworkedLocomotionPlayer loco = player.PlayerWithRole.LocomotionPlayer;
-
-                    loco.RPC_ToggleExternalUINames(true);
-                }
+                Destroy(player);
             }
         }
 
@@ -176,17 +171,20 @@ namespace AirlockClient.Managers.Gamemode
 
                     foreach (SubRole player in SubRole.All)
                     {
-                        if (GetTrueRole(player.PlayerWithRole) == GameRole.Infected)
+                        if (player.PlayerWithRole.IsAlive)
                         {
-                            RPC_SetSeeker(player.PlayerWithRole.PlayerId, true, seeker.PlayerWithRole.PlayerId);
-                        }
-                        else
-                        {
-                            RPC_SetSeeker(player.PlayerWithRole.PlayerId, false);
-                        }
+                            if (GetTrueRole(player.PlayerWithRole) == GameRole.Infected)
+                            {
+                                RPC_SetSeeker(player.PlayerWithRole.PlayerId, true, seeker.PlayerWithRole.PlayerId);
+                            }
+                            else
+                            {
+                                RPC_SetSeeker(player.PlayerWithRole.PlayerId, false);
+                            }
 
-                        NetworkedLocomotionPlayer loco = player.PlayerWithRole.LocomotionPlayer;
-                        loco.RPC_ToggleExternalUINames(ShowNametags);
+                            NetworkedLocomotionPlayer loco = player.PlayerWithRole.LocomotionPlayer;
+                            loco.RPC_ToggleExternalUINames(ShowNametags);
+                        }
                     }
 
                     GameStarted = true;

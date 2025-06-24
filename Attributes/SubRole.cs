@@ -16,7 +16,10 @@ namespace AirlockClient.Attributes
         {
             if (ModdedGamemode.Current)
             {
-                ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+                if (ModdedGamemode.Current.AssignedRoles.ContainsKey(PlayerWithRole))
+                {
+                    ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+                }
             }
 
             OnRoleRemoved();
@@ -29,6 +32,11 @@ namespace AirlockClient.Attributes
 
             if (ModdedGamemode.Current)
             {
+                if (ModdedGamemode.Current.AssignedRoles.ContainsKey(PlayerWithRole))
+                {
+                    ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+                }
+
                 ModdedGamemode.Current.AssignedRoles.Add(PlayerWithRole, this);
             }
 
