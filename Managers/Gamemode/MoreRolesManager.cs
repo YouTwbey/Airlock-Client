@@ -88,18 +88,21 @@ namespace AirlockClient.Managers.Gamemode
 
         void Update()
         {
-            if (!State.InLobbyState())
+            if (UI)
             {
-                if (UI.activeSelf)
+                if (!State.InLobbyState())
                 {
-                    UI.SetActive(false);
+                    if (UI.activeSelf)
+                    {
+                        UI.SetActive(false);
+                    }
+                    return;
                 }
-                return;
-            }
 
-            if (Keyboard.current.leftAltKey.wasPressedThisFrame)
-            {
-                UI.SetActive(!UI.activeSelf);
+                if (Keyboard.current.leftAltKey.wasPressedThisFrame)
+                {
+                    UI.SetActive(!UI.activeSelf);
+                }
             }
         }
 
@@ -225,20 +228,23 @@ namespace AirlockClient.Managers.Gamemode
 
         void OnGUI()
         {
-            GUILayout.BeginVertical("More Roles");
-            foreach (SubGameRole role in SubRoleToData.Keys)
+            if (State.InLobbyState())
             {
-                SubRoleData data = SubRoleToData[role];
-
-                if (data != null)
+                GUILayout.BeginVertical("More Roles");
+                foreach (SubGameRole role in SubRoleToData.Keys)
                 {
-                    if (GUILayout.Button(role.ToString() + ": " + data.Amount))
-                    {
-                        data.Amount += 1;
+                    SubRoleData data = SubRoleToData[role];
 
-                        if (data.Amount == 11)
+                    if (data != null)
+                    {
+                        if (GUILayout.Button(role.ToString() + ": " + data.Amount))
                         {
-                            data.Amount = 0;
+                            data.Amount += 1;
+
+                            if (data.Amount == 11)
+                            {
+                                data.Amount = 0;
+                            }
                         }
                     }
                 }
