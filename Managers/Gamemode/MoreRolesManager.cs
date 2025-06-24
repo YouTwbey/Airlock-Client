@@ -83,7 +83,7 @@ namespace AirlockClient.Managers.Gamemode
         void Start()
         {
             UI = Instantiate(StorageManager.AirlockClient_UI);
-            SetupUI();
+            //SetupUI();
         }
 
         void Update()
@@ -139,8 +139,17 @@ namespace AirlockClient.Managers.Gamemode
         {
             SubRoleData data = SubRoleToData[role];
             data.Amount += changeBy;
+            
+            if (data.Amount == -1)
+            {
+                data.Amount = 10;
+            }
+            else if (data.Amount == 11)
+            {
+                data.Amount = 0;
+            }
 
-            subRoleAmount.text = data.Amount.ToString();
+            subRoleAmount.text = "(" + data.Amount.ToString() + ")";
         }
 
         public List<PlayerState> Crewmates = new List<PlayerState>();
@@ -211,6 +220,28 @@ namespace AirlockClient.Managers.Gamemode
             {
                 candidates[0].gameObject.AddComponent<T>();
                 candidates.RemoveAt(0);
+            }
+        }
+
+        void OnGUI()
+        {
+            GUILayout.BeginVertical("More Roles");
+            foreach (SubGameRole role in SubRoleToData.Keys)
+            {
+                SubRoleData data = SubRoleToData[role];
+
+                if (data != null)
+                {
+                    if (GUILayout.Button(role.ToString() + ": " + data.Amount))
+                    {
+                        data.Amount += 1;
+
+                        if (data.Amount == 11)
+                        {
+                            data.Amount = 0;
+                        }
+                    }
+                }
             }
         }
 
