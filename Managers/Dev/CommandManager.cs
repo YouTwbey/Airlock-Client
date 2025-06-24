@@ -22,6 +22,7 @@ namespace AirlockClient.Managers.Dev
         };
 
         public Dictionary<PlayerState, string> NameTagChanged = new Dictionary<PlayerState, string>();
+        public UINameTagsDrawer NameTagDrawer;
 
         void Start()
         {
@@ -90,9 +91,35 @@ namespace AirlockClient.Managers.Dev
                 QueuedCommands.Clear();
             }
 
-            if (requiresUpdate)
+            if (NameTagChanged.Count != 0)
             {
-                RPC_SendUpdatedNameTagList();
+                foreach (PlayerState state in NameTagChanged.Keys)
+                {
+                    if (!state.IsSpawned) continue;
+
+                    if (state.IsConnected)
+                    {
+                        if (NameTagDrawer == null)
+                        {
+                            NameTagDrawer = FindObjectOfType<UINameTagsDrawer>(true);
+                            if (NameTagDrawer == null) continue;
+                        }
+
+                        if (NameTagDrawer._nametagCharacterLimit != 999999)
+                        {
+                            NameTagDrawer._nametagCharacterLimit = 999999;
+                        }
+
+                        string newName = NameTagChanged[state];
+                        if (state.LocomotionPlayer._nameTag._storedName == newName) continue;
+                        state.LocomotionPlayer.SetNameTagName(newName);
+                        state.LocomotionPlayer.OnNetworkNameChange(newName);
+                    }
+                    else
+                    {
+                        NameTagChanged.Remove(state);
+                    }
+                }
             }
         }
 
