@@ -1,16 +1,17 @@
 ﻿using Il2CppFusion;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.CoreLite;
+using MelonLoader;
 
 namespace AirlockClient.AC
 {
     public class RpcData
     {
-        public static RpcInfo Info;
+        public static RpcInfo info;
 
-        public static unsafe void FromSimulationMessage(NetworkRunner runner, SimulationMessage* msg)
+        public static unsafe void FromMessage(NetworkRunner runner, SimulationMessage* message)
         {
-            Info = RpcInfo.FromMessage(runner, msg, RpcHostMode.SourceIsHostPlayer);
+            info = RpcInfo.FromMessage(runner, message, RpcHostMode.SourceIsHostPlayer);
         }
     }
 }

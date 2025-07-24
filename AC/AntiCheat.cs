@@ -9,7 +9,9 @@ using AirlockClient.Managers.Debug;
 using UnityEngine.SceneManagement;
 using AirlockClient.Attributes;
 using System.Text.RegularExpressions;
+using Il2CppSG.Airlock.UI.Moderation;
 using AirlockAPI.Data;
+using Il2CppSystem.IO;
 
 namespace AirlockClient.AC
 {
@@ -49,7 +51,6 @@ namespace AirlockClient.AC
         public EmergencyButton Button;
         public NetworkedKillBehaviour Kill;
         public AirlockPeer Peer;
-        public RpcData PreviousRpc;
 
         void Start()
         {
@@ -150,7 +151,7 @@ namespace AirlockClient.AC
 
             if (reporter.PlayerId != sender)
             {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of body report rpc", true);
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of body report data", true);
                 return false;
             }
 
@@ -183,7 +184,7 @@ namespace AirlockClient.AC
 
             if (IsCheating)
             {
-                Alert(reporter, "unverified report body data", false);
+                Alert(reporter, "suspicious report body data", false);
             }
 
             return !IsCheating;
@@ -231,13 +232,13 @@ namespace AirlockClient.AC
 
             if (IsCheating)
             {
-                Alert(caller, "unverified meeting data", false);
+                Alert(caller, "suspicious meeting data", false);
             }
 
             return !IsCheating;
         }
 
-        public bool VerifySpawnBody(PlayerState body, NetworkRigidbodyObsolete rb, RpcInfo info)
+        public bool VerifySpawnBody(PlayerState body, NetworkRigidbodyObsolete rb)
         {
             bool IsCheating = false;
 
@@ -264,15 +265,25 @@ namespace AirlockClient.AC
             }
             else
             {
-                Alert(body, "unverified spawn body data", false);
+                Alert(body, "suspicious spawn body data", true);
             }
 
             return !IsCheating;
         }
 
+        List<string> BlacklistedUsers = new List<string>();
+
         void Update()
         {
-            foreach (PlayerState state in State.SpawnManager.PlayerStates)
+            foreach (PlayerRef player in State.Runner.ActivePlayers.ToArray())
+            {
+                if (BlacklistedUsers.Contains(State.Runner.GetPlayerUserId(player)))
+                {
+                    Alert(State.SpawnManager.PlayerStates[player], "user is on blacklist", true);
+                }
+            }
+
+            foreach (PlayerState state in State.SpawnManager.ActivePlayerStates)
             {
                 if (state != null)
                 {
@@ -357,17 +368,9 @@ namespace AirlockClient.AC
             }
         }
 
-        public bool VerifyVent(PlayerState venter, RpcInfo info)
+        public bool VerifyVent(PlayerState venter)
         {
-            int sender = info.Source;
-
             bool IsCheating = false;
-
-            if (venter.PlayerId != sender)
-            {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of vent rpc", true);
-                return false;
-            }
 
             if (State.GameModeStateValue.GameMode == GameModes.Infection)
             {
@@ -386,22 +389,38 @@ namespace AirlockClient.AC
 
             if (IsCheating)
             {
-                Alert(venter, "unverified vent data", true);
+                Alert(venter, "suspicious vent data", true);
             }
 
             return !IsCheating;
         }
 
-        public bool VerifyKill(PlayerState killer, PlayerState target, int action, RpcInfo info)
+        public bool VerifyVote(PlayerState voter, PlayerState voted, RpcInfo info)
         {
             int sender = info.Source;
             bool IsCheating = false;
 
-            if (killer.PlayerId != sender)
+            if (sender != voter.PlayerId)
             {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of kill rpc", true);
-                return false;
+                Alert(State.SpawnManager.PlayerStates[sender], "misuse of vote rpc", true);
             }
+
+            if (State.GameModeStateValue.GameMode == GameModes.Infection)
+            {
+                IsCheating = true;
+            }
+
+            if (IsCheating)
+            {
+                Alert(State.SpawnManager.PlayerStates[sender], "suspicious vote data", true);
+            }
+
+            return !IsCheating;
+        }
+
+        public bool VerifyKill(PlayerState killer, PlayerState target, int action)
+        {
+            bool IsCheating = false;
 
             float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition).magnitude;
             GameRole killerRole = GetTrueRole(killer);
@@ -531,7 +550,7 @@ namespace AirlockClient.AC
             }
             else
             {
-                Alert(killer, "unverified kill data", false);
+                Alert(killer, "suspicious kill data", true);
             }
 
             return !IsCheating;
@@ -565,12 +584,17 @@ namespace AirlockClient.AC
                     Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
                     guilty.NetworkName.Value = "CHEATER";
                     BannedUsers.Add(guilty.PlayerModerationID.Value);
+                    SendReportToDevelopers(guilty, reason);
+                }
+                else
+                {
+                    Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Banning user from lobby.");
+                    guilty.NetworkName.Value = "CHEATER";
                 }
 
                 if (guilty.PlayerId != 9)
                 {
                     Moderation.Runner.Disconnect(guilty.PlayerId);
-                    SendReportToDevelopers(guilty, reason);
                 }
                 else
                 {
@@ -585,7 +609,16 @@ namespace AirlockClient.AC
 
         public void SendReportToDevelopers(PlayerState guilty, string reason)
         {
+            return;
 
+            ReportPlayerPanel Reporting = FindObjectOfType<ReportPlayerPanel>(true);
+
+            if (Reporting != null)
+            {
+                Reporting.ShowPanel(guilty.PlayerId, guilty);
+                Reporting._playerReportAE.ReportCategory = "[AIRLOCK CLIENT | ANTI CHEAT] Category: Cheating/Hacking. Reason provided from Airlock Client: " + reason + ".";
+                Reporting.SubmitReport();
+            }
         }
     }
 }

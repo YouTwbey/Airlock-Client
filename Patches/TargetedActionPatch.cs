@@ -24,7 +24,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyKill(perp, target, action, RpcData.Info))
+                if (!AntiCheat.Instance.VerifyKill(perp, target, action))
                 {
                     return false;
                 }

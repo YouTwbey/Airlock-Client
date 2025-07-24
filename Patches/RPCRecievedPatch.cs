@@ -5,11 +5,11 @@ using Il2CppFusion;
 namespace AirlockClient.Patches
 {
     [HarmonyPatch(typeof(NetworkRunner), nameof(NetworkRunner.OnMessageUser))]
-    public class RPCRecievedPatch
+    public class RpcRecievedPatch
     {
         public static unsafe void Prefix(NetworkRunner __instance, SimulationMessage* message)
         {
-            RpcData.FromSimulationMessage(__instance, message);
+            RpcData.FromMessage(__instance, message);
         }
     }
 }

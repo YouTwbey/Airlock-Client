@@ -1,11 +1,12 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockAPI.Data;
+using AirlockClient.AC;
+using AirlockClient.Attributes;
+using AirlockClient.Managers.Gamemode;
+using HarmonyLib;
 using Il2CppFusion;
 using Il2CppSG.Airlock;
-using HarmonyLib;
+using System.Media;
 using UnityEngine;
-using AirlockClient.Managers.Gamemode;
-using AirlockClient.AC;
-using AirlockAPI.Data;
 
 namespace AirlockClient.Patches
 {
@@ -18,6 +19,14 @@ namespace AirlockClient.Patches
         {
             PlayerState voter = GameObject.Find("PlayerState (" + voteAgainstPlayer.PlayerId + ")").GetComponent<PlayerState>();
             PlayerState voted = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+
+            if (CurrentMode.IsHosting && !CurrentMode.Modded)
+            {
+                if (!AntiCheat.Instance.VerifyVote(voter, voted, info))
+                {
+                    return false;
+                }
+            }
 
             if (ModdedGamemode.Current)
             {
@@ -51,6 +60,16 @@ namespace AirlockClient.Patches
         [HarmonyPrefix]
         public static bool Prefix2(PlayerRef sourcePlayer, RpcInfo info)
         {
+            PlayerState voter = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+
+            if (CurrentMode.IsHosting && !CurrentMode.Modded)
+            {
+                if (!AntiCheat.Instance.VerifyVote(voter, null, info))
+                {
+                    return false;
+                }
+            }
+
             if (ModdedGamemode.Current)
             {
                 ModdedGamemode.Current.OnPlayerVotedSkip(GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>());
@@ -92,7 +111,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyBodyReport(caller, bodyFound, RpcData.Info))
+                if (!AntiCheat.Instance.VerifyBodyReport(caller, bodyFound, info))
                 {
                     return false;
                 }
@@ -124,7 +143,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyMeeting(caller, RpcData.Info))
+                if (!AntiCheat.Instance.VerifyMeeting(caller, info))
                 {
                     return false;
                 }

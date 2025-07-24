@@ -38,7 +38,7 @@
     </Reference>
     <Reference Include="AirlockAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\Mods\AirlockAPI.dll</HintPath>
+      <HintPath>..\AirlockAPI\obj\Release\net6.0\AirlockAPI.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
@@ -264,7 +264,7 @@
     <Compile Include="Patches\OnModeSelectPatch.cs" />
     <Compile Include="Patches\ReplayPatch.cs" />
     <Compile Include="Patches\RequestPowerupPatch.cs" />
-    <Compile Include="Patches\RPCRecievedPatch.cs" />
+    <Compile Include="Patches\RpcRecievedPatch.cs" />
     <Compile Include="Patches\SetHeightPatch.cs" />
     <Compile Include="Patches\ShowDeathCutscenePatch.cs" />
     <Compile Include="Patches\ShowEjectedPatch.cs" />

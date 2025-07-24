@@ -12,7 +12,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState, RpcData.Info))
+                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
                 {
                     return false;
                 }
@@ -29,7 +29,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState, RpcData.Info))
+                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
                 {
                     return false;
                 }
