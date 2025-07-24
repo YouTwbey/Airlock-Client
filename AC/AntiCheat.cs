@@ -12,6 +12,8 @@ using System.Text.RegularExpressions;
 using Il2CppSG.Airlock.UI.Moderation;
 using AirlockAPI.Data;
 using Il2CppSystem.IO;
+using MelonLoader;
+using UnityEngine.Networking;
 
 namespace AirlockClient.AC
 {
@@ -63,6 +65,8 @@ namespace AirlockClient.AC
                 Button = FindObjectOfType<EmergencyButton>();
                 Kill = FindObjectOfType<NetworkedKillBehaviour>();
                 Peer = FindObjectOfType<AirlockPeer>();
+
+                MelonCoroutines.Start(FetchBlacklist());
             }
             else
             {
@@ -272,6 +276,26 @@ namespace AirlockClient.AC
         }
 
         List<string> BlacklistedUsers = new List<string>();
+        const string BlacklistUrl = "https://raw.githubusercontent.com/YouTwbey/Airlock-Client/main/AC/blacklisted_user_list.txt";
+
+        System.Collections.IEnumerator FetchBlacklist()
+        {
+            UnityWebRequest www = UnityWebRequest.Get(BlacklistUrl);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Logging.Error($"Failed to fetch blacklist: {www.error}");
+                yield break;
+            }
+
+            string[] ids = www.downloadHandler.text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string id in ids)
+            {
+                BlacklistedUsers.Add(id);
+            }
+        }
 
         void Update()
         {
