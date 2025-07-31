@@ -1,19 +1,21 @@
-﻿using Il2CppSG.Airlock;
+﻿using AirlockAPI.Data;
+using AirlockClient.Attributes;
+using AirlockClient.Managers.Debug;
+using Il2CppFusion;
+using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
-using System.Collections.Generic;
-using System;
-using UnityEngine;
-using Il2CppFusion;
-using AirlockClient.Managers.Debug;
-using UnityEngine.SceneManagement;
-using AirlockClient.Attributes;
-using System.Text.RegularExpressions;
 using Il2CppSG.Airlock.UI.Moderation;
-using AirlockAPI.Data;
 using Il2CppSystem.IO;
 using MelonLoader;
+using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 
 namespace AirlockClient.AC
 {
@@ -53,6 +55,7 @@ namespace AirlockClient.AC
         public EmergencyButton Button;
         public NetworkedKillBehaviour Kill;
         public AirlockPeer Peer;
+        SHA256 encrypt;
 
         void Start()
         {
@@ -65,6 +68,7 @@ namespace AirlockClient.AC
                 Button = FindObjectOfType<EmergencyButton>();
                 Kill = FindObjectOfType<NetworkedKillBehaviour>();
                 Peer = FindObjectOfType<AirlockPeer>();
+                encrypt = SHA256.Create();
 
                 MelonCoroutines.Start(FetchBlacklist());
             }
@@ -168,12 +172,10 @@ namespace AirlockClient.AC
             {
                 IsCheating = true;
             }
-
             if (distance > 5)
             {
                 IsCheating = true;
             }
-
             if (BodiesReported.Contains(bodyReported))
             {
                 IsCheating = true;
@@ -293,18 +295,45 @@ namespace AirlockClient.AC
 
             foreach (string id in ids)
             {
+                Logging.Log($"Added {id} to the blacklist!");
                 BlacklistedUsers.Add(id);
             }
         }
 
+        string ModerationIDToSHA256(PlayerRef player)
+        {
+            string playerId = State.Runner.GetPlayerUserId(player);
+
+            byte[] inputBytes = Encoding.UTF8.GetBytes(playerId);
+            byte[] hashBytes = encrypt.ComputeHash(inputBytes);
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                sb.Append(b.ToString("x2"));
+            }
+
+            return sb.ToString();
+        }
+
+        int checkDelay;
+
         void Update()
         {
-            foreach (PlayerRef player in State.Runner.ActivePlayers.ToArray())
+            if (checkDelay == 0)
             {
-                if (BlacklistedUsers.Contains(State.Runner.GetPlayerUserId(player)))
+                foreach (PlayerRef player in State.Runner.ActivePlayers.ToArray())
                 {
-                    Alert(State.SpawnManager.PlayerStates[player], "user is on blacklist", true);
+                    if (BlacklistedUsers.Contains(ModerationIDToSHA256(player)))
+                    {
+                        Alert(State.SpawnManager.PlayerStates[player], "user is on blacklist", true);
+                    }
                 }
+                checkDelay = 60;
+            }
+            else
+            {
+                checkDelay -= 1;
             }
 
             foreach (PlayerState state in State.SpawnManager.ActivePlayerStates)

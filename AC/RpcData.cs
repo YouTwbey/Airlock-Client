@@ -1,7 +1,4 @@
 ﻿using Il2CppFusion;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.CoreLite;
-using MelonLoader;
 
 namespace AirlockClient.AC
 {
