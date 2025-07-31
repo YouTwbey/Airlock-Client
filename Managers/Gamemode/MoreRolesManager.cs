@@ -1,4 +1,7 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockAPI.Attributes;
+using AirlockAPI.Data;
+using AirlockClient.AC;
+using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
@@ -12,13 +15,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using AirlockAPI.Attributes;
+using UnityEngine.UIElements.Experimental;
 using static AirlockAPI.Managers.NetworkManager;
-using AirlockAPI.Data;
+using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class MoreRolesManager : ModdedGamemode
+    public class MoreRolesManager : AirlockClientGamemode
     {
         public enum SubGameRole
         {
@@ -155,11 +158,123 @@ namespace AirlockClient.Managers.Gamemode
             subRoleAmount.text = "(" + data.Amount.ToString() + ")";
         }
 
+        public override bool OnPlayerVoted(ref PlayerState voter, ref PlayerState voted)
+        {
+            foreach (SubRole role in SubRole.All)
+            {
+                if (role.PlayerWithRole == voter)
+                {
+                    role.OnPlayerVoted(voted);
+                }
+            }
+
+            return true;
+        }
+
+        public override bool OnTargetedAction(ref PlayerState killer, ref PlayerState victim, ref int action)
+        {
+            SubRole targetSubRole = victim.GetComponent<SubRole>();
+            GameRole targetRole = GetTrueRole(victim);
+
+            if (victim.Guarded)
+            {
+                AntiCheat.PlayShieldBreakWithAntiCheat(killer, victim);
+
+                return false;
+            }
+
+            foreach (SubRole role in SubRole.All)
+            {
+                if (role == null) continue;
+                if (role.PlayerWithRole == null) continue;
+
+                if (role.PlayerWithRole.PlayerId == killer.PlayerId)
+                {
+                    if (killer.GetComponent<Vampire>())
+                    {
+                        killer.GetComponent<Vampire>().DelayedKill(killer, action);
+                        return false;
+                    }
+
+                    if (killer.GetComponent<Sheriff>())
+                    {
+                        if (targetRole == GameRole.Imposter)
+                        {
+                            if (targetSubRole != null)
+                            {
+                                targetSubRole.OnPlayerDied(killer);
+                            }
+                            role.OnPlayerKilled(victim);
+                            role.OnPlayerAction(action);
+                            return true;
+                        }
+                        else
+                        {
+                            AntiCheat.KillPlayerWithAntiCheat(killer, killer);
+                            return false;
+                        }
+                    }
+
+                    if (killer.GetComponent<Witch>())
+                    {
+                        if (victim.GetComponent<Bait>() == null)
+                        {
+                            if (targetSubRole != null)
+                            {
+                                targetSubRole.OnPlayerDied(killer);
+                            }
+                        }
+                        role.OnPlayerAction(action);
+
+                        return false;
+                    }
+
+                    if (killer.GetComponent<Poisoner>())
+                    {
+                        role.OnPlayerKilled(victim);
+                        role.OnPlayerAction(action);
+                        return false;
+                    }
+
+                    if (targetSubRole != null)
+                    {
+                        targetSubRole.OnPlayerDied(killer);
+                    }
+
+                    role.OnPlayerKilled(victim);
+                    role.OnPlayerAction(action);
+                }
+                else if (role.PlayerWithRole.PlayerId == victim.PlayerId)
+                {
+                    Armorer armorer = victim.GetComponent<Armorer>();
+                    if (armorer)
+                    {
+                        if (armorer.HasTakenHit)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            armorer.HasTakenHit = true;
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            if (targetSubRole != null)
+            {
+                targetSubRole.OnPlayerDied(killer);
+            }
+
+            return true;
+        }
+
         public List<PlayerState> Crewmates = new List<PlayerState>();
         public List<PlayerState> Imposters = new List<PlayerState>();
-        public override void OnAssignRoles()
+        public override void OnAfterAssignRoles()
         {
-            AssignedRoles.Clear();
+            AssignedSubRoles.Clear();
             Crewmates.Clear();
             Imposters.Clear();
 
@@ -249,6 +364,49 @@ namespace AirlockClient.Managers.Gamemode
                     }
                 }
             }
+        }
+
+        public override bool OnMeetingCalled(ref PlayerState reportingPlayer)
+        {
+            foreach (SubRole role in SubRole.All)
+            {
+                role.OnVotingBegan(null, reportingPlayer);
+
+                if (role.PlayerWithRole.PlayerId == reportingPlayer.PlayerId)
+                {
+                    role.OnPlayerCalledMeeting();
+                }
+            }
+
+            return true;
+        }
+
+        public override bool OnBodyReported(ref PlayerState bodyReported, ref PlayerState reportingPlayer)
+        {
+            foreach (SubRole role in SubRole.All)
+            {
+                role.OnVotingBegan(bodyReported, reportingPlayer);
+
+                if (role.PlayerWithRole.PlayerId == reportingPlayer.PlayerId)
+                {
+                    role.OnPlayerReportedBody(bodyReported);
+                }
+            }
+
+            return true;
+        }
+
+        public override bool OnPlayerVotedSkip(ref PlayerState voter)
+        {
+            foreach (SubRole role in SubRole.All)
+            {
+                if (role.PlayerWithRole == voter)
+                {
+                    role.OnPlayerVotedSkip();
+                }
+            }
+
+            return true;
         }
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role, SubRoleData Data, string additional = "", GameRole roleToChange = GameRole.NotSet)

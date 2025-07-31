@@ -5,16 +5,16 @@ using System.Collections.Generic;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class LightsOutManager : ModdedGamemode
+    public class LightsOutManager : AirlockClientGamemode
     {
-        public override void OnGameStart()
+        public override bool OnGameStart()
         {
             ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchFloatSettings.CrewmateVisionDistance, 0.25f);
             ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchFloatSettings.ImpostorVisionDistance, 0.25f);
-
+            return true;
         }
 
-        public override void OnAssignRoles()
+        public override void OnAfterAssignRoles()
         {
             List<PlayerState> normalCrewmates = new List<PlayerState>();
             List<PlayerState> imposters = new List<PlayerState>();

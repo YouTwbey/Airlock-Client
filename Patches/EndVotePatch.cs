@@ -9,11 +9,6 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(VoteManager __instance)
         {
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnAllVotesCast();
-            }
-
             foreach (SubRole role in SubRole.All)
             {
                 role.OnAllVotesCast();

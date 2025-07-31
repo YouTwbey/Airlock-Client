@@ -114,13 +114,6 @@ namespace AirlockClient.Core
                         SceneStorage.AddComponent<ModdedGameStateManager>();
                         SceneStorage.AddComponent<CommandManager>();
 
-                        System.Type moddedGamemodeScript = System.Type.GetType("AirlockClient.Managers.Gamemode." + CurrentMode.Name.Replace(" ", "") + "Manager");
-                        if (moddedGamemodeScript != null)
-                        {
-                            var il2cppType = Il2CppType.From(moddedGamemodeScript);
-                            SceneStorage.AddComponent(il2cppType);
-                        }
-
                         if (CurrentMode.Name == "Hide N Seek")
                         {
                             FindObjectOfType<UILobbyScreenHandler>().PrivateLobbyPlayerCount = 2;

@@ -13,7 +13,7 @@ using static AirlockClient.Managers.Gamemode.MoreRolesManager;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class SandboxManager : ModdedGamemode
+    public class SandboxManager : AirlockClientGamemode
     {
         public bool playerDidSpawn;
         public MinigameManager Tasks;
@@ -214,7 +214,7 @@ namespace AirlockClient.Managers.Gamemode
             GUILayout.BeginArea(new Rect(10, 10, 350, 800), "Sandbox Menu", GUI.skin.window);
             scrollPosition = GUILayout.BeginScrollView(scrollPosition, GUILayout.Width(390), GUILayout.Height(680));
 
-            GUILayout.Label("LOBBY CODE: " + ModdedGamemode.Current.State.GameSession.SessionName);
+            GUILayout.Label("LOBBY CODE: " + AirlockClientGamemode.Current.State.GameSession.SessionName);
 
             // Player ID Input
             GUILayout.Label("Enter Player ID:");

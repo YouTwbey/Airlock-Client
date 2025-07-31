@@ -18,11 +18,6 @@ namespace AirlockClient.Patches
             PlayerState ejected = GameObject.Find("PlayerState (" + playerEjected.PlayerId + ")").GetComponent<PlayerState>();
             Logging.Debug_Log("Player Ejected: " + ejected.NetworkName.Value);
 
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerEjected(ejected, playerEjectedRole);
-            }
-
             foreach (SubRole role in SubRole.All)
             {
                 role.OnPlayerEjected(ejected, playerEjectedRole);
@@ -38,11 +33,6 @@ namespace AirlockClient.Patches
             PlayerState ejected = GameObject.Find("PlayerState (" + playerEjected.PlayerId + ")").GetComponent<PlayerState>();
             Logging.Debug_Log("Player Ejected: " + ejected.NetworkName.Value);
 
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerEjected(ejected, ModdedGamemode.Current.GetTrueRole(ejected));
-            }
-
             foreach (SubRole role in SubRole.All)
             {
                 role.OnPlayerEjected(ejected, GameRole.NotSet);
@@ -55,11 +45,6 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(CutsceneManager __instance, int aliveImposters)
         {
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerEjected(null, GameRole.NotSet);
-            }
-
             foreach (SubRole role in SubRole.All)
             {
                 role.OnPlayerEjected(null, GameRole.NotSet);
@@ -74,11 +59,6 @@ namespace AirlockClient.Patches
         {
             PlayerState ejected = GameObject.Find("PlayerState (" + playerEjected.PlayerId + ")").GetComponent<PlayerState>();
             Logging.Debug_Log("Player Ejected: " + ejected.NetworkName.Value);
-
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerEjected(ejected, ModdedGamemode.Current.GetTrueRole(ejected));
-            }
 
             foreach (SubRole role in SubRole.All)
             {

@@ -208,11 +208,18 @@
     <Reference Include="UnityEngine.UIModule">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UIModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AC\AntiCheat.cs" />
     <Compile Include="AC\RpcData.cs" />
-    <Compile Include="Attributes\ModdedGamemode.cs" />
+    <Compile Include="Attributes\AirlockClientGamemode.cs" />
     <Compile Include="Attributes\QueuedWin.cs" />
     <Compile Include="Attributes\SubRole.cs" />
     <Compile Include="Attributes\SubRoleData.cs" />
@@ -244,7 +251,7 @@
     <Compile Include="Handlers\PetHandler.cs" />
     <Compile Include="Managers\Dev\CommandManager.cs" />
     <Compile Include="Managers\Gamemode\ContainmentManager.cs" />
-    <Compile Include="Managers\Gamemode\DangerMeterManager.cs" />
+    <Compile Include="Handlers\DangerMeterHandler.cs" />
     <Compile Include="Managers\Gamemode\SandboxManager.cs" />
     <Compile Include="Managers\Debug\Logging.cs" />
     <Compile Include="Managers\Gamemode\HideNSeekManager.cs" />
@@ -256,7 +263,6 @@
     <Compile Include="Managers\PetManager.cs" />
     <Compile Include="Managers\StorageManager.cs" />
     <Compile Include="Managers\Gamemode\MoreRolesManager.cs" />
-    <Compile Include="Patches\AssignRolesPatch.cs" />
     <Compile Include="Patches\EndGamePatch.cs" />
     <Compile Include="Patches\EndVotePatch.cs" />
     <Compile Include="Patches\FixSabotagePatch.cs" />
@@ -269,7 +275,6 @@
     <Compile Include="Patches\ShowDeathCutscenePatch.cs" />
     <Compile Include="Patches\ShowEjectedPatch.cs" />
     <Compile Include="Patches\SpawnBodyPatch.cs" />
-    <Compile Include="Patches\StartGamePatch.cs" />
     <Compile Include="Patches\TargetedActionPatch.cs" />
     <Compile Include="Patches\SpawnInitializationPatch.cs" />
     <Compile Include="Patches\VentPatch.cs" />

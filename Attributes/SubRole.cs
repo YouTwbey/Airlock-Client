@@ -1,5 +1,7 @@
-﻿using Il2CppSG.Airlock;
+﻿using AirlockAPI.Handlers;
+using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
+using Il2CppSG.Airlock.Venting;
 using Il2CppSG.Airlock.XR;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,11 +16,11 @@ namespace AirlockClient.Attributes
 
         void OnDestroy()
         {
-            if (ModdedGamemode.Current)
+            if (AirlockClientGamemode.Get())
             {
-                if (ModdedGamemode.Current.AssignedRoles.ContainsKey(PlayerWithRole))
+                if (AirlockClientGamemode.Get().AssignedSubRoles.ContainsKey(PlayerWithRole))
                 {
-                    ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+                    AirlockClientGamemode.Get().AssignedSubRoles.Remove(PlayerWithRole);
                 }
             }
 
@@ -30,14 +32,14 @@ namespace AirlockClient.Attributes
         {
             PlayerWithRole = GetComponent<PlayerState>();
 
-            if (ModdedGamemode.Current)
+            if (AirlockClientGamemode.Get())
             {
-                if (ModdedGamemode.Current.AssignedRoles.ContainsKey(PlayerWithRole))
+                if (AirlockClientGamemode.Get().AssignedSubRoles.ContainsKey(PlayerWithRole))
                 {
-                    ModdedGamemode.Current.AssignedRoles.Remove(PlayerWithRole);
+                    AirlockClientGamemode.Get().AssignedSubRoles.Remove(PlayerWithRole);
                 }
 
-                ModdedGamemode.Current.AssignedRoles.Add(PlayerWithRole, this);
+                AirlockClientGamemode.Get().AssignedSubRoles.Add(PlayerWithRole, this);
             }
 
             OnPlayerRecievedRole();

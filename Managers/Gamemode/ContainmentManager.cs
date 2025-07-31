@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class ContainmentManager : ModdedGamemode
+    public class ContainmentManager : AirlockClientGamemode
     {
         public SabotageManager sabotage;
         public DoorsSabotage doors;
@@ -15,10 +15,11 @@ namespace AirlockClient.Managers.Gamemode
             doors = FindObjectOfType<DoorsSabotage>();
         }
 
-        public override void OnGameStart()
+        public override bool OnGameStart()
         {
             ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.SabotageCooldown, 0);
             ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchBoolSettings.AllowDoorSabotage, false);
+            return true;
         }
 
         public void OnRepairedSabotage()

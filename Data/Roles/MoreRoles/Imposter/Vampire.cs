@@ -33,7 +33,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             yield return new WaitForSeconds(10);
 
-            if (!ModdedGamemode.Current.State.InVotingState())
+            if (!AirlockClientGamemode.Current.State.InVotingState())
             {
                 AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
 

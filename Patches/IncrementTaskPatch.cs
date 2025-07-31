@@ -12,7 +12,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.Name == "Hide N Seek")
             {
-                ModdedGamemode.Current.State._gamemodeTimerCurrent -= 5;
+                AirlockClientGamemode.Current.State._gamemodeTimerCurrent -= 5;
             }
         }
     }

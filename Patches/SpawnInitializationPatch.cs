@@ -21,7 +21,7 @@ namespace AirlockClient.Patches
 
                     if (CurrentMode.Name == "Sandbox")
                     {
-                        ((SandboxManager)ModdedGamemode.Current).playerDidSpawn = true;
+                        ((SandboxManager)AirlockClientGamemode.Current).playerDidSpawn = true;
                         __instance.PState.IsSpectating = false;
                         __instance.PState.IsAlive = true;
                     }

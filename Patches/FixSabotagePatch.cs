@@ -13,12 +13,12 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.Name == "Hide N Seek")
             {
-                return ((HideNSeekManager)ModdedGamemode.Current).AllowSabotagesToBeTurnedOff;
+                return ((HideNSeekManager)AirlockClientGamemode.Current).AllowSabotagesToBeTurnedOff;
             }
 
             if (CurrentMode.Name == "Containment")
             {
-                ((ContainmentManager)ModdedGamemode.Current).OnRepairedSabotage();
+                ((ContainmentManager)AirlockClientGamemode.Current).OnRepairedSabotage();
             }
 
             return true;

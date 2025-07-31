@@ -1,11 +1,8 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
-using AirlockClient.Attributes;
-using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
 using Il2CppFusion;
 using Il2CppSG.Airlock;
-using System.Media;
 using UnityEngine;
 
 namespace AirlockClient.Patches
@@ -28,31 +25,6 @@ namespace AirlockClient.Patches
                 }
             }
 
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerVoted(voter, voted);
-            }
-
-            if (CurrentMode.Name == "Round Up")
-            {
-                if (sourcePlayer != ((RoundUpManager)ModdedGamemode.Current).deputy.PlayerId)
-                {
-                    return false;
-                }
-                else
-                {
-                    ((RoundUpManager)ModdedGamemode.Current).OnDeputyVote(voted);
-                }
-            }
-
-            foreach (SubRole role in SubRole.All)
-            {
-                if (role.PlayerWithRole.PlayerId == sourcePlayer.PlayerId)
-                {
-                    role.OnPlayerVoted(voted);
-                }
-            }
-
             return true;
         }
 
@@ -67,31 +39,6 @@ namespace AirlockClient.Patches
                 if (!AntiCheat.Instance.VerifyVote(voter, null, info))
                 {
                     return false;
-                }
-            }
-
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnPlayerVotedSkip(GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>());
-            }
-
-            if (CurrentMode.Name == "Round Up")
-            {
-                if (sourcePlayer != ((RoundUpManager)ModdedGamemode.Current).deputy.PlayerId)
-                {
-                    return false;
-                }
-                else
-                {
-                    ((RoundUpManager)ModdedGamemode.Current).OnDeputyVote(GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>());
-                }
-            }
-
-            foreach (SubRole role in SubRole.All)
-            {
-                if (role.PlayerWithRole.PlayerId == sourcePlayer.PlayerId)
-                {
-                    role.OnPlayerVotedSkip();
                 }
             }
 
@@ -117,21 +64,6 @@ namespace AirlockClient.Patches
                 }
             }
 
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnVotingBegan(caller, bodyFound);
-            }
-
-            foreach (SubRole role in SubRole.All)
-            {
-                role.OnVotingBegan(null, null);
-
-                if (role.PlayerWithRole.PlayerId == sourcePlayer.PlayerId)
-                {
-                    role.OnPlayerReportedBody(bodyFound);
-                }
-            }
-
             return true;
         }
 
@@ -146,21 +78,6 @@ namespace AirlockClient.Patches
                 if (!AntiCheat.Instance.VerifyMeeting(caller, info))
                 {
                     return false;
-                }
-            }
-
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnVotingBegan(null, caller);
-            }
-
-            foreach (SubRole role in SubRole.All)
-            {
-                role.OnVotingBegan(null, null);
-
-                if (role.PlayerWithRole.PlayerId == sourcePlayer.PlayerId)
-                {
-                    role.OnPlayerCalledMeeting();
                 }
             }
 

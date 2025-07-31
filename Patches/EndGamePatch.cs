@@ -10,11 +10,6 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(GameStateManager __instance, GameTeam winningTeam)
         {
-            if (ModdedGamemode.Current)
-            {
-                ModdedGamemode.Current.OnGameEnd(winningTeam);
-            }
-
             foreach (SubRole role in SubRole.All)
             {
                 role.OnGameEnd(winningTeam);

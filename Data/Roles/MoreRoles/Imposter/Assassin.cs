@@ -28,7 +28,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             List<int> validIds = new List<int>();
 
-            foreach (PlayerState player in ((MoreRolesManager)ModdedGamemode.Current).Crewmates)
+            foreach (PlayerState player in ((MoreRolesManager)AirlockClientGamemode.Current).Crewmates)
             {
                 if (!player.GetComponent<Troll>()&& player.IsConnected && player != PlayerWithRole)
                 {

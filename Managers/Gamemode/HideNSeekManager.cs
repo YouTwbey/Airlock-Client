@@ -1,19 +1,23 @@
-﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock;
-using UnityEngine;
-using static AirlockClient.Data.Enums;
-using AirlockClient.Data.Roles.HideNSeek.Imposter;
+﻿using AirlockAPI.Attributes;
+using AirlockClient.AC;
+using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.HideNSeek.Crewmate;
-using Il2CppSG.Airlock.Sabotage;
-using UnityEngine.Audio;
+using AirlockClient.Data.Roles.HideNSeek.Imposter;
+using AirlockClient.Handlers;
+using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
-using AirlockAPI.Attributes;
+using Il2CppSG.Airlock.Roles;
+using Il2CppSG.Airlock.Sabotage;
+using UnityEngine;
+using UnityEngine.Audio;
+using UnityEngine.UIElements.Experimental;
 using static AirlockAPI.Managers.NetworkManager;
+using static AirlockClient.Data.Enums;
+using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class HideNSeekManager : ModdedGamemode
+    public class HideNSeekManager : AirlockClientGamemode
     {
         public AudioSource SeekerMusic;
         public static Seeker seeker;
@@ -43,7 +47,13 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public override void OnGameStart()
+        public override bool OnTargetedAction(ref PlayerState killer, ref PlayerState victim, ref int action)
+        {
+            AntiCheat.KillPlayerWithAntiCheat(killer, victim);
+            return false;
+        }
+
+        public override bool OnGameStart()
         {
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.MaxInfected, 1);
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.NumImposters, 1);
@@ -65,6 +75,8 @@ namespace AirlockClient.Managers.Gamemode
             GameStarted = false;
             FinalHide = false;
             AllowSabotagesToBeTurnedOff = false;
+
+            return true;
         }
 
         public static void RPC_GameEnd()
@@ -75,7 +87,7 @@ namespace AirlockClient.Managers.Gamemode
         [AirlockRpc("GameEnd", RpcTarget.All, RpcCaller.Host)]
         public static void GameEnd()
         {
-            DangerMeterManager.DeInit();
+            DangerMeterHandler.DeInit();
             AudioSource SeekMusic = ((HideNSeekManager)Current).SeekerMusic;
 
             if (SeekMusic)
@@ -96,7 +108,7 @@ namespace AirlockClient.Managers.Gamemode
             {
                 if (Current.State.SpawnManager.Avatars[seekerId])
                 {
-                    DangerMeterManager.Init(Current.State.SpawnManager.Avatars[seekerId].TaskPlayer.transform);
+                    DangerMeterHandler.Init(Current.State.SpawnManager.Avatars[seekerId].TaskPlayer.transform);
                 }
 
                 AudioSource SeekMusic = ((HideNSeekManager)Current).SeekerMusic;
@@ -123,7 +135,7 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public override void OnGameEnd(GameTeam teamThatWon)
+        public override bool OnGameEnd(ref GameTeam teamThatWon)
         {
             State._gamemodeTimerCurrent = 0;
             State._gamemodeTimerRunning = false;
@@ -131,7 +143,7 @@ namespace AirlockClient.Managers.Gamemode
             FinalHide = false;
             AllowSabotagesToBeTurnedOff = true;
 
-            DangerMeterManager.DeInit();
+            DangerMeterHandler.DeInit();
             SeekerMusic.Stop();
             FindObjectOfType<SabotageManager>().RPC_EndSabotage(false);
 
@@ -149,6 +161,8 @@ namespace AirlockClient.Managers.Gamemode
             {
                 Destroy(player);
             }
+
+            return true;
         }
 
         void Update()
@@ -166,7 +180,7 @@ namespace AirlockClient.Managers.Gamemode
                     }
                     else
                     {
-                        DangerMeterManager.Init(seeker.PlayerWithRole.LocomotionPlayer.TaskPlayer.transform);
+                        DangerMeterHandler.Init(seeker.PlayerWithRole.LocomotionPlayer.TaskPlayer.transform);
                     }
 
                     foreach (SubRole player in SubRole.All)
@@ -256,7 +270,7 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public override void OnAssignRoles()
+        public override void OnAfterAssignRoles()
         {
             foreach (SubRole role in SubRole.All)
             {

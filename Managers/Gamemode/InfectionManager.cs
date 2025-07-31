@@ -9,7 +9,7 @@ using AirlockClient.AC;
 
 namespace AirlockClient.Managers.Gamemode
 {
-    public class InfectionManager : ModdedGamemode
+    public class InfectionManager : AirlockClientGamemode
     {
         public static InfectionManager Instance;
         public SpawnManager spawn;
@@ -73,7 +73,7 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public override void OnAssignRoles()
+        public override void OnAfterAssignRoles()
         {
             foreach (SubRole role in SubRole.All)
             {

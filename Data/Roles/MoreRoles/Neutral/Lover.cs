@@ -29,7 +29,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             List<int> validIds = new List<int>();
 
-            foreach (PlayerState player in ((MoreRolesManager)ModdedGamemode.Current).Crewmates)
+            foreach (PlayerState player in ((MoreRolesManager)AirlockClientGamemode.Current).Crewmates)
             {
                 if (player.IsConnected && player != PlayerWithRole && player.GetComponent<SubRole>() == null)
                 {

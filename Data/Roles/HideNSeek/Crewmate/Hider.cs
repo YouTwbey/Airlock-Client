@@ -1,4 +1,5 @@
 ﻿using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
@@ -38,7 +39,7 @@ namespace AirlockClient.Data.Roles.HideNSeek.Crewmate
 
             if (PlayerWithRole == FindObjectOfType<XRRig>().PState)
             {
-                DangerMeterManager.Instance.HasDied = true;
+                DangerMeterHandler.Instance.HasDied = true;
             }
         }
 
