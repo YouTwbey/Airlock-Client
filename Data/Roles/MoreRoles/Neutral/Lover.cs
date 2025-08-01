@@ -51,22 +51,6 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         }
 
         OtherLover otherLover;
-
-        public override void OnPlayerDied(PlayerState killer)
-        {
-            AntiCheat.KillPlayerWithAntiCheat(killer, otherLover.PlayerWithRole);
-        }
-
-        public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
-        {
-            if (ejectedPlayer != null)
-            {
-                if (ejectedPlayer == PlayerWithRole)
-                {
-                    otherLover.PlayerWithRole.IsAlive = false;
-                }
-            }
-        }
     }
 
     public class OtherLover : SubRole
@@ -82,22 +66,6 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         void Start()
         {
             MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, mainLover.PlayerWithRole.NetworkName.Value));
-        }
-
-        public override void OnPlayerDied(PlayerState killer)
-        {
-            AntiCheat.KillPlayerWithAntiCheat(killer, mainLover.PlayerWithRole);
-        }
-
-        public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
-        {
-            if (ejectedPlayer != null)
-            {
-                if (ejectedPlayer == PlayerWithRole)
-                {
-                    mainLover.PlayerWithRole.IsAlive = false;
-                }
-            }
         }
 
         public Lover mainLover;
