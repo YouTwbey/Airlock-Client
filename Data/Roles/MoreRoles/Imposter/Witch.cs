@@ -17,10 +17,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Witch",
+            RoleType = "Imposter",
             Description = "Cast spells",
             AC_Description = "You can cast spells as a witch. Crewmates you cast spells on will be flagged with [†] when a meeting is called and be killed after.",
             Team = GameTeam.Imposter,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

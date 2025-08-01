@@ -1,5 +1,4 @@
-﻿using AirlockClient.AC;
-using AirlockClient.Attributes;
+﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
@@ -19,10 +18,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Lover",
+            RoleType = "Neutral",
             Description = "Protect user:",
             AC_Description = "You must protect your other lover. If anything happens to them, it also will happen to you. Lover: ",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()
@@ -42,6 +42,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                 otherLover = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").AddComponent<OtherLover>();
                 otherLover.mainLover = this;
                 MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, otherLover.PlayerWithRole.NetworkName.Value));
+
+                PlayerWithRole.SoulLinkID = otherLover.PlayerWithRole.PlayerId;
+                otherLover.PlayerWithRole.SoulLinkID = PlayerWithRole.PlayerId;
             }
             else
             {

@@ -17,10 +17,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Janitor (Point)",
+            RoleType = "Imposter",
             Description = "Remove Bodies",
             AC_Description = "Pointing near a body will remove it. You can only remove one body every time a meeting ends.",
             Team = GameTeam.Imposter,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

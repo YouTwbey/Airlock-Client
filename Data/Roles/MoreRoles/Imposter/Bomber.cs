@@ -19,10 +19,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Bomber (Point)",
+            RoleType = "Imposter",
             Description = "Explode others",
             AC_Description = "When pointing, you will kill yourself but others near you.",
             Team = GameTeam.Imposter,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

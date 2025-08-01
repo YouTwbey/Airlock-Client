@@ -18,10 +18,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Guardian Angel",
+            RoleType = "Crewmate",
             Description = "Protect crew",
             AC_Description = "When dead, you have the ability to protect the crew by pointing when near them.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

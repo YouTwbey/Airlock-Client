@@ -19,10 +19,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Executioner",
+            RoleType = "Neutral",
             Description = "Eject Player:",
             AC_Description = "Your goal is to eject your target. Target: ",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

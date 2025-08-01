@@ -15,10 +15,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Magician",
+            RoleType = "Crewmate",
             Description = "Go Invisible",
             AC_Description = "You get to vanish once every time a meeting ends.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

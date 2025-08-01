@@ -17,10 +17,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Poisoner",
+            RoleType = "Imposter",
             Description = "20 Sec Delay",
             AC_Description = "A poisoner's kills are delayed by 20 seconds.",
             Team = GameTeam.Imposter,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

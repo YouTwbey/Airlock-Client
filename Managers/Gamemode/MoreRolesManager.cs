@@ -350,6 +350,19 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     SubRoleData data = SubRoleToData[role];
 
+                    if (data.RoleType == "Crewmate")
+                    {
+                        GUI.color = Color.cyan;
+                    }
+                    else if (data.RoleType == "Imposter")
+                    {
+                        GUI.color = Color.red;
+                    }
+                    else
+                    {
+                        GUI.color = Color.gray;
+                    }
+
                     if (data != null)
                     {
                         if (GUILayout.Button(role.ToString() + ": " + data.Amount))

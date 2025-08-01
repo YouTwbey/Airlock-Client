@@ -18,10 +18,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Yapper",
+            RoleType = "Crewmate",
             Description = "Keep talk or die",
             AC_Description = "If at any moment you stop talking, you will die.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

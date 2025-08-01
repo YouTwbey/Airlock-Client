@@ -7,6 +7,7 @@ namespace AirlockClient.Attributes
     {
         public int Amount;
         public string Name;
+        public string RoleType;
         public string Description;
         public Color AC_Color = Color.white;
         public string AC_Description;

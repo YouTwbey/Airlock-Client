@@ -15,10 +15,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Bait",
+            RoleType = "Crewmate",
             Description = "Auto Report Body",
             AC_Description = "When an imposter kills you, they will automatically report your body.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

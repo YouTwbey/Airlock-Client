@@ -14,10 +14,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Sheriff",
+            RoleType = "Crewmate",
             Description = "Kill Imposter",
             AC_Description = "Kill the imposters to help the crew win.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()

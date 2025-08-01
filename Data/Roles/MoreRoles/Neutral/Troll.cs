@@ -15,10 +15,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Troll",
+            RoleType = "Neutral",
             Description = "Death = Win",
             AC_Description = "You need to be killed to win.",
             Team = GameTeam.Crewmember,
-            Amount = 1
+            Amount = 0
         };
 
         void Start()
