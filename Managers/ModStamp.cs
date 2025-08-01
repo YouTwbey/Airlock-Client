@@ -18,7 +18,7 @@ namespace AirlockClient.Managers
 
         public static void ApplyWatermark()
         {
-            if (watermark == null)
+            if (watermark == null && !IsVR)
             {
                 watermark = new GameObject("Watermark").AddComponent<TextMeshProUGUI>();
                 watermark.transform.SetParent(GameObject.Find("3DHUD_Canvas").transform, false);
