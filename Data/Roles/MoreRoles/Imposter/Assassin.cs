@@ -21,7 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Kill Player:",
             AC_Description = "Your goal is to kill your target before the first meeting. Target: ",
-            Team = GameTeam.Crewmember,
+            Team = GameTeam.Imposter,
             Amount = 0
         };
 

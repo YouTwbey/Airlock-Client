@@ -21,6 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Amount = 0
         };
 
+        public static float SecondsUntilDisolve = 30;
         List<NetworkedBody> bodiesToDisolve = new List<NetworkedBody>();
         public override void OnPlayerKilled(PlayerState playerKilled)
         {
@@ -43,7 +44,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
             foreach (NetworkedBody body in bodiesToDisolve)
             {
-                body.transform.position = Vector3.down * 0.01f;
+                body.transform.position += Vector3.down * (1 / SecondsUntilDisolve) * Time.deltaTime;
 
                 if (body.transform.position.y <= -1)
                 {
@@ -53,6 +54,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
             foreach (NetworkedBody body in bodiesToRemove)
             {
+                body.RPC_ToggleBody(false);
                 bodiesToDisolve.Remove(body);
             }
         }
