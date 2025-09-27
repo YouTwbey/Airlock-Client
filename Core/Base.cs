@@ -177,14 +177,14 @@ namespace AirlockClient.Core
                                 {
                                     if (menu.gameObject.activeSelf)
                                     {
-                                        //FindObjectOfType<GamemodeSelectionMenu>(true)._mapInfoCollection._activeModesAndMaps.Maps.Add("Mess Hall"); devs removed mess hall
-                                        GamemodeManager.AddMode("More Roles", "Social deduction gameplay, with tons of extra roles", GameModes.NotSet);
+                                        GamemodeManager.AddMode("More Roles", "Social deduction gameplay, with tons of extra roles");
                                         GamemodeManager.AddMode("Hide N Seek", "Survive the time limit before the imposter takes everyone out", GameModes.Infection);
-                                        GamemodeManager.AddMode("Sandbox", "Practice killing, doing tasks or just have fun", GameModes.NotSet);
+                                        GamemodeManager.AddMode("Sandbox", "Practice killing, doing tasks or just have fun");
                                         GamemodeManager.AddMode("Lights Out", "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut);
                                         GamemodeManager.AddMode("Infection", "The zomburritos have breached mess hall", GameModes.Infection);
+                                        GamemodeManager.AddMode("Critical Cargo", "The zomburritos have breached mess hall");
+                                        //GamemodeManager.AddMode("Versus", "Be the first one to complete tasks and stop others");
                                         //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
-                                        //CustomModeManager.Instance.CreateMode("Dum Justice", "The vigilante has returned to restore justice", GameModes.Vigilante);
                                         //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);
 
                                         bonusMapsAdded = true;
