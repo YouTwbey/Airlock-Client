@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
+using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using Il2CppFusion;
 using Il2CppSG.Airlock;
@@ -29,10 +30,11 @@ namespace AirlockClient.AC
         public Dictionary<PlayerState, int> PreviousSkin = new Dictionary<PlayerState, int>();
         public Dictionary<PlayerState, int> PreviousColor = new Dictionary<PlayerState, int>();
         public Dictionary<PlayerState, int> MeetingsCalled = new Dictionary<PlayerState, int>();
+        public List<PlayerState> IsDead = new List<PlayerState>();
         public List<PlayerState> AllowedBodySpawns = new List<PlayerState>();
         public List<string> BannedUsers = new List<string>();
         public List<PlayerState> BodiesReported = new List<PlayerState>();
-        public List<PlayerState> WitchTargets = new List<PlayerState>();
+        public Dictionary<PlayerState, List<PlayerState>> RoleTargets = new Dictionary<PlayerState, List<PlayerState>>();
 
         public readonly Dictionary<int, string> ColorToName = new Dictionary<int, string> {
             {0, "Red"},
@@ -80,9 +82,11 @@ namespace AirlockClient.AC
 
         public void OnEndGame()
         {
+            IsDead.Clear();
             MeetingsCalled.Clear();
             BodiesReported.Clear();
             AllowedBodySpawns.Clear();
+            RoleTargets.Clear();
         }
 
         public static void KillPlayerWithAntiCheat(PlayerState killer, PlayerState target)
@@ -96,6 +100,11 @@ namespace AirlockClient.AC
             if (Instance.AllowedBodySpawns.Contains(target))
             {
                 Instance.AllowedBodySpawns.Remove(target);
+            }
+
+            if (Instance.IsDead.Contains(target))
+            {
+                Instance.IsDead.Remove(target);
             }
 
             Instance.AllowedBodySpawns.Add(target);
@@ -137,6 +146,24 @@ namespace AirlockClient.AC
 
         public static void ChangeIsAliveWithAntiCheat(PlayerState player, bool isAlive)
         {
+            if (Instance)
+            {
+                if (isAlive)
+                {
+                    if (Instance.IsDead.Contains(player))
+                    {
+                        Instance.IsDead.Remove(player);
+                    }
+                }
+                else
+                {
+                    if (!Instance.IsDead.Contains(player))
+                    {
+                        Instance.IsDead.Add(player);
+                    }
+                }
+            }
+
             player.IsAlive = isAlive;
         }
 
@@ -148,6 +175,41 @@ namespace AirlockClient.AC
             }
 
             player.HatId = hatId;
+        }
+
+        public static void ChangeSkinWithAntiCheat(PlayerState player, int SkinId)
+        {
+            if (Instance)
+            {
+                Instance.PreviousSkin.Add(player, SkinId);
+            }
+
+            player.SkinId = SkinId;
+        }
+
+        public static void ChangeGlovesWithAntiCheat(PlayerState player, int handsId)
+        {
+            if (Instance)
+            {
+                Instance.PreviousGlove.Add(player, handsId);
+            }
+
+            player.HandsId = handsId;
+        }
+
+        public static void DousePlayerWithAntiCheat(Arsonist arsonist, PlayerState victim)
+        {
+            if (Instance)
+            {
+                if (!Instance.RoleTargets.ContainsKey(arsonist.PlayerWithRole))
+                {
+                    Instance.RoleTargets.Add(arsonist.PlayerWithRole, new List<PlayerState>());
+                }
+
+                Instance.RoleTargets[arsonist.PlayerWithRole].Add(victim);
+            }
+
+            arsonist.dousedPlayers.Add(victim, victim.NetworkName.Value);
         }
 
         public bool VerifyBodyReport(PlayerState reporter, PlayerState bodyReported, RpcInfo info)
@@ -365,7 +427,7 @@ namespace AirlockClient.AC
             {
                 if (player.IsConnected)
                 {
-                    if (!ColorToName.ContainsValue(player.NetworkName.Value) && player.NetworkName.Value != "Color###")
+                    if (!CurrentMode.Modded && !ColorToName.ContainsValue(player.NetworkName.Value) && player.NetworkName.Value != "Color###")
                     {
                         string formattedName = Regex.Replace(player.PlayerModerationUsername, @"\d", "");
                         if (formattedName != "" && !formattedName.Contains(player.NetworkName.Value))
@@ -548,12 +610,22 @@ namespace AirlockClient.AC
                 }
                 else
                 {
-                    if (killerRole != GameRole.Imposter || targetRole == GameRole.Imposter || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                    if (killerRole == GameRole.Imposter)
                     {
-                        IsCheating = true;
+                        if (targetRole == GameRole.Imposter || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                        {
+                            IsCheating = true;
+                        }
+                    }
+                    else
+                    {
+                        if (killerRole != GameRole.Vigilante || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                        {
+                            IsCheating = true;
+                        }
                     }
                 }
-                
+
                 if (!IsCheating)
                 {
                     AllowedBodySpawns.Add(target);
@@ -603,7 +675,29 @@ namespace AirlockClient.AC
             }
             else
             {
-                Alert(killer, "suspicious kill data", true);
+                Alert(killer, "suspicious kill data", false);
+            }
+
+            return !IsCheating;
+        }
+
+        public bool VerifyJoin(NetworkedLocomotionPlayer joiningPlayer, int color, int hat, int hands, int skin, string name, string moderationID, string moderationUsername, string accountID, bool is3D)
+        {
+            bool IsCheating = false;
+
+            if (color < 0 || color > 12)
+            {
+                IsCheating = true;
+            }
+
+            if (!VerifyModerationID(moderationID))
+            {
+                IsCheating = true;
+            }
+
+            if (IsCheating)
+            {
+                Alert(joiningPlayer.PState, "suspicious join data", true);
             }
 
             return !IsCheating;
@@ -628,8 +722,31 @@ namespace AirlockClient.AC
             return GameRole.NotSet;
         }
 
+        public bool VerifyModerationID(string modId)
+        {
+            bool isValid = true;
+
+            if (string.IsNullOrEmpty(modId)) isValid = false;
+            if (!modId.StartsWith("PS5_") && !modId.StartsWith("Steam_") && !modId.StartsWith("Meta_")) isValid = false;
+
+            return isValid;
+        }
+
         public void Alert(PlayerState guilty, string reason, bool takeAction)
         {
+            if (!VerifyModerationID(guilty.PlayerModerationID.Value))
+            {
+                GetActualModId(guilty);
+                reason = "hidden moderation id";
+                takeAction = true;
+
+                Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
+                guilty.NetworkName.Value = "CHEATER";
+                BannedUsers.Add(guilty.PlayerModerationID.Value);
+                SendReportToDevelopers(guilty, reason);
+                return;
+            }
+
             if (takeAction)
             {
                 if (!BannedUsers.Contains(guilty.PlayerModerationID.Value))
@@ -658,6 +775,12 @@ namespace AirlockClient.AC
             }
 
             Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") is being suspected of cheating. Reason: " + reason + ".");
+        }
+
+        public string GetActualModId(PlayerState player)
+        {
+            player.PlayerModerationID.Value = State.Runner.GetPlayerUserId(player.PlayerId);
+            return player.PlayerModerationID.Value;
         }
 
         public void SendReportToDevelopers(PlayerState guilty, string reason)

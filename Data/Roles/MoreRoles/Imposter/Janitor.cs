@@ -33,13 +33,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         bool canHideBody = true;
         public override void OnPlayerInput(XRRigInput input)
         {
-            if ((PlayerWithRole.LocomotionPlayer._prevLeftHandPose == HandPoses.Point || PlayerWithRole.LocomotionPlayer._prevRightHandPose == HandPoses.Point || input.handPoses == new Vector2Int(1, 2)) && PlayerWithRole.IsAlive && canHideBody)
+            if ((PlayerWithRole.LocomotionPlayer._prevLeftHandPose == HandPoses.Point || PlayerWithRole.LocomotionPlayer._prevRightHandPose == HandPoses.Point || PlayerWithRole.LocomotionPlayer._previousBool == "Gesture_Point") && PlayerWithRole.IsAlive && canHideBody)
             {
                 foreach (NetworkedBody body in FindObjectsOfType<NetworkedBody>())
                 {
                     if (body != null)
                     {
-                        if ((body.transform.position - PlayerWithRole.LocomotionPlayer.RigidbodyPosition).magnitude <= 2 && canHideBody)
+                        if ((body.transform.position - PlayerWithRole.LocomotionPlayer.RigidbodyPosition).magnitude <= 2 && canHideBody && body.IsActive)
                         {
                             body.RPC_ToggleBody(false);
                             canHideBody = false;

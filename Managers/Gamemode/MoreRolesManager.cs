@@ -42,7 +42,9 @@ namespace AirlockClient.Managers.Gamemode
             Armorer,
             Assassin,
             Poisoner,
-            Troll
+            Troll,
+            Duelist,
+            Mixup,
         }
 
         static readonly Dictionary<SubGameRole, SubRoleData> SubRoleToData = new Dictionary<SubGameRole, SubRoleData>
@@ -65,6 +67,8 @@ namespace AirlockClient.Managers.Gamemode
             { SubGameRole.Assassin, Assassin.Data },
             { SubGameRole.Poisoner, Poisoner.Data },
             { SubGameRole.Troll, Troll.Data },
+            { SubGameRole.Duelist, Duelist.Data },
+            { SubGameRole.Mixup, Mixup.Data },
         };
 
         public static void RPC_SendSubRole(int playerId, string role)
@@ -145,7 +149,7 @@ namespace AirlockClient.Managers.Gamemode
         {
             SubRoleData data = SubRoleToData[role];
             data.Amount += changeBy;
-            
+
             if (data.Amount == -1)
             {
                 data.Amount = 10;
@@ -192,7 +196,7 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     if (killer.GetComponent<Vampire>())
                     {
-                        killer.GetComponent<Vampire>().DelayedKill(killer, action);
+                        killer.GetComponent<Vampire>().DelayedKill(victim, action);
                         return false;
                     }
 
@@ -302,26 +306,27 @@ namespace AirlockClient.Managers.Gamemode
 
             List<System.Action> roleAssignments = new List<System.Action>();
 
-            if (Bait.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bait>(Crewmates, Bait.Data.Amount));
-            if (Magician.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Magician>(Crewmates, Magician.Data.Amount));
-            if (Mayor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Mayor>(Crewmates, Mayor.Data.Amount));
-            if (Silencer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Silencer>(Crewmates, Silencer.Data.Amount));
-            if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(Crewmates, Yapper.Data.Amount));
-            if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(Crewmates, GuardianAngel.Data.Amount));
-            if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(Crewmates, Sheriff.Data.Amount));
-            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(Crewmates, Armorer.Data.Amount));
+            if (Bait.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bait>(Crewmates, Bait.Data));
+            if (Magician.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Magician>(Crewmates, Magician.Data));
+            if (Mayor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Mayor>(Crewmates, Mayor.Data));
+            if (Silencer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Silencer>(Crewmates, Silencer.Data));
+            if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(Crewmates, Yapper.Data));
+            if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(Crewmates, GuardianAngel.Data));
+            if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(Crewmates, Sheriff.Data));
+            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(Crewmates, Armorer.Data));
 
-            if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(Imposters, Bomber.Data.Amount));
-            if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(Imposters, Janitor.Data.Amount));
-            if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(Imposters, Vampire.Data.Amount));
-            if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(Imposters, Witch.Data.Amount));
-            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(Imposters, Poisoner.Data.Amount));
-            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(Imposters, Assassin.Data.Amount));
+            if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(Imposters, Bomber.Data));
+            if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(Imposters, Janitor.Data));
+            if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(Imposters, Vampire.Data));
+            if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(Imposters, Witch.Data));
+            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(Imposters, Poisoner.Data));
+            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(Imposters, Assassin.Data));
 
-            if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(Crewmates, Executioner.Data.Amount));
-            if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(Crewmates, Jester.Data.Amount));
-            if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(Crewmates, Lover.Data.Amount));
-            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(Crewmates, Troll.Data.Amount));
+            if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(Crewmates, Executioner.Data));
+            if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(Crewmates, Jester.Data));
+            if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(Crewmates, Lover.Data));
+            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(Crewmates, Troll.Data));
+            if (Duelist.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Duelist>(Crewmates, Duelist.Data));
 
             System.Random rng3 = new System.Random();
             roleAssignments = roleAssignments.OrderBy(_ => rng3.Next()).ToList();
@@ -332,12 +337,17 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public void AssignRole<T>(List<PlayerState> candidates, int amount) where T : Component
+        public void AssignRole<T>(List<PlayerState> candidates, SubRoleData data) where T : Component
         {
-            for (int i = 0; i < amount && candidates.Count > 0; i++)
+            for (int i = 0; i < data.Amount && candidates.Count > 0; i++)
             {
-                candidates[0].gameObject.AddComponent<T>();
-                candidates.RemoveAt(0);
+                int randomChance = Random.Range(1, 101);
+
+                if (data.Chance >= randomChance && candidates[0].gameObject.GetComponent<SubRole>() == null)
+                {
+                    candidates[0].gameObject.AddComponent<T>();
+                    candidates.RemoveAt(0);
+                }
             }
         }
 

@@ -49,14 +49,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
                 vote.VotedAgainst = new Il2CppSystem.Nullable<Il2CppFusion.PlayerRef>(playerToVote.PlayerId);
 
                 FindObjectOfType<VoteManager>()._votes.Add(vote);
-                playerToVote = null;
             }
 
             if (playerVotedSkip)
             {
                 FindObjectOfType<VoteManager>()._skipVoting.Add(PlayerWithRole.PlayerId);
-                playerVotedSkip = false;
             }
+
+            playerVotedSkip = false;
+            playerToVote = null;
         }
     }
 }

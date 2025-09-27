@@ -6,6 +6,7 @@ namespace AirlockClient.Attributes
     public class SubRoleData
     {
         public int Amount;
+        public int Chance = 50;
         public string Name;
         public string RoleType;
         public string Description;

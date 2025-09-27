@@ -38,7 +38,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             yield return new WaitForSeconds(20);
 
-            if (!AirlockClientGamemode.Current.State.InVotingState())
+            if (AirlockClientGamemode.Current.State.InTaskState() && AirlockClientGamemode.Current.State.InPlayableGameState())
             {
                 if (target.GetComponent<SubRole>())
                 {

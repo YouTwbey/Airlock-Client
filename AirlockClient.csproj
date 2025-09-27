@@ -240,6 +240,7 @@
     <Compile Include="Data\Roles\MoreRoles\Imposter\Vampire.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Arsonist.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Executioner.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Janitor.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Jester.cs" />

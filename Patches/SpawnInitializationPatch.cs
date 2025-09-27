@@ -1,4 +1,5 @@
 ﻿using AirlockAPI.Data;
+using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
@@ -11,8 +12,13 @@ namespace AirlockClient.Patches
     [HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.RPC_SpawnInitialization))]
     public class SpawnInitializationPatch
     {
-        public static void Postfix(NetworkedLocomotionPlayer __instance)
+        public static void Postfix(NetworkedLocomotionPlayer __instance, int color, int hat, int hands, int skin, string name, string moderationID, string moderationUsername, string accountID, bool is3D)
         {
+            if (AntiCheat.Instance != null)
+            {
+                if (AntiCheat.Instance.VerifyJoin())
+            }
+
             if (CurrentMode.Modded)
             {
                 if (CurrentMode.IsHosting)

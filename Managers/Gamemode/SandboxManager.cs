@@ -132,6 +132,10 @@ namespace AirlockClient.Managers.Gamemode
                         player.gameObject.AddComponent<Witch>();
                         break;
 
+                    case SubGameRole.Mixup:
+                        player.gameObject.AddComponent<Mixup>();
+                        break;
+
                     case SubGameRole.Executioner:
                         player.gameObject.AddComponent<Executioner>();
                         break;
@@ -142,6 +146,10 @@ namespace AirlockClient.Managers.Gamemode
 
                     case SubGameRole.Lover:
                         player.gameObject.AddComponent<Lover>();
+                        break;
+
+                    case SubGameRole.Duelist:
+                        player.gameObject.AddComponent<Duelist>();
                         break;
 
                     default:
