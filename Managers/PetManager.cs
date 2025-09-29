@@ -24,7 +24,7 @@ namespace AirlockClient.Managers
                         {
                             if (state.IsConnected)
                             {
-                                AssignDebugPet(state.LocomotionPlayer);
+                                //AssignDebugPet(state.LocomotionPlayer);
                             }
                         }
                     }

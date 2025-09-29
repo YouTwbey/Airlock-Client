@@ -16,7 +16,7 @@ namespace AirlockClient.Patches
         {
             if (AntiCheat.Instance != null)
             {
-                if (AntiCheat.Instance.VerifyJoin())
+                AntiCheat.Instance.VerifyJoin(__instance, color, hat, hands, skin, name, moderationID, moderationUsername, accountID, is3D);
             }
 
             if (CurrentMode.Modded)
@@ -49,7 +49,7 @@ namespace AirlockClient.Patches
                     }
                 }
 
-                if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
+                //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
             }
         }
     }

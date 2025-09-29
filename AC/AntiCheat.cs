@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
+using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using Il2CppFusion;
@@ -124,13 +125,15 @@ namespace AirlockClient.AC
             if (!Instance)
             {
                 NetworkedKillBehaviour Kill = FindObjectOfType<NetworkedKillBehaviour>();
-                Kill.GuardTarget(target);
-                Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, FindObjectOfType<AirlockPeer>());
+                Kill.RPC_GuardVFX(target.PlayerId, true, false, false);
+                Kill.RPC_GuardVFX(target.PlayerId, false, false, true);
+                target.Guarded = false;
                 return;
             }
 
-            Instance.Kill.GuardTarget(target);
-            Instance.Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Instance.Peer);
+            Instance.Kill.RPC_GuardVFX(target.PlayerId, true, false, false);
+            Instance.Kill.RPC_GuardVFX(target.PlayerId, false, false, true);
+            target.Guarded = false;
         }
 
         public static void InfectPlayerWithAntiCheat(PlayerState killer, PlayerState target)
@@ -195,6 +198,43 @@ namespace AirlockClient.AC
             }
 
             player.HandsId = handsId;
+        }
+
+        public static void CastSpellWithAntiCheat(Witch witch, PlayerState victim)
+        {
+            if (Instance)
+            {
+                if (!Instance.RoleTargets.ContainsKey(witch.PlayerWithRole))
+                {
+                    Instance.RoleTargets.Add(witch.PlayerWithRole, new List<PlayerState>());
+                }
+
+                Instance.RoleTargets[witch.PlayerWithRole].Add(victim);
+            }
+
+            witch.spellsCasted.Add(victim, victim.NetworkName.Value);
+        }
+
+        public static void RemoveSpellWithAntiCheat(Witch witch, PlayerState victim, bool toggleKill)
+        {
+            if (Instance)
+            {
+                if (Instance.RoleTargets.ContainsKey(witch.PlayerWithRole))
+                {
+                    if (Instance.RoleTargets[witch.PlayerWithRole].Contains(victim))
+                    {
+                        Instance.RoleTargets[witch.PlayerWithRole].Remove(victim);
+                    }
+                }
+            }
+
+            victim.NetworkName.Value = witch.spellsCasted[victim];
+            witch.spellsCasted.Remove(victim);
+
+            if (toggleKill)
+            {
+                victim.IsAlive = false;
+            }
         }
 
         public static void DousePlayerWithAntiCheat(Arsonist arsonist, PlayerState victim)
@@ -344,21 +384,25 @@ namespace AirlockClient.AC
 
         System.Collections.IEnumerator FetchBlacklist()
         {
-            UnityWebRequest www = UnityWebRequest.Get(BlacklistUrl);
-            yield return www.SendWebRequest();
-
-            if (www.result != UnityWebRequest.Result.Success)
+            while (gameObject != null)
             {
-                Logging.Error($"Failed to fetch blacklist: {www.error}");
-                yield break;
-            }
+                UnityWebRequest www = UnityWebRequest.Get(BlacklistUrl);
+                yield return www.SendWebRequest();
 
-            string[] ids = www.downloadHandler.text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Logging.Error($"Failed to fetch blacklist: {www.error}");
+                    yield break;
+                }
 
-            foreach (string id in ids)
-            {
-                Logging.Log($"Added {id} to the blacklist!");
-                BlacklistedUsers.Add(id);
+                string[] ids = www.downloadHandler.text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string id in ids)
+                {
+                    Logging.Log($"Added {id} to the blacklist!");
+                    BlacklistedUsers.Add(id);
+                }
+                yield return new WaitForSecondsRealtime(300);
             }
         }
 

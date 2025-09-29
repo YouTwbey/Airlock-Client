@@ -3,6 +3,7 @@ using AirlockAPI.Managers;
 using AirlockClient.AC;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
+using AirlockClient.Managers.Gamemode;
 using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSG.Airlock;
@@ -42,6 +43,8 @@ namespace AirlockClient.Core
                 }
                 catch { }
             }
+
+            MoreRolesManager.FetchRoles();
 
             IsVR = Application.productName.Contains("VR");
         }
@@ -182,7 +185,7 @@ namespace AirlockClient.Core
                                         GamemodeManager.AddMode("Sandbox", "Practice killing, doing tasks or just have fun");
                                         GamemodeManager.AddMode("Lights Out", "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut);
                                         GamemodeManager.AddMode("Infection", "The zomburritos have breached mess hall", GameModes.Infection);
-                                        GamemodeManager.AddMode("Critical Cargo", "The zomburritos have breached mess hall");
+                                        GamemodeManager.AddMode("Critical Cargo", "Protect the critical crewmates and scan anyone suspicious.");
                                         //GamemodeManager.AddMode("Versus", "Be the first one to complete tasks and stop others");
                                         //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
                                         //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);

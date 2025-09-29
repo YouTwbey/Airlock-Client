@@ -8,8 +8,10 @@ using AirlockClient.Managers.Dev;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Settings;
+using MelonLoader;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using static AirlockAPI.Managers.NetworkManager;
 
 namespace AirlockClient.Managers
@@ -42,6 +44,34 @@ namespace AirlockClient.Managers
             else
             {
                 Destroy(this);
+            }
+
+            MelonCoroutines.Start(FetchBlacklist());
+        }
+
+        List<string> BlacklistedUsers = new List<string>();
+        const string BlacklistUrl = "https://raw.githubusercontent.com/YouTwbey/Airlock-Client/main/AC/blacklisted_user_list.txt";
+
+        System.Collections.IEnumerator FetchBlacklist()
+        {
+            while (gameObject != null)
+            {
+                UnityWebRequest www = UnityWebRequest.Get(BlacklistUrl);
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success)
+                {
+                    Logging.Error($"Failed to fetch blacklist: {www.error}");
+                    yield break;
+                }
+
+                string[] ids = www.downloadHandler.text.Split(new[] { '\r', '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (string id in ids)
+                {
+                    BlacklistedUsers.Add(id);
+                }
+                yield return new WaitForSecondsRealtime(300);
             }
         }
 

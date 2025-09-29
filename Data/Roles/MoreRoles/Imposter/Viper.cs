@@ -1,8 +1,10 @@
 ﻿using AirlockClient.Attributes;
+using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
-using UnityEngine;
+using MelonLoader;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -20,6 +22,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Team = GameTeam.Imposter,
             Amount = 0
         };
+
+        void Start()
+        {
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+        }
 
         public static float SecondsUntilDisolve = 30;
         List<NetworkedBody> bodiesToDisolve = new List<NetworkedBody>();

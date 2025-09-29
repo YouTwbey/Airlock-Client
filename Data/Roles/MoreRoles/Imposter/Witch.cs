@@ -6,7 +6,7 @@ using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
 
-namespace AirlockClient.Data.Roles.MoreRoles.Imposter
+namespace AirlockClient.Data.Roles.MoreRoles.Broken
 {
     /// <summary>
     /// Imposter Role
@@ -29,14 +29,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
-        Dictionary<PlayerState, string> spellsCasted = new Dictionary<PlayerState, string>();
+        public Dictionary<PlayerState, string> spellsCasted = new Dictionary<PlayerState, string>();
 
         void AddSpell(PlayerState state)
         {
             if (!spellsCasted.ContainsKey(state))
             {
-                AntiCheat.Instance.WitchTargets.Add(state);
-                spellsCasted.Add(state, state.NetworkName.Value);
+                AntiCheat.CastSpellWithAntiCheat(this, state);
             }
         }
 
@@ -44,14 +43,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             if (spellsCasted.ContainsKey(state))
             {
-                AntiCheat.Instance.WitchTargets.Remove(state);
-                state.NetworkName.Value = spellsCasted[state];
-                spellsCasted.Remove(state);
-
-                if (toggleKill)
-                {
-                    state.IsAlive = false;
-                }
+                AntiCheat.RemoveSpellWithAntiCheat(this, state, toggleKill);
             }
         }
 

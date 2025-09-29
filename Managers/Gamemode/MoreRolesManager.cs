@@ -2,15 +2,18 @@
 using AirlockAPI.Data;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
+using AirlockClient.Core;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
+using Il2CppInterop.Runtime;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using Il2CppTMPro;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -21,53 +24,36 @@ namespace AirlockClient.Managers.Gamemode
 {
     public class MoreRolesManager : AirlockClientGamemode
     {
-        public enum SubGameRole
-        {
-            Bait,
-            GuardianAngel,
-            Magician,
-            Mayor,
-            Sheriff,
-            Silencer,
-            Yapper,
-            Bomber,
-            Janitor,
-            Vampire,
-            Witch,
-            Executioner,
-            Jester,
-            Lover,
-            Armorer,
-            Assassin,
-            Poisoner,
-            Troll,
-            Duelist,
-            Mixup,
-        }
+        public static Dictionary<string, SubRoleData> SubRoleToData;
+        public static Dictionary<string, System.Type> SubRoleToType;
 
-        static readonly Dictionary<SubGameRole, SubRoleData> SubRoleToData = new Dictionary<SubGameRole, SubRoleData>
+        public static void FetchRoles()
         {
-            { SubGameRole.Bait, Bait.Data },
-            { SubGameRole.GuardianAngel, GuardianAngel.Data },
-            { SubGameRole.Magician, Magician.Data },
-            { SubGameRole.Mayor, Mayor.Data },
-            { SubGameRole.Sheriff , Sheriff.Data },
-            { SubGameRole.Silencer, Silencer.Data },
-            { SubGameRole.Yapper, Yapper.Data },
-            { SubGameRole.Bomber, Bomber.Data },
-            { SubGameRole.Janitor, Janitor.Data },
-            { SubGameRole.Vampire, Vampire.Data },
-            { SubGameRole.Witch, Witch.Data },
-            { SubGameRole.Executioner, Executioner.Data },
-            { SubGameRole.Jester, Jester.Data },
-            { SubGameRole.Lover, Lover.Data },
-            { SubGameRole.Armorer, Armorer.Data },
-            { SubGameRole.Assassin, Assassin.Data },
-            { SubGameRole.Poisoner, Poisoner.Data },
-            { SubGameRole.Troll, Troll.Data },
-            { SubGameRole.Duelist, Duelist.Data },
-            { SubGameRole.Mixup, Mixup.Data },
-        };
+            SubRoleToData = new Dictionary<string, SubRoleData>();
+            SubRoleToType = new Dictionary<string, System.Type>();
+
+            string[] namespaceTargets =
+            {
+            "AirlockClient.Data.Roles.MoreRoles.Crewmate",
+            "AirlockClient.Data.Roles.MoreRoles.Imposter",
+            "AirlockClient.Data.Roles.MoreRoles.Neutral"
+            };
+
+            List<System.Type> roleTypes = Assembly.GetAssembly(typeof(Base)).GetTypes().Where(t => namespaceTargets.Contains(t.Namespace)).Where(t => t.IsClass).ToList();
+
+            foreach (System.Type type in roleTypes)
+            {
+                FieldInfo field = type.GetField("Data", BindingFlags.Public | BindingFlags.Static);
+                if (field == null) continue;
+
+                SubRoleData data = (SubRoleData)field.GetValue(null);
+                if (data != null)
+                {
+                    SubRoleToData[type.Name] = data;
+                    SubRoleToType[type.FullName] = type;
+                }
+            }
+        }
 
         public static void RPC_SendSubRole(int playerId, string role)
         {
@@ -115,7 +101,7 @@ namespace AirlockClient.Managers.Gamemode
         {
             GameObject Template = UI.transform.Find("MoreRoles").Find("BG").Find("Roles").Find("ROLE_TEMPLATE").gameObject;
 
-            foreach (SubGameRole subrole in System.Enum.GetValues(typeof(SubGameRole)))
+            foreach (string subrole in SubRoleToData.Keys)
             {
                 GameObject RoleSetting = Instantiate(Template, Template.transform.parent);
                 RoleSetting.name = "ROLE_" + subrole.ToString();
@@ -143,7 +129,7 @@ namespace AirlockClient.Managers.Gamemode
             UI.SetActive(false);
         }
 
-        void ChangeRoleAmount(TextMeshProUGUI subRoleAmount, SubGameRole role, int changeBy)
+        void ChangeRoleAmount(TextMeshProUGUI subRoleAmount, string role, int changeBy)
         {
             SubRoleData data = SubRoleToData[role];
             data.Amount += changeBy;
@@ -304,27 +290,30 @@ namespace AirlockClient.Managers.Gamemode
 
             List<System.Action> roleAssignments = new List<System.Action>();
 
-            if (Bait.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bait>(Crewmates, Bait.Data));
-            if (Magician.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Magician>(Crewmates, Magician.Data));
-            if (Mayor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Mayor>(Crewmates, Mayor.Data));
-            if (Silencer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Silencer>(Crewmates, Silencer.Data));
-            if (Yapper.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Yapper>(Crewmates, Yapper.Data));
-            if (GuardianAngel.Data.Amount > 0) roleAssignments.Add(() => AssignRole<GuardianAngel>(Crewmates, GuardianAngel.Data));
-            if (Sheriff.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Sheriff>(Crewmates, Sheriff.Data));
-            if (Armorer.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Armorer>(Crewmates, Armorer.Data));
+            foreach (string role in SubRoleToData.Keys)
+            {
+                SubRoleData data = SubRoleToData[role];
 
-            if (Bomber.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Bomber>(Imposters, Bomber.Data));
-            if (Janitor.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Janitor>(Imposters, Janitor.Data));
-            if (Vampire.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Vampire>(Imposters, Vampire.Data));
-            if (Witch.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Witch>(Imposters, Witch.Data));
-            if (Poisoner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Poisoner>(Imposters, Poisoner.Data));
-            if (Assassin.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Assassin>(Imposters, Assassin.Data));
+                if (data.Amount > 0)
+                {
+                    foreach (string type in SubRoleToType.Keys)
+                    {
+                        if (type.Contains(role))
+                        {
+                            if (data.Team == GameTeam.Crewmember)
+                            {
+                                roleAssignments.Add(() => AssignRole(SubRoleToType[type], Crewmates, data));
+                            }
+                            else if (data.Team == GameTeam.Imposter)
+                            {
+                                roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
+                            }
 
-            if (Executioner.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Executioner>(Crewmates, Executioner.Data));
-            if (Jester.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Jester>(Crewmates, Jester.Data));
-            if (Lover.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Lover>(Crewmates, Lover.Data));
-            if (Troll.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Troll>(Crewmates, Troll.Data));
-            if (Duelist.Data.Amount > 0) roleAssignments.Add(() => AssignRole<Duelist>(Crewmates, Duelist.Data));
+                            break;
+                        }
+                    }
+                }
+            }
 
             System.Random rng3 = new System.Random();
             roleAssignments = roleAssignments.OrderBy(_ => rng3.Next()).ToList();
@@ -335,7 +324,7 @@ namespace AirlockClient.Managers.Gamemode
             }
         }
 
-        public void AssignRole<T>(List<PlayerState> candidates, SubRoleData data) where T : Component
+        public void AssignRole(System.Type role, List<PlayerState> candidates, SubRoleData data)
         {
             for (int i = 0; i < data.Amount && candidates.Count > 0; i++)
             {
@@ -343,7 +332,7 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (data.Chance >= randomChance && candidates[0].gameObject.GetComponent<SubRole>() == null)
                 {
-                    candidates[0].gameObject.AddComponent<T>();
+                    candidates[0].gameObject.AddComponent(Il2CppType.From(role));
                     candidates.RemoveAt(0);
                 }
             }
@@ -353,8 +342,10 @@ namespace AirlockClient.Managers.Gamemode
         {
             if (State.InLobbyState())
             {
-                GUILayout.BeginVertical("More Roles");
-                foreach (SubGameRole role in SubRoleToData.Keys)
+                GUILayout.BeginHorizontal();
+
+                GUILayout.BeginVertical("More Roles - Amount");
+                foreach (string role in SubRoleToData.Keys)
                 {
                     SubRoleData data = SubRoleToData[role];
 
@@ -373,6 +364,8 @@ namespace AirlockClient.Managers.Gamemode
 
                     if (data != null)
                     {
+                        if (data.AC_Description.Contains("OTHER_ROLE")) continue;
+
                         if (GUILayout.Button(role.ToString() + ": " + data.Amount))
                         {
                             data.Amount += 1;
@@ -384,6 +377,43 @@ namespace AirlockClient.Managers.Gamemode
                         }
                     }
                 }
+                GUILayout.EndVertical();
+
+                GUILayout.BeginVertical("More Roles - Chance");
+                foreach (string role in SubRoleToData.Keys)
+                {
+                    SubRoleData data = SubRoleToData[role];
+
+                    if (data.RoleType == "Crewmate")
+                    {
+                        GUI.color = Color.cyan;
+                    }
+                    else if (data.RoleType == "Imposter")
+                    {
+                        GUI.color = Color.red;
+                    }
+                    else
+                    {
+                        GUI.color = Color.gray;
+                    }
+
+                    if (data != null)
+                    {
+                        if (data.AC_Description.Contains("OTHER_ROLE")) continue;
+
+                        if (GUILayout.Button("Chance: " + data.Chance))
+                        {
+                            data.Chance += 5;
+
+                            if (data.Chance == 105)
+                            {
+                                data.Chance = 5;
+                            }
+                        }
+                    }
+                }
+                GUILayout.EndVertical();
+                GUILayout.EndHorizontal();
             }
         }
 
@@ -444,7 +474,6 @@ namespace AirlockClient.Managers.Gamemode
                 if (roleToChange != GameRole.NotSet)
                 {
                     Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
                 }
                 yield return new WaitForSeconds(2);
                 if (string.IsNullOrEmpty(additional))
@@ -460,6 +489,12 @@ namespace AirlockClient.Managers.Gamemode
                     yield return new WaitForSeconds(1.5f);
                 }
                 Player.NetworkName = ogName;
+
+                if (roleToChange != GameRole.NotSet)
+                {
+                    Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
+                }
+
                 Role.IsDisplayingRole = false;
             }
         }

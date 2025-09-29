@@ -29,24 +29,38 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         void Start()
         {
-            List<int> validIds = new List<int>();
+            MoreRolesManager moreRoles = (MoreRolesManager)AirlockClientGamemode.Current;
 
-            foreach (PlayerState player in ((MoreRolesManager)AirlockClientGamemode.Current).Crewmates)
+            if (moreRoles != null)
             {
-                if (player.IsConnected && player != PlayerWithRole && player.GetComponent<SubRole>() == null)
+                List<PlayerState> validIds = new List<PlayerState>();
+
+                foreach (PlayerState player in moreRoles.Crewmates)
                 {
-                    validIds.Add(player.PlayerId);
+                    if (player.IsConnected && player != PlayerWithRole && player.GetComponent<SubRole>() == null)
+                    {
+                        validIds.Add(player);
+                    }
+                }
+
+                if (validIds.Count > 0)
+                {
+                    PlayerState rival = validIds[Random.Range(0, validIds.Count)];
+                    playerToKill = rival;
+                    otherDuelist = rival.gameObject.AddComponent<OtherDuelist>();
+                    otherDuelist.mainDuelist = this;
+                    otherDuelist.playerToKill = PlayerWithRole;
+                    MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, otherDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante));
+                }
+                else
+                {
+                    Logging.Error("Found no players to equip other duelist. Removing role...");
+                    Destroy(this);
                 }
             }
-
-            if (validIds.Count > 0)
+            else
             {
-                int rivalId = validIds[Random.Range(0, validIds.Count)];
-                playerToKill = GameObject.Find("PlayerState (" + rivalId + ")").GetComponent<PlayerState>();
-                otherDuelist = GameObject.Find("PlayerState (" + rivalId + ")").AddComponent<OtherDuelist>();
-                otherDuelist.mainDuelist = this;
-                otherDuelist.playerToKill = PlayerWithRole;
-                MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, otherDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante));
+                Logging.Error("Cannot addd role outside of More Roles.");
             }
         }
 
@@ -84,6 +98,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             Name = "Duelist",
             Description = "Other Duelist:",
+            AC_Description = "<size=0>OTHER_ROLE</size>",
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -102,7 +117,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             {
                 playerToKill = null;
                 if (mainDuelist != null)
-                    mainDuelist.playerToKill = null;
+                {
+                    playerToKill = null;
+                }
             }
         }
 

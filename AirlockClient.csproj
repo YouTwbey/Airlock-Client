@@ -251,7 +251,9 @@
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Silencer.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Yapper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Lover.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Trapper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Troll.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Vulture.cs" />
     <Compile Include="Handlers\PetHandler.cs" />
     <Compile Include="Managers\Dev\CommandManager.cs" />
     <Compile Include="Managers\Gamemode\ContainmentManager.cs" />

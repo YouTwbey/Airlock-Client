@@ -10,6 +10,9 @@ using Il2CppSG.Airlock.Minigames;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static AirlockClient.Managers.Gamemode.MoreRolesManager;
+using Il2CppInterop.Runtime;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -82,85 +85,23 @@ namespace AirlockClient.Managers.Gamemode
             Logging.Warn("Player was null in AssignNewTasks(PlayerState, int) [SandboxManager].");
         }
 
-        public void AssignRole(PlayerState player, SubGameRole role)
+        public void AssignRole(PlayerState player, string role)
         {
             if (player)
             {
-                switch (role)
+                foreach (string typeName in SubRoleToType.Keys)
                 {
-                    case SubGameRole.Bait:
-                        player.gameObject.AddComponent<Bait>();
+                    if (typeName.Contains(role))
+                    {
+                        player.gameObject.AddComponent(Il2CppType.From(SubRoleToType[typeName]));
                         break;
-
-                    case SubGameRole.GuardianAngel:
-                        player.gameObject.AddComponent<GuardianAngel>();
-                        break;
-
-                    case SubGameRole.Magician:
-                        player.gameObject.AddComponent<Magician>();
-                        break;
-
-                    case SubGameRole.Mayor:
-                        player.gameObject.AddComponent<Mayor>();
-                        break;
-
-                    case SubGameRole.Sheriff:
-                        player.gameObject.AddComponent<Sheriff>();
-                        break;
-
-                    case SubGameRole.Silencer:
-                        player.gameObject.AddComponent<Silencer>();
-                        break;
-
-                    case SubGameRole.Yapper:
-                        player.gameObject.AddComponent<Yapper>();
-                        break;
-
-                    case SubGameRole.Bomber:
-                        player.gameObject.AddComponent<Bomber>();
-                        break;
-
-                    case SubGameRole.Janitor:
-                        player.gameObject.AddComponent<Janitor>();
-                        break;
-
-                    case SubGameRole.Vampire:
-                        player.gameObject.AddComponent<Vampire>();
-                        break;
-
-                    case SubGameRole.Witch:
-                        player.gameObject.AddComponent<Witch>();
-                        break;
-
-                    case SubGameRole.Mixup:
-                        player.gameObject.AddComponent<Mixup>();
-                        break;
-
-                    case SubGameRole.Executioner:
-                        player.gameObject.AddComponent<Executioner>();
-                        break;
-
-                    case SubGameRole.Jester:
-                        player.gameObject.AddComponent<Jester>();
-                        break;
-
-                    case SubGameRole.Lover:
-                        player.gameObject.AddComponent<Lover>();
-                        break;
-
-                    case SubGameRole.Duelist:
-                        player.gameObject.AddComponent<Duelist>();
-                        break;
-
-                    default:
-                        Logging.Warn("Unknown role for type: " + role.ToString());
-                        break;
+                    }
                 }
 
                 return;
             }
 
-            Logging.Warn("Player was null in AssignRole(PlayerState, SubGameRole) [SandboxManager].");
+            Logging.Warn("Player was null in AssignRole(PlayerState, string) [SandboxManager].");
         }
 
         PlayerState GetPlayerStateById(int id)
@@ -188,7 +129,7 @@ namespace AirlockClient.Managers.Gamemode
         private int playerIdInput = 0;
         private int taskAmount = 1;
 
-        private SubGameRole selectedSubRole;
+        private string selectedSubRole;
         private GameRole selectedGameRole;
         private PowerUps selectedPowerUp;
 
@@ -196,6 +137,22 @@ namespace AirlockClient.Managers.Gamemode
         private int selectedSubRoleIndex = 0;
         private int selectedGameRoleIndex = 0;
         private int selectedPowerUpIndex = 0;
+
+        private int DrawRoleSelectionGrid(List<string> list, int selectedIndex)
+        {
+            list = list.Where(role => !role.StartsWith("Other")).ToList();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                bool isSelected = (i == selectedIndex);
+                bool toggled = GUILayout.Toggle(isSelected, list[i], GUI.skin.button);
+                if (toggled && !isSelected)
+                {
+                    selectedIndex = i;
+                }
+            }
+            return selectedIndex;
+        }
 
         private int DrawEnumSelectionGrid<T>(int selectedIndex) where T : System.Enum
         {
@@ -232,8 +189,8 @@ namespace AirlockClient.Managers.Gamemode
             GUILayout.Space(10);
 
             GUILayout.Label("Assign SubRole:");
-            selectedSubRoleIndex = DrawEnumSelectionGrid<SubGameRole>(selectedSubRoleIndex);
-            selectedSubRole = (SubGameRole)selectedSubRoleIndex;
+            selectedSubRoleIndex = DrawRoleSelectionGrid(SubRoleToData.Keys.ToList(), selectedSubRoleIndex);
+            selectedSubRole = SubRoleToData.Keys.ToList()[selectedSubRoleIndex];
             if (GUILayout.Button("Assign SubRole"))
             {
                 AssignRole(GetPlayerStateById(playerIdInput), selectedSubRole);

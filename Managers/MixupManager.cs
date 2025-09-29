@@ -1,17 +1,11 @@
 ﻿using AirlockClient.AC;
-using AirlockClient.Managers;
-using AirlockClient.Managers.Gamemode;
-using Il2CppFusion.Protocol;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
-using Il2CppSG.Platform;
 using MelonLoader;
-using MelonLoader.TinyJSON;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static Il2CppFusion.NetworkCharacterController;
 
 namespace AirlockClient.Managers
 {
@@ -92,11 +86,25 @@ namespace AirlockClient.Managers
                 AntiCheat.ChangeHatWithAntiCheat(snapshot.Player, randomSnapshot.HatId);
                 AntiCheat.ChangeSkinWithAntiCheat(snapshot.Player, randomSnapshot.SkinId);
                 AntiCheat.ChangeGlovesWithAntiCheat(snapshot.Player, randomSnapshot.HandsId);
-                snapshot.Player.ColorId = randomSnapshot.ColorId;
+                snapshot.Player.ColorId = GetFreeColor();
                 snapshot.Player.NetworkName = randomSnapshot.Name;
 
                 snapshot.Player.LocomotionPlayer.PlayPowerUpVFX(PowerUps.Vanish, true, true, false, false);
             }
+        }
+
+        public static int GetFreeColor()
+        {
+            List<int> allColors = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+
+            foreach (PlayerState player in ModdedGameStateManager.Instance.state.SpawnManager.ActivePlayerStates)
+            {
+                allColors.Remove(player.ColorId);
+            }
+
+            int randomColor = allColors[Random.Range(0, allColors.Count)];
+
+            return randomColor;
         }
     }
 }
