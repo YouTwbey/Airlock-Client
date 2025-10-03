@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
+using AirlockClient.Data.Roles.MoreRoles.Broken;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
@@ -540,7 +541,7 @@ namespace AirlockClient.AC
             }
             else
             {
-                if (GetTrueRole(venter) != GameRole.Imposter && GetTrueRole(venter) != GameRole.Engineer)
+                if (GetTrueRole(venter) != GameRole.Impostor && GetTrueRole(venter) != GameRole.Engineer)
                 {
                     IsCheating = true;
                 }
@@ -599,7 +600,7 @@ namespace AirlockClient.AC
                         DateTime previousKill = TargetActionCheck[killer];
                         double difference = (DateTime.Now - previousKill).TotalSeconds;
 
-                        if (difference < Kill.TagCooldown.Value - 1)
+                        if (difference < Kill._actionCooldownTime - 1)
                         {
                             IsCheating = true;
                         }
@@ -616,16 +617,16 @@ namespace AirlockClient.AC
                         DateTime previousKill = TargetActionCheck[killer];
                         double difference = (DateTime.Now - previousKill).TotalSeconds;
 
-                        if (GetTrueRole(killer) == GameRole.Imposter)
+                        if (GetTrueRole(killer) == GameRole.Impostor)
                         {
-                            if (difference < Kill.KillCooldownVar.Value - 1)
+                            if (difference < Kill._actionCooldownTime - 1)
                             {
                                 IsCheating = true;
                             }
                         }
                         else
                         {
-                            if (difference < Kill.VigilanteKillCooldownVar.Value - 1)
+                            if (difference < Kill._actionCooldownTime - 1)
                             {
                                 IsCheating = true;
                             }
@@ -643,7 +644,7 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            if (action == (int)TargetedAction.Kill)
+            if (action == (int)ProximityTargetedAction.Kill)
             {
                 if (CurrentMode.Name == "Hide N Seek")
                 {
@@ -654,9 +655,9 @@ namespace AirlockClient.AC
                 }
                 else
                 {
-                    if (killerRole == GameRole.Imposter)
+                    if (killerRole == GameRole.Impostor)
                     {
-                        if (targetRole == GameRole.Imposter || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                        if (targetRole == GameRole.Impostor || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
                         {
                             IsCheating = true;
                         }
@@ -676,7 +677,7 @@ namespace AirlockClient.AC
                 }
             }
 
-            if (action == (int)TargetedAction.Neutralize)
+            if (action == (int)ProximityTargetedAction.Neutralize)
             {
                 if (killer.ActivePowerUps != PowerUps.Stun || targetRole != GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
                 {
@@ -684,7 +685,7 @@ namespace AirlockClient.AC
                 }
             }
 
-            if (action == (int)TargetedAction.Infect)
+            if (action == (int)ProximityTargetedAction.Infect)
             {
                 if (killerRole != GameRole.Infected || targetRole == GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
                 {
@@ -692,7 +693,7 @@ namespace AirlockClient.AC
                 }
             }
 
-            if (action == (int)TargetedAction.Guard)
+            if (action == (int)ProximityTargetedAction.Guard)
             {
                 if (killer.ActivePowerUps != PowerUps.Guard || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
                 {
@@ -700,12 +701,12 @@ namespace AirlockClient.AC
                 }
             }
 
-            if (action == (int)TargetedAction.None)
+            if (action == (int)ProximityTargetedAction.None)
             {
                 IsCheating = true;
             }
 
-            if (action == (int)TargetedAction.Vote)
+            if (action == (int)ProximityTargetedAction.Vote)
             {
                 if (killerRole != GameRole.Sheriff || State.GameModeStateValue.GameMode != GameModes.Sheriff || !State.InVotingState())
                 {

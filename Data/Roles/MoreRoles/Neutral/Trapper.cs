@@ -23,7 +23,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Trap Bodies",
             AC_Description = "As the trapper, you have the ability to point at bodies and make it so if a crewmember tries to report it, said crewmember dies.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

@@ -20,7 +20,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "20 Sec Delay",
             AC_Description = "A poisoner's kills are delayed by 20 seconds.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

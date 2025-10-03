@@ -20,7 +20,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Broken
             RoleType = "Imposter",
             Description = "Cast spells",
             AC_Description = "You can cast spells as a witch. Crewmates you cast spells on will be flagged with [†] when a meeting is called and be killed after.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

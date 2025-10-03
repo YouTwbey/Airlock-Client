@@ -63,6 +63,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Lover",
             Description = "Protect user:",
             Team = GameTeam.Crewmember,
+            AC_Description = "<size=0>OTHER_ROLE</size>",
             Amount = 0
         };
 

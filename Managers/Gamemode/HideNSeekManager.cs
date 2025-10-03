@@ -259,7 +259,7 @@ namespace AirlockClient.Managers.Gamemode
                 if (totalAlive == 0)
                 {
                     State.GameEndReasonIndex = State.LowCrewmateCountWin;
-                    State.EndGame(GameTeam.Imposter);
+                    State.EndGame(GameTeam.Impostor);
                 }
 
                 if (!seeker.PlayerWithRole.IsConnected)

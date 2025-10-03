@@ -232,7 +232,6 @@
     <Compile Include="Data\Roles\Infection\Imposter\Zomburitto.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Armorer.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Bait.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\GuardianAngel.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Sheriff.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Assassin.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Bomber.cs" />
@@ -242,6 +241,7 @@
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Viper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Wraith.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Arsonist.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Duelist.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Executioner.cs" />

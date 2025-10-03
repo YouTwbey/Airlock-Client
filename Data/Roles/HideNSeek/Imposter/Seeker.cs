@@ -15,7 +15,7 @@ namespace AirlockClient.Data.Roles.HideNSeek.Imposter
         {
             Name = "Killer",
             Description = "Kill all crew",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 1
         };
 

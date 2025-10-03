@@ -19,7 +19,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Disolve Bodies",
             AC_Description = "Anyone you kill, their bodies will be put on a timer before they fully disolve.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

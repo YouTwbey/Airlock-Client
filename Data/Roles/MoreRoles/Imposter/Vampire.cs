@@ -21,7 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "10 Sec Delay",
             AC_Description = "Your kills are delayed by 10 seconds.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

@@ -24,7 +24,7 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     normalCrewmates.Add(player);
                 }
-                if (GetTrueRole(player) == GameRole.Imposter)
+                if (GetTrueRole(player) == GameRole.Impostor)
                 {
                     imposters.Add(player);
                 }

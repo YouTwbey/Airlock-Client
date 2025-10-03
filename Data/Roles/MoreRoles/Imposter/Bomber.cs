@@ -22,7 +22,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Explode others",
             AC_Description = "When pointing, you will kill yourself but others near you.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

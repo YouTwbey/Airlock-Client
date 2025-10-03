@@ -128,7 +128,7 @@ namespace AirlockClient.Core
                 {
                     if (CurrentMode.IsHosting)
                     {
-                        SceneStorage.AddComponent<AntiCheat>();
+                        //SceneStorage.AddComponent<AntiCheat>();
                     }
                 }
             }

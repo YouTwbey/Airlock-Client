@@ -67,7 +67,7 @@ namespace AirlockClient.Managers.Gamemode
 
             foreach (PlayerState player in FindObjectsOfType<PlayerState>())
             {
-                if (GetTrueRole(player) == GameRole.Imposter)
+                if (GetTrueRole(player) == GameRole.Impostor)
                 {
                     Imposters.Add(player);
                 }

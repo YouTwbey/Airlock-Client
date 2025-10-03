@@ -20,7 +20,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Remove Bodies",
             AC_Description = "Pointing near a body will remove it. You can only remove one body every time a meeting ends.",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

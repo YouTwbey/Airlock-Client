@@ -26,7 +26,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             RoleType = "Imposter",
             Description = "Change Looks",
             AC_Description = "You Can Mixup everything once per round, will reset after every meeting",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

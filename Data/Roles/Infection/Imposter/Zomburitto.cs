@@ -9,7 +9,7 @@ namespace AirlockClient.Data.Roles.Infection.Imposter
         {
             Name = "Zomburitto",
             Description = "infect all",
-            Team = GameTeam.Imposter,
+            Team = GameTeam.Impostor,
             Amount = 0
         };
 

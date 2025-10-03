@@ -3,6 +3,7 @@ using AirlockAPI.Data;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Core;
+using AirlockClient.Data.Roles.MoreRoles.Broken;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
@@ -186,7 +187,7 @@ namespace AirlockClient.Managers.Gamemode
 
                     if (killer.GetComponent<Sheriff>())
                     {
-                        if (targetRole == GameRole.Imposter)
+                        if (targetRole == GameRole.Impostor)
                         {
                             if (targetSubRole != null)
                             {
@@ -277,7 +278,7 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     Crewmates.Add(player);
                 }
-                if (GetTrueRole(player) == GameRole.Imposter)
+                if (GetTrueRole(player) == GameRole.Impostor)
                 {
                     Imposters.Add(player);
                 }
@@ -304,7 +305,7 @@ namespace AirlockClient.Managers.Gamemode
                             {
                                 roleAssignments.Add(() => AssignRole(SubRoleToType[type], Crewmates, data));
                             }
-                            else if (data.Team == GameTeam.Imposter)
+                            else if (data.Team == GameTeam.Impostor)
                             {
                                 roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
                             }
@@ -460,10 +461,14 @@ namespace AirlockClient.Managers.Gamemode
             return true;
         }
 
-        public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role, SubRoleData Data, string additional = "", GameRole roleToChange = GameRole.NotSet)
+        public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role, SubRoleData Data, string additional = "", GameRole roleToChange = GameRole.NotSet, bool displayRoleInstant = false)
         {
             if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
             {
+                if (roleToChange != GameRole.NotSet && displayRoleInstant)
+                {
+                    Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                }
                 Role.IsDisplayingRole = true;
                 RPC_SendSubRole(Player.PlayerId, Data.Name);
                 string ogName = Player.NetworkName.Value;
@@ -471,7 +476,7 @@ namespace AirlockClient.Managers.Gamemode
                 Player.NetworkName = "WMWMWMWMWMWMWMWM";
                 yield return new WaitForSeconds(3);
                 Player.NetworkName = Data.Name;
-                if (roleToChange != GameRole.NotSet)
+                if (roleToChange != GameRole.NotSet && !displayRoleInstant)
                 {
                     Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
                 }

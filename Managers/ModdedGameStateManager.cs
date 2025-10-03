@@ -93,10 +93,18 @@ namespace AirlockClient.Managers
 
             state._preventMatchEnding.Value = true;
 
-            foreach (PlayerState player in winningPlayers)
+            foreach (PlayerState player in Instance.state.SpawnManager.ActivePlayerStates)
             {
-                player.RPC_KnownGameRole(GameRole.Jester);
-                state.RoleManager.AlterPlayerRole(GameRole.Jester, player.PlayerId);
+                if (winningPlayers.Contains(player))
+                {
+                    player.RPC_KnownGameRole(GameRole.Impostor);
+                    state.RoleManager.AlterPlayerRole(GameRole.Impostor, player.PlayerId);
+                }
+                else
+                {
+                    player.RPC_KnownGameRole(GameRole.Crewmember);
+                    state.RoleManager.AlterPlayerRole(GameRole.Crewmember, player.PlayerId);
+                }
             }
 
             queuedWin = new QueuedWin { WinningPlayers = winningPlayers, Reason = reason, RunInState = runInState };
@@ -262,7 +270,7 @@ namespace AirlockClient.Managers
                         if (queuedWin.RunInState == GameplayStates.NotSet || queuedWin.RunInState == state.GameModeStateValue.GameState)
                         {
                             state.GameEndReasonIndex = queuedWin.Reason;
-                            state.EndGame(GameTeam.Jester);
+                            state.EndGame(GameTeam.Impostor);
                             queuedWin = null;
                         }
                     }

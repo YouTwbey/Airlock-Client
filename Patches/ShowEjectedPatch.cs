@@ -7,6 +7,7 @@ using UnityEngine;
 using Il2CppSG.Airlock;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Managers.Debug;
+using AirlockClient.Data.Roles.MoreRoles.Broken;
 
 namespace AirlockClient.Patches
 {
