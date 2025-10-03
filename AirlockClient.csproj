@@ -237,7 +237,6 @@
     <Compile Include="Data\Roles\MoreRoles\Imposter\Bomber.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Mixup.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Poisoner.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Vampire.cs" />
     <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Viper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
