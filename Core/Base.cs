@@ -49,6 +49,7 @@ namespace AirlockClient.Core
             IsVR = Application.productName.Contains("VR");
         }
 
+        string previousSceneName;
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             StorageManager.LoadAllAssets();
@@ -107,7 +108,7 @@ namespace AirlockClient.Core
                 }
             }
 
-            if (InGame)
+            if (InGame && previousSceneName == "Title")
             {
                 if (CurrentMode.Modded)
                 {
@@ -132,6 +133,8 @@ namespace AirlockClient.Core
                     }
                 }
             }
+
+            previousSceneName = sceneName;
         }
 
         bool titleScreenFormat;
