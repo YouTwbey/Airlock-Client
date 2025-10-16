@@ -9,6 +9,7 @@ using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.UI.Moderation;
+using Il2CppSG.Platform;
 using Il2CppSystem.IO;
 using MelonLoader;
 using System;
@@ -59,6 +60,7 @@ namespace AirlockClient.AC
         public EmergencyButton Button;
         public NetworkedKillBehaviour Kill;
         public AirlockPeer Peer;
+        public ChatManager Chat;
         SHA256 encrypt;
 
         void Start()
@@ -72,6 +74,7 @@ namespace AirlockClient.AC
                 Button = FindObjectOfType<EmergencyButton>();
                 Kill = FindObjectOfType<NetworkedKillBehaviour>();
                 Peer = FindObjectOfType<AirlockPeer>();
+                Chat = FindObjectOfType<ChatManager>();
                 encrypt = SHA256.Create();
 
                 MelonCoroutines.Start(FetchBlacklist());
@@ -578,6 +581,11 @@ namespace AirlockClient.AC
             return !IsCheating;
         }
 
+        float GetCooldownForRole(GameRole role, bool whenAlive = true)
+        {
+            return Role.GetRoleData(role).GetTargetedActionCooldown(whenAlive);
+        }
+
         public bool VerifyKill(PlayerState killer, PlayerState target, int action)
         {
             bool IsCheating = false;
@@ -591,51 +599,48 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            if (CurrentMode.Name != "Hide N Seek")
+            if (!CurrentMode.Modded)
             {
-                if (State.GameModeStateValue.GameMode == GameModes.Infection)
+                if (TargetActionCheck.ContainsKey(killer))
                 {
-                    if (TargetActionCheck.ContainsKey(killer))
-                    {
-                        DateTime previousKill = TargetActionCheck[killer];
-                        double difference = (DateTime.Now - previousKill).TotalSeconds;
+                    DateTime previousKill = TargetActionCheck[killer];
+                    double difference = (DateTime.Now - previousKill).TotalSeconds;
 
-                        if (difference < Kill._actionCooldownTime - 1)
-                        {
-                            IsCheating = true;
-                        }
-                    }
-                    else
+                    switch (killerRole)
                     {
-                        TargetActionCheck.Add(killer, DateTime.Now);
+                        case GameRole.Revenger:
+                            if (difference < GetCooldownForRole(GameRole.Revenger, false) - 1)
+                            {
+                                IsCheating = true;
+                            }
+                            break;
+                        case GameRole.Crewmember:
+                            if (State._GameModeStateValue.GameMode == GameModes.Infection)
+                            {
+                                if (difference < GetCooldownForRole(GameRole.Crewmember) - 1 || killer.ActivePowerUps == PowerUps.None)
+                                {
+                                    IsCheating = true;
+                                }
+                            }
+                            else
+                            {
+                                if (difference < GetCooldownForRole(GameRole.Crewmember) - 1)
+                                {
+                                    IsCheating = true;
+                                }
+                            }
+                            break;
+                        default:
+                            if (difference < GetCooldownForRole(killerRole) - 1)
+                            {
+                                IsCheating = true;
+                            }
+                            break;
                     }
                 }
                 else
                 {
-                    if (TargetActionCheck.ContainsKey(killer))
-                    {
-                        DateTime previousKill = TargetActionCheck[killer];
-                        double difference = (DateTime.Now - previousKill).TotalSeconds;
-
-                        if (GetTrueRole(killer) == GameRole.Impostor)
-                        {
-                            if (difference < Kill._actionCooldownTime - 1)
-                            {
-                                IsCheating = true;
-                            }
-                        }
-                        else
-                        {
-                            if (difference < Kill._actionCooldownTime - 1)
-                            {
-                                IsCheating = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        TargetActionCheck.Add(killer, DateTime.Now);
-                    }
+                    TargetActionCheck.Add(killer, DateTime.Now);
                 }
             }
 
@@ -644,74 +649,95 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            if (action == (int)ProximityTargetedAction.Kill)
+            ProximityTargetedAction targetAction = (ProximityTargetedAction)action;
+
+            switch (targetAction)
             {
-                if (CurrentMode.Name == "Hide N Seek")
-                {
-                    if (killerRole != GameRole.Infected || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                case ProximityTargetedAction.None:
+                    IsCheating = true;
+                    break;
+
+                case ProximityTargetedAction.Kill:
+                    if (CurrentMode.Name == "Hide N Seek")
                     {
-                        IsCheating = true;
-                    }
-                }
-                else
-                {
-                    if (killerRole == GameRole.Impostor)
-                    {
-                        if (targetRole == GameRole.Impostor || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                        if (killerRole != GameRole.Infected || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
                         {
                             IsCheating = true;
                         }
                     }
                     else
                     {
-                        if (killerRole != GameRole.Vigilante || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                        if (killerRole == GameRole.Impostor)
+                        {
+                            if (targetRole == GameRole.Impostor || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                            {
+                                IsCheating = true;
+                            }
+                        }
+                        else
+                        {
+                            if (killerRole != GameRole.Vigilante || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
+                            {
+                                IsCheating = true;
+                            }
+                        }
+                    }
+
+                    if (!IsCheating)
+                    {
+                        AllowedBodySpawns.Add(target);
+                    }
+                    break;
+
+                case ProximityTargetedAction.Neutralize:
+                    if (killer.ActivePowerUps != PowerUps.Stun || targetRole != GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
+                    {
+                        IsCheating = true;
+                    }
+                    break;
+
+                case ProximityTargetedAction.Infect:
+                    if (killerRole != GameRole.Infected || targetRole == GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
+                    {
+                        IsCheating = true;
+                    }
+                    break;
+
+                case ProximityTargetedAction.Guard:
+                    if (State.GameModeStateValue.GameMode == GameModes.Infection)
+                    {
+                        if (killer.ActivePowerUps != PowerUps.Guard || targetRole != GameRole.Crewmember || !State.InTaskState())
                         {
                             IsCheating = true;
                         }
                     }
-                }
+                    else
+                    {
+                        if (killerRole != GameRole.GuardianAngel || !State.InTaskState())
+                        {
+                            IsCheating = true;
+                        }
+                    }
+                    break;
 
-                if (!IsCheating)
-                {
-                    AllowedBodySpawns.Add(target);
-                }
-            }
+                case ProximityTargetedAction.Vote:
+                    if (killerRole != GameRole.Sheriff || State.GameModeStateValue.GameMode != GameModes.Sheriff || !State.InVotingState())
+                    {
+                        IsCheating = true;
+                    }
+                    break;
 
-            if (action == (int)ProximityTargetedAction.Neutralize)
-            {
-                if (killer.ActivePowerUps != PowerUps.Stun || targetRole != GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
-                {
-                    IsCheating = true;
-                }
-            }
+                case ProximityTargetedAction.KillSelf:
+                    if (killerRole != GameRole.Revenger || State.GameModeStateValue.GameMode != GameModes.BuffGhosts || !State.InVotingState())
+                    {
+                        IsCheating = true;
+                    }
 
-            if (action == (int)ProximityTargetedAction.Infect)
-            {
-                if (killerRole != GameRole.Infected || targetRole == GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
-                {
-                    IsCheating = true;
-                }
-            }
-
-            if (action == (int)ProximityTargetedAction.Guard)
-            {
-                if (killer.ActivePowerUps != PowerUps.Guard || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
-                {
-                    IsCheating = true;
-                }
-            }
-
-            if (action == (int)ProximityTargetedAction.None)
-            {
-                IsCheating = true;
-            }
-
-            if (action == (int)ProximityTargetedAction.Vote)
-            {
-                if (killerRole != GameRole.Sheriff || State.GameModeStateValue.GameMode != GameModes.Sheriff || !State.InVotingState())
-                {
-                    IsCheating = true;
-                }
+                    if (!IsCheating)
+                    {
+                        AllowedBodySpawns.Add(target);
+                    }
+                    break;
             }
 
             if (!IsCheating)
@@ -735,10 +761,7 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            if (!VerifyModerationID(moderationID))
-            {
-                IsCheating = true;
-            }
+            joiningPlayer.PState.PlayerModerationID = GetActualModId(joiningPlayer.PState);
 
             if (IsCheating)
             {
@@ -781,7 +804,7 @@ namespace AirlockClient.AC
         {
             if (!VerifyModerationID(guilty.PlayerModerationID.Value))
             {
-                GetActualModId(guilty);
+                guilty.PlayerModerationID = GetActualModId(guilty);
                 reason = "hidden moderation id";
                 takeAction = true;
 
@@ -791,6 +814,8 @@ namespace AirlockClient.AC
                 SendReportToDevelopers(guilty, reason);
                 return;
             }
+
+            guilty.PlayerModerationID = GetActualModId(guilty);
 
             if (takeAction)
             {
@@ -833,7 +858,7 @@ namespace AirlockClient.AC
             return;
 
             ReportPlayerPanel Reporting = FindObjectOfType<ReportPlayerPanel>(true);
-
+            
             if (Reporting != null)
             {
                 Reporting.ShowPanel(guilty.PlayerId, guilty);

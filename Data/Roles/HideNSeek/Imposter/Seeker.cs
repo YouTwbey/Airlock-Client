@@ -37,6 +37,12 @@ namespace AirlockClient.Data.Roles.HideNSeek.Imposter
         public override void OnPlayerRecievedRole()
         {
             PlayerWithRole.ActivePowerUps = PowerUps.None;
+            PlayerWithRole.AllowGhostAudio = true;
+        }
+
+        public override void OnRoleRemoved()
+        {
+            PlayerWithRole.AllowGhostAudio = false;
         }
 
         public IEnumerator StartTimer()

@@ -179,12 +179,6 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (role.PlayerWithRole.PlayerId == killer.PlayerId)
                 {
-                    if (killer.GetComponent<Vampire>())
-                    {
-                        killer.GetComponent<Vampire>().DelayedKill(victim, action);
-                        return false;
-                    }
-
                     if (killer.GetComponent<Sheriff>())
                     {
                         if (targetRole == GameRole.Impostor)
@@ -463,44 +457,83 @@ namespace AirlockClient.Managers.Gamemode
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role, SubRoleData Data, string additional = "", GameRole roleToChange = GameRole.NotSet, bool displayRoleInstant = false)
         {
-            if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
+            if (true)
             {
-                if (roleToChange != GameRole.NotSet && displayRoleInstant)
+                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
                 {
-                    Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                }
-                Role.IsDisplayingRole = true;
-                RPC_SendSubRole(Player.PlayerId, Data.Name);
-                string ogName = Player.NetworkName.Value;
-                yield return new WaitForSeconds(1);
-                Player.NetworkName = "WMWMWMWMWMWMWMWM";
-                yield return new WaitForSeconds(3);
-                Player.NetworkName = Data.Name;
-                if (roleToChange != GameRole.NotSet && !displayRoleInstant)
-                {
-                    Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                }
-                yield return new WaitForSeconds(2);
-                if (string.IsNullOrEmpty(additional))
-                {
-                    Player.NetworkName = Data.Description;
+                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
+                    {
+                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                    }
+                    Role.IsDisplayingRole = true;
+                    RPC_SendSubRole(Player.PlayerId, Data.Name);
+                    string ogName = Player.NetworkName.Value;
+
+                    yield return new WaitForSeconds(1);
+
+                    Player.NetworkName = Data.Name;
+
                     yield return new WaitForSeconds(3);
-                }
-                else
-                {
-                    Player.NetworkName = Data.Description;
-                    yield return new WaitForSeconds(1.5f);
-                    Player.NetworkName = additional;
-                    yield return new WaitForSeconds(1.5f);
-                }
-                Player.NetworkName = ogName;
 
-                if (roleToChange != GameRole.NotSet)
-                {
-                    Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
-                }
+                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
+                    {
+                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                    }
 
-                Role.IsDisplayingRole = false;
+                    yield return new WaitForSeconds(5);
+
+                    Player.NetworkName = ogName;
+                    Role.IsDisplayingRole = false;
+
+                    yield return new WaitForSeconds(3);
+                    if (roleToChange != GameRole.NotSet)
+                    {
+                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
+                    }
+                }
+            }
+            else
+            {
+                // Old Code
+                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
+                {
+                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
+                    {
+                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                    }
+                    Role.IsDisplayingRole = true;
+                    RPC_SendSubRole(Player.PlayerId, Data.Name);
+                    string ogName = Player.NetworkName.Value;
+                    yield return new WaitForSeconds(1);
+                    Player.NetworkName = "WMWMWMWMWMWMWMWM";
+                    yield return new WaitForSeconds(3);
+                    Player.NetworkName = Data.Name;
+                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
+                    {
+                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                    }
+                    yield return new WaitForSeconds(2);
+                    if (string.IsNullOrEmpty(additional))
+                    {
+                        Player.NetworkName = Data.Description;
+                        yield return new WaitForSeconds(3);
+                    }
+                    else
+                    {
+                        Player.NetworkName = Data.Description;
+                        yield return new WaitForSeconds(1.5f);
+                        Player.NetworkName = additional;
+                        yield return new WaitForSeconds(1.5f);
+                    }
+                    Player.NetworkName = ogName;
+
+                    if (roleToChange != GameRole.NotSet)
+                    {
+                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
+                    }
+
+                    Role.IsDisplayingRole = false;
+                }
             }
         }
     }
