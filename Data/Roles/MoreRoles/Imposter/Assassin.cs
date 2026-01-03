@@ -20,7 +20,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Assassin",
             RoleType = "Imposter",
             Description = "Kill Player:",
-            AC_Description = "Your goal is to kill your target before the first meeting. Target: ",
+            AC_Description = "Kill your target before a meeting",
+            AC_Color = new Color(150, 0, 0),
             Team = GameTeam.Impostor,
             Amount = 0
         };
@@ -40,7 +41,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             if (validIds.Count == 0) Destroy(this);
 
             playerToKill = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, playerToKill.NetworkName.Value));
+            PlayerWithRole.SoulLinkID = playerToKill.PlayerId;
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
         PlayerState playerToKill;

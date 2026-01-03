@@ -2,6 +2,7 @@
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -16,7 +17,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Sheriff",
             RoleType = "Crewmate",
             Description = "Kill Imposter",
-            AC_Description = "Kill the imposters to help the crew win.",
+            AC_Description = "Take out the imposters",
+            AC_Color = new Color(255, 255, 0),
             Team = GameTeam.Crewmember,
             Amount = 0
         };

@@ -18,7 +18,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Jester",
             RoleType = "Neutral",
             Description = "Ejected = Win",
-            AC_Description = "You need to be voted out to win.",
+            AC_Description = "Get voted out",
             Team = GameTeam.Crewmember,
             Amount = 0
         };

@@ -2,9 +2,11 @@
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.XR;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 {
@@ -19,7 +21,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Vulture (Point)",
             RoleType = "Neutral",
             Description = "Eat Corpses",
-            AC_Description = "Point Near a dead body makes you eat said body, you must eat 4 bodies to win",
+            AC_Description = "Eat 4 bodies to win",
+            AC_Color = new Color(125, 0, 0),
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -49,7 +52,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             }
             if (bodiesEaten >= 4)
             {
-                ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, FindObjectOfType<GameStateManager>().NoImpostorsLeftWin, GameplayStates.Task, 1);
+                ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, EndGameReasonsData.EndGameReason.NotEnoughImpostors, GameplayStates.Task, 1);
                 bodiesEaten = 0;
             }
         }

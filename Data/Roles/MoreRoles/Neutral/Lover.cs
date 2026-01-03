@@ -20,7 +20,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Lover",
             RoleType = "Neutral",
             Description = "Protect user:",
-            AC_Description = "You must protect your other lover. If anything happens to them, it also will happen to you. Lover: ",
+            AC_Description = "Protect your partner",
+            AC_Color = Color.magenta,
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -63,7 +64,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Lover",
             Description = "Protect user:",
             Team = GameTeam.Crewmember,
-            AC_Description = "<size=0>OTHER_ROLE</size>",
+            AC_Description = "<size=0>OTHER_ROLE</size>Protect your partner",
+            AC_Color = Color.magenta,
             Amount = 0
         };
 

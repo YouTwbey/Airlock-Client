@@ -2,6 +2,7 @@
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
@@ -21,7 +22,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Executioner",
             RoleType = "Neutral",
             Description = "Eject Player:",
-            AC_Description = "Your goal is to eject your target. Target: ",
+            AC_Description = "Eject your target",
+            AC_Color = new Color(200, 0, 0),
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -52,7 +54,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             {
                 if (ejectedPlayer == playerToVoteOut && PlayerWithRole.IsAlive)
                 {
-                    ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, FindObjectOfType<GameStateManager>().NoImpostorsLeftWin, GameplayStates.Task, 1);
+                    ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, EndGameReasonsData.EndGameReason.NotEnoughImpostors, GameplayStates.Task, 1);
                 }
             }
         }

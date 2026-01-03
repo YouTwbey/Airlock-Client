@@ -4,6 +4,7 @@ using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 {
@@ -17,7 +18,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Troll",
             RoleType = "Neutral",
             Description = "Death = Win",
-            AC_Description = "You need to be killed to win.",
+            AC_Description = "Get yourself taken out",
+            AC_Color = Color.white,
             Team = GameTeam.Crewmember,
             Amount = 0
         };

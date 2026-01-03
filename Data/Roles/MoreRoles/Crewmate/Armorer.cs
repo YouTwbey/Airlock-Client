@@ -2,6 +2,7 @@
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -15,8 +16,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Armorer",
             RoleType = "Crewmate",
             Description = "Take 2 Hits",
-            AC_Description = "You are able to withstand 2 kills from an imposter.",
+            AC_Description = "Ability to withstand 2 hits",
             Team = GameTeam.Crewmember,
+            AC_Color = Color.gray,
             Amount = 0
         };
 

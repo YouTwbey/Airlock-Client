@@ -20,7 +20,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Yapper",
             RoleType = "Crewmate",
             Description = "Keep talk or die",
-            AC_Description = "If at any moment you stop talking, you will die.",
+            AC_Description = "Can't stop speaking",
+            AC_Color = new Color(179, 251, 255),
             Team = GameTeam.Crewmember,
             Amount = 0
         };

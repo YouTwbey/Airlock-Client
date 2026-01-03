@@ -6,8 +6,6 @@ using AirlockClient.Core;
 using AirlockClient.Data.Roles.MoreRoles.Broken;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
-using AirlockClient.Data.Roles.MoreRoles.Neutral;
-using AirlockClient.Managers.Debug;
 using Il2CppInterop.Runtime;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
@@ -25,8 +23,27 @@ namespace AirlockClient.Managers.Gamemode
 {
     public class MoreRolesManager : AirlockClientGamemode
     {
+        public static SubRoleData MyRole;
         public static Dictionary<string, SubRoleData> SubRoleToData;
         public static Dictionary<string, System.Type> SubRoleToType;
+
+        static string Color32ToHex(Color32 c) { return $"#{c.r:X2}{c.g:X2}{c.b:X2}{c.a:X2}"; }
+        public static void OnRoleReveal(TextMeshPro yourRole, TextMeshPro role, TextMeshPro desc)
+        {
+            if (MyRole != null)
+            {
+                string hex = Color32ToHex(MyRole.AC_Color);
+                yourRole.text = $"<color={hex}>Your role is";
+                role.text = $"<color={hex}>{MyRole.Name}";
+                desc.text = $"<color={hex}>{MyRole.AC_Description}";
+            }
+        }
+        
+        public override bool OnGameEnd(ref GameTeam teamThatWon)
+        {
+            RPC_SendSubRole(-1, "null");
+            return true;
+        }
 
         public static void FetchRoles()
         {
@@ -61,13 +78,17 @@ namespace AirlockClient.Managers.Gamemode
             SendRpc("SendSubRole", playerId, role);
         }
 
-        [AirlockRpc("SendSubRole", RpcTarget.All, RpcCaller.Host)]
+        [AirlockRpc("SendSubRole", RpcTarget.AllInclusive, RpcCaller.Host)]
         public static void SendSubRole(string role)
         {
-            if (System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role) != null)
+            if (SubRoleToData.ContainsKey(role))
             {
-                SubRoleData roleData = (SubRoleData)System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role).GetField("Data").GetValue(null);
-                Logging.Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
+                SubRoleData roleData = SubRoleToData[role];
+                MyRole = roleData;
+            }
+            else
+            {
+                MyRole = null;
             }
         }
 
@@ -164,7 +185,7 @@ namespace AirlockClient.Managers.Gamemode
         {
             SubRole targetSubRole = victim.GetComponent<SubRole>();
             GameRole targetRole = GetTrueRole(victim);
-
+            ProximityTargetedAction targetAction = (ProximityTargetedAction)action;
             if (victim.Guarded)
             {
                 AntiCheat.PlayShieldBreakWithAntiCheat(killer, victim);
@@ -185,7 +206,7 @@ namespace AirlockClient.Managers.Gamemode
                         {
                             if (targetSubRole != null)
                             {
-                                targetSubRole.OnPlayerDied(killer);
+                                if (targetAction == ProximityTargetedAction.Kill) targetSubRole.OnPlayerDied(killer);
                             }
                             role.OnPlayerKilled(victim);
                             role.OnPlayerAction(action);
@@ -204,7 +225,7 @@ namespace AirlockClient.Managers.Gamemode
                         {
                             if (targetSubRole != null)
                             {
-                                targetSubRole.OnPlayerDied(killer);
+                                if (targetAction == ProximityTargetedAction.Kill) targetSubRole.OnPlayerDied(killer);
                             }
                         }
                         role.OnPlayerAction(action);
@@ -221,7 +242,7 @@ namespace AirlockClient.Managers.Gamemode
 
                     if (targetSubRole != null)
                     {
-                        targetSubRole.OnPlayerDied(killer);
+                        if (targetAction == ProximityTargetedAction.Kill) targetSubRole.OnPlayerDied(killer);
                     }
 
                     role.OnPlayerKilled(victim);
@@ -247,7 +268,7 @@ namespace AirlockClient.Managers.Gamemode
 
             if (targetSubRole != null)
             {
-                targetSubRole.OnPlayerDied(killer);
+                if (targetAction == ProximityTargetedAction.Kill) targetSubRole.OnPlayerDied(killer);
             }
 
             return true;
@@ -301,7 +322,17 @@ namespace AirlockClient.Managers.Gamemode
                             }
                             else if (data.Team == GameTeam.Impostor)
                             {
-                                roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
+                                if (data.Name == "Wraith")
+                                {
+                                    if (Imposters.Count != 1)
+                                    {
+                                        roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
+                                    }
+                                }
+                                else
+                                {
+                                    roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
+                                }
                             }
 
                             break;
@@ -457,82 +488,37 @@ namespace AirlockClient.Managers.Gamemode
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role, SubRoleData Data, string additional = "", GameRole roleToChange = GameRole.NotSet, bool displayRoleInstant = false)
         {
-            if (true)
+            RPC_SendSubRole(Player.PlayerId, Data.Name);
+
+            if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
             {
-                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
+                if (roleToChange != GameRole.NotSet && displayRoleInstant)
                 {
-                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    Role.IsDisplayingRole = true;
-                    RPC_SendSubRole(Player.PlayerId, Data.Name);
-                    string ogName = Player.NetworkName.Value;
-
-                    yield return new WaitForSeconds(1);
-
-                    Player.NetworkName = Data.Name;
-
-                    yield return new WaitForSeconds(3);
-
-                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-
-                    yield return new WaitForSeconds(5);
-
-                    Player.NetworkName = ogName;
-                    Role.IsDisplayingRole = false;
-
-                    yield return new WaitForSeconds(3);
-                    if (roleToChange != GameRole.NotSet)
-                    {
-                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
-                    }
+                    Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
                 }
-            }
-            else
-            {
-                // Old Code
-                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
+                Role.IsDisplayingRole = true;
+                string ogName = Player.NetworkName.Value;
+
+                yield return new WaitForSeconds(1);
+
+                if (!AirlockClientUsers.Contains(Player.PlayerId)) Player.NetworkName = Data.Name;
+
+                yield return new WaitForSeconds(3);
+
+                if (roleToChange != GameRole.NotSet && !displayRoleInstant)
                 {
-                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    Role.IsDisplayingRole = true;
-                    RPC_SendSubRole(Player.PlayerId, Data.Name);
-                    string ogName = Player.NetworkName.Value;
-                    yield return new WaitForSeconds(1);
-                    Player.NetworkName = "WMWMWMWMWMWMWMWM";
-                    yield return new WaitForSeconds(3);
-                    Player.NetworkName = Data.Name;
-                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    yield return new WaitForSeconds(2);
-                    if (string.IsNullOrEmpty(additional))
-                    {
-                        Player.NetworkName = Data.Description;
-                        yield return new WaitForSeconds(3);
-                    }
-                    else
-                    {
-                        Player.NetworkName = Data.Description;
-                        yield return new WaitForSeconds(1.5f);
-                        Player.NetworkName = additional;
-                        yield return new WaitForSeconds(1.5f);
-                    }
-                    Player.NetworkName = ogName;
+                    Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
+                }
 
-                    if (roleToChange != GameRole.NotSet)
-                    {
-                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
-                    }
+                yield return new WaitForSeconds(5);
 
-                    Role.IsDisplayingRole = false;
+                Player.NetworkName = ogName;
+                Role.IsDisplayingRole = false;
+
+                yield return new WaitForSeconds(3);
+                if (roleToChange != GameRole.NotSet)
+                {
+                    Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
                 }
             }
         }

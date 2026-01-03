@@ -21,7 +21,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Bomber (Point)",
             RoleType = "Imposter",
             Description = "Explode others",
-            AC_Description = "When pointing, you will kill yourself but others near you.",
+            AC_Description = "Kill others around you including yourself",
+            AC_Color = Color.gray,
             Team = GameTeam.Impostor,
             Amount = 0
         };

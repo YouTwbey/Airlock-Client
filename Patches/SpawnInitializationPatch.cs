@@ -51,6 +51,8 @@ namespace AirlockClient.Patches
 
                 //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
             }
+
+            AirlockClientGamemode.RPC_AirlockClientVerification();
         }
     }
 }

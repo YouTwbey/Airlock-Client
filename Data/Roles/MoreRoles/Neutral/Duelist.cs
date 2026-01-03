@@ -22,8 +22,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Duelist",
             RoleType = "Neutral",
             Description = "Kill Duelist:",
-            AC_Description = "Kill the other duelist, before the first meeting or you both die. Other Duelist: ",
+            AC_Description = "Duel it out with your chosen target",
             Team = GameTeam.Crewmember,
+            AC_Color = new Color(255, 100, 0),
             Amount = 0
         };
 
@@ -98,8 +99,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             Name = "Duelist",
             Description = "Other Duelist:",
-            AC_Description = "<size=0>OTHER_ROLE</size>",
+            AC_Description = "<size=0>OTHER_ROLE</size>Duel it out with your chosen target",
             Team = GameTeam.Crewmember,
+            AC_Color = new Color(255, 100, 0),
             Amount = 0
         };
 

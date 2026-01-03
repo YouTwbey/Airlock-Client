@@ -3,6 +3,7 @@ using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -17,7 +18,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Mayor",
             RoleType = "Crewmate",
             Description = "Votes doubled",
-            AC_Description = "During meetings, your votes are doubled.",
+            AC_Description = "Your meeting votes are doubled",
+            AC_Color = new Color(20, 255, 122),
             Team = GameTeam.Crewmember,
             Amount = 0
         };

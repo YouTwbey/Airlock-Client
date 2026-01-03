@@ -6,6 +6,7 @@ using AirlockClient.Data;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Dev;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Settings;
 using MelonLoader;
@@ -75,6 +76,21 @@ namespace AirlockClient.Managers
             }
         }
 
+        public void QueueWin(List<PlayerState> winningPlayers, EndGameReasonsData.EndGameReason reason, GameplayStates runInState = GameplayStates.NotSet, int authority = 99999)
+        {
+            QueueWin(winningPlayers, (int)reason, runInState, authority);
+        }
+
+        public void QueueWin(PlayerState winningPlayer, EndGameReasonsData.EndGameReason reason, GameplayStates runInState = GameplayStates.NotSet, int authority = 99999)
+        {
+            QueueWin(new List<PlayerState> { winningPlayer }, (int)reason, runInState, authority);
+        }
+
+        public void QueueWin(PlayerState winningPlayer, int reason = -1, GameplayStates runInState = GameplayStates.NotSet, int authority = 99999)
+        {
+            QueueWin(new List<PlayerState> { winningPlayer }, reason, runInState, authority);
+        }
+
         public void QueueWin(List<PlayerState> winningPlayers, int reason = -1, GameplayStates runInState = GameplayStates.NotSet, int authority = 99999)
         {
             if (queuedWin != null)
@@ -97,22 +113,12 @@ namespace AirlockClient.Managers
             {
                 if (winningPlayers.Contains(player))
                 {
-                    player.RPC_KnownGameRole(GameRole.Impostor);
-                    state.RoleManager.AlterPlayerRole(GameRole.Impostor, player.PlayerId);
-                }
-                else
-                {
-                    player.RPC_KnownGameRole(GameRole.Crewmember);
-                    state.RoleManager.AlterPlayerRole(GameRole.Crewmember, player.PlayerId);
+                    player.RPC_KnownGameRole(GameRole.NotSet);
+                    state.RoleManager.AlterPlayerRole(GameRole.NotSet, player.PlayerId);
                 }
             }
 
             queuedWin = new QueuedWin { WinningPlayers = winningPlayers, Reason = reason, RunInState = runInState };
-        }
-
-        public void QueueWin(PlayerState winningPlayer, int reason = -1, GameplayStates runInState = GameplayStates.NotSet, int authority = 99999)
-        {
-            QueueWin(new List<PlayerState> { winningPlayer }, reason, runInState, authority);
         }
 
         public BoolSettingsItem GetMatchSetting(Enums.MatchBoolSettings setting)
@@ -270,7 +276,7 @@ namespace AirlockClient.Managers
                         if (queuedWin.RunInState == GameplayStates.NotSet || queuedWin.RunInState == state.GameModeStateValue.GameState)
                         {
                             state.GameEndReasonIndex = queuedWin.Reason;
-                            state.EndGame(GameTeam.Impostor);
+                            state.EndGame(GameTeam.None);
                             queuedWin = null;
                         }
                     }

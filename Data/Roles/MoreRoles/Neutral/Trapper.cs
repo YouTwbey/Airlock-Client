@@ -7,6 +7,7 @@ using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.XR;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -22,7 +23,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Trapper (Point)",
             RoleType = "Imposter",
             Description = "Trap Bodies",
-            AC_Description = "As the trapper, you have the ability to point at bodies and make it so if a crewmember tries to report it, said crewmember dies.",
+            AC_Description = "Place traps on dead bodies",
+            AC_Color = new Color(255, 100, 100),
             Team = GameTeam.Impostor,
             Amount = 0
         };

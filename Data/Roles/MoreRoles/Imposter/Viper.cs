@@ -18,7 +18,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Viper",
             RoleType = "Imposter",
             Description = "Disolve Bodies",
-            AC_Description = "Anyone you kill, their bodies will be put on a timer before they fully disolve.",
+            AC_Description = "Your vicims bodies will dissolve",
+            AC_Color = Color.green,
             Team = GameTeam.Impostor,
             Amount = 0
         };

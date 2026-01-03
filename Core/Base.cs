@@ -85,7 +85,7 @@ namespace AirlockClient.Core
 
                 if (polusScene)
                 {
-                    polusScene._someoneWasEjected.gameObject.SetActive(true);
+                    polusScene._ejection.gameObject.SetActive(true);
                     Destroy(GameObject.Find("OrbitingCrewmates"));
 
                     foreach (Transform obj in polusScene.GetComponentsInChildren<Transform>(true))
@@ -129,7 +129,7 @@ namespace AirlockClient.Core
                 {
                     if (CurrentMode.IsHosting)
                     {
-                        //SceneStorage.AddComponent<AntiCheat>();
+                        SceneStorage.AddComponent<AntiCheat>();
                     }
                 }
             }

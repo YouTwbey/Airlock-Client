@@ -4,6 +4,7 @@ using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -17,7 +18,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Bait",
             RoleType = "Crewmate",
             Description = "Auto Report Body",
-            AC_Description = "When an imposter kills you, they will automatically report your body.",
+            AC_Description = "Imposter automatically reports your body",
+            AC_Color = Color.yellow,
             Team = GameTeam.Crewmember,
             Amount = 0
         };

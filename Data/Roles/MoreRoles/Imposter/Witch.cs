@@ -5,6 +5,7 @@ using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Broken
 {
@@ -19,7 +20,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Broken
             Name = "Witch",
             RoleType = "Imposter",
             Description = "Cast spells",
-            AC_Description = "You can cast spells as a witch. Crewmates you cast spells on will be flagged with [†] when a meeting is called and be killed after.",
+            AC_Description = "Cast spells on the crew",
+            AC_Color = Color.magenta,
             Team = GameTeam.Impostor,
             Amount = 0
         };

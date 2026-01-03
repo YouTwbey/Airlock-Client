@@ -3,11 +3,13 @@ using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.XR;
 using MelonLoader;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 {
@@ -18,7 +20,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Arsonist",
             RoleType = "Neutral",
             Description = "Douse Everyone",
-            AC_Description = "Douse everyone then (HandPoses.Thumbsup) to win",
+            AC_Description = "Douse the crew and call a meeting",
+            AC_Color = new Color(255, 255, 0),
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -53,7 +56,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                 }
                 if (EveryoneDoused)
                 {
-                    ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, FindObjectOfType<GameStateManager>().NoImpostorsLeftWin, GameplayStates.Task, 1);
+                    ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, EndGameReasonsData.EndGameReason.NotEnoughImpostors, GameplayStates.Task, 1);
                 }
             }
         }

@@ -5,6 +5,7 @@ using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using AirlockClient.Data.Roles.HideNSeek.Imposter;
 using AirlockClient.Handlers;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Cutscenes;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Sabotage;
@@ -258,13 +259,13 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (totalAlive == 0)
                 {
-                    State.GameEndReasonIndex = State.LowCrewmateCountWin;
+                    State.GameEndReasonIndex = (int)EndGameReasonsData.EndGameReason.NotEnoughCrewmates;
                     State.EndGame(GameTeam.Impostor);
                 }
 
                 if (!seeker.PlayerWithRole.IsConnected)
                 {
-                    State.GameEndReasonIndex = State.NoImpostorsLeftWin;
+                    State.GameEndReasonIndex = (int)EndGameReasonsData.EndGameReason.NotEnoughImpostors;
                     State.EndGame(GameTeam.Crewmember);
                 }
             }

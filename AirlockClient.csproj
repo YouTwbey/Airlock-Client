@@ -274,7 +274,9 @@
     <Compile Include="Patches\EndVotePatch.cs" />
     <Compile Include="Patches\FixSabotagePatch.cs" />
     <Compile Include="Patches\IncrementTaskPatch.cs" />
+    <Compile Include="Patches\MournSoulmatePatch.cs" />
     <Compile Include="Patches\OnModeSelectPatch.cs" />
+    <Compile Include="Patches\PlayCutscenePatch.cs" />
     <Compile Include="Patches\ReplayPatch.cs" />
     <Compile Include="Patches\RequestPowerupPatch.cs" />
     <Compile Include="Patches\RpcRecievedPatch.cs" />
