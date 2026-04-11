@@ -19,7 +19,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
     {
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Trapper (Point)",
+            Name = "Trapper",
             RoleType = "Imposter",
             Description = "Trap Bodies",
             AC_Description = "As the trapper, you have the ability to point at bodies and make it so if a crewmember tries to report it, said crewmember dies.",
@@ -29,16 +29,14 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
-        NetworkedKillBehaviour killing;
-        AirlockPeer Peer;
         PlayerState trappedbody = null;
         bool cantrapbody = true;
         public override void OnVotingBegan(PlayerState bodyReported, PlayerState reportingPlayer)
         {
             if (trappedbody != null && bodyReported != null)
-            { 
+            {
                 if (bodyReported == trappedbody)
                 {
                     AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, reportingPlayer);

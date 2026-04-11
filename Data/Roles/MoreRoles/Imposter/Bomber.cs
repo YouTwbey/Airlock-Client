@@ -8,6 +8,8 @@ using Il2CppSG.Airlock.XR;
 using MelonLoader;
 using AirlockClient.Managers;
 using AirlockClient.AC;
+using System;
+using Il2CppSystem;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -18,7 +20,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
     {
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Bomber (Point)",
+            Name = "Bomber",
             RoleType = "Imposter",
             Description = "Explode others",
             AC_Description = "When pointing, you will kill yourself but others near you.",
@@ -28,7 +30,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         bool canExplode = true;
@@ -46,6 +48,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             if ((PlayerWithRole.LocomotionPlayer._prevLeftHandPose == HandPoses.Point || PlayerWithRole.LocomotionPlayer._prevRightHandPose == HandPoses.Point || input.handPoses == new Vector2Int(1, 2)) && PlayerWithRole.IsAlive && canExplode && !gameEnded && ModdedGameStateManager.Instance.state.InTaskState())
             {
+                //if (MoreRolesManager.BomberCooldown - )
                 foreach (NetworkedLocomotionPlayer player in FindObjectsOfType<NetworkedLocomotionPlayer>())
                 {
                     if (player != null)

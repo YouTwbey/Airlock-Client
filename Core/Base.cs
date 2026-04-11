@@ -1,6 +1,7 @@
 ﻿using AirlockAPI.Data;
 using AirlockAPI.Managers;
 using AirlockClient.AC;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
@@ -8,12 +9,16 @@ using Il2CppInterop.Runtime;
 using Il2CppInterop.Runtime.Injection;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Cutscenes;
+using Il2CppSG.Airlock.Localization;
 using Il2CppSG.Airlock.UI;
 using Il2CppSG.Airlock.UI.TitleScreen;
+using Il2CppSG.LightUI;
+using Il2CppTMPro;
 using MelonLoader;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using static AirlockClient.Data.Info;
 using static UnityEngine.Object;
 
@@ -50,6 +55,7 @@ namespace AirlockClient.Core
         }
 
         string previousSceneName;
+        public static bool titleScreenFormat;
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             StorageManager.LoadAllAssets();
@@ -57,6 +63,8 @@ namespace AirlockClient.Core
             InGame = SceneName != "Boot" && SceneName != "Title";
             SceneStorage = new GameObject("AirlockClient_" + SceneName);
             bonusMapsAdded = false;
+            LobbyBrowserHandler.firstTimeInBrowseMenu = false;
+            LobbyBrowserHandler.browseAdded = false;
 
             if (SceneName != "Boot")
             {
@@ -137,7 +145,11 @@ namespace AirlockClient.Core
             previousSceneName = sceneName;
         }
 
-        bool titleScreenFormat;
+        public override void OnGUI()
+        {
+            LobbyBrowserHandler.OnGUI();
+        }
+
         public override void OnUpdate()
         {
             if (SceneName == "Title")
@@ -145,6 +157,56 @@ namespace AirlockClient.Core
                 if (CurrentMode.IsHosting == false)
                 {
                     CurrentMode.IsHosting = GameObject.Find("Host Private Menu");
+                }
+
+                if (!LobbyBrowserHandler.browseAdded)
+                {
+                    GameObject playOnline = GameObject.Find("PlayOnlineMenu");
+                    if (playOnline != null)
+                    {
+                        GameObject buttons = playOnline.transform.Find("MainLayout").Find("TopBar").Find("MatchButtons").gameObject;
+                        GameObject quickMatch = buttons.transform.Find("QuickMatch").gameObject;
+                        GameObject host = buttons.transform.Find("Host").gameObject;
+                        GameObject directJoin = buttons.transform.Find("DirectCode").gameObject;
+                        GameObject browse = Instantiate(quickMatch, quickMatch.transform.position, quickMatch.transform.rotation, buttons.transform);
+                        browse.name = "Browse";
+
+                        browse.transform.localPosition = new Vector3(-525, 0, 0);
+                        quickMatch.transform.localPosition = new Vector3(-175, 0, 0);
+                        host.transform.localPosition = new Vector3(175, 0, 0);
+                        directJoin.transform.localPosition = new Vector3(525, 0, 0);
+
+                        browse.transform.Find("LUI_Button_Frame").Find("Label (TMP)").GetComponent<TextMeshPro>().text = "<color=yellow>Browse";
+                        browse.transform.Find("LUI_Button_Frame").Find("Label (TMP)").GetComponent<UserStringComponent_TMP>().enabled = false;
+                        browse.transform.Find("LUI_Button_Frame").GetComponent<LUIButton>().OnPressed.RemoveAllListeners();
+                        browse.transform.Find("LUI_Button_Frame").GetComponent<LUIButton>().OnPressed.AddListener(DelegateSupport.ConvertDelegate<UnityAction>(LobbyBrowserHandler.OnEnteredBrowseLobbies));
+                        LobbyBrowserHandler.browseAdded = true;
+                    }
+                }
+
+                if (LobbyBrowserHandler.waitingForBrowseChange)
+                {
+                    GameObject menu = GameObject.Find("QuickMatchHostMenu");
+                    if (menu != null)
+                    {
+                        GameObject uiTitle = menu.transform.Find("Title").Find("QuickMatch").gameObject;
+                        LobbyBrowserHandler.quickMatchHud = menu.transform.Find("MainLayout").gameObject;
+                        uiTitle.transform.Find("QuickMatchTitle").GetComponent<TextMeshPro>().text = "<color=yellow>Browse";
+                        uiTitle.transform.Find("TitleText").GetComponent<TextMeshPro>().text = "Select A Lobby From The List";
+                        LobbyBrowserHandler.quickMatchHud.SetActive(false);
+                        LobbyBrowserHandler.waitingForBrowseChange = false;
+                        LobbyBrowserHandler.inBrowseMenu = true;
+                    }
+                }
+
+                if (LobbyBrowserHandler.inBrowseMenu)
+                {
+                    GameObject playOnline = GameObject.Find("PlayOnlineMenu");
+                    if (playOnline != null)
+                    {
+                        LobbyBrowserHandler.quickMatchHud.SetActive(true);
+                        LobbyBrowserHandler.inBrowseMenu = false;
+                    }
                 }
 
                 if (!titleScreenFormat)
@@ -186,12 +248,11 @@ namespace AirlockClient.Core
                                         GamemodeManager.AddMode("More Roles", "Social deduction gameplay, with tons of extra roles");
                                         GamemodeManager.AddMode("Hide N Seek", "Survive the time limit before the imposter takes everyone out", GameModes.Infection);
                                         GamemodeManager.AddMode("Sandbox", "Practice killing, doing tasks or just have fun");
+                                        GamemodeManager.AddMode("Versus", "Be the first one to complete tasks and stop others");
+                                        GamemodeManager.AddMode("Crown Runners", "Keep the crown for as long as possible");
                                         GamemodeManager.AddMode("Lights Out", "Imposters loose, vents accessible, complete darkness", GameModes.LightsOut);
                                         GamemodeManager.AddMode("Infection", "The zomburritos have breached mess hall", GameModes.Infection);
-                                        GamemodeManager.AddMode("Critical Cargo", "Protect the critical crewmates and scan anyone suspicious.");
-                                        //GamemodeManager.AddMode("Versus", "Be the first one to complete tasks and stop others");
-                                        //CustomModeManager.Instance.CreateMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
-                                        //CustomModeManager.Instance.CreateMode("Round Up", "The deputy has returned to lasso imposters", GameModes.Sheriff);
+                                        //GamemodeManager.AddMode("Containment", "Sabotages triggering, doors locking, imposters wandering", GameModes.Containment);
 
                                         bonusMapsAdded = true;
                                     }

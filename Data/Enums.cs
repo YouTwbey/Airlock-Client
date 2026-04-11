@@ -8,8 +8,7 @@
             VisualTasks,
             ChatDuringTasks,
             AlwaysShowHands,
-            ReportBodies,
-            AllowDoorSabotage
+            ReportBodies
         }
 
         public enum MatchFloatSettings
@@ -22,42 +21,67 @@
 
         public enum MatchIntSettings
         {
-            NumImposters,
             NumEmergencyMeetings,
             DiscussionTime,
             VotingTime,
-            KillCooldown,
             TaskBarUpdateFrequency,
             LongTasks,
             ShortTasks,
-            SabotageCooldown,
             ConfirmEjects,
             TagCooldown,
             TagTotalTasks,
             MaxInfected,
-            TagNumTasksAssigned
+            TagNumTasksAssigned,
+            TagTotalTasksPrevious
         }
 
         public enum RoleBoolSettings
         {
-
+            GuardianAngelImpostorSeesGuard,
+            VIPImpostorsKnow,
+            AllowDoorSabotage
         }
 
         public enum RoleFloatSettings
         {
             ChanceOfEngineer,
-            MaxTimeInVentsEngineer,
-            VentUseCooldownEngineer,
-            ChanceOfVigilante
+            ChanceOfGuardianAngel,
+            ChanceOfInfected,
+            ChanceOfRevenger,
+            ChanceOfSheriff,
+            ChanceOfVigilante,
+            ChanceOfVIP,
+            ChanceOfTracker,
+            SheriffSpeedMultiplier
         }
 
         public enum RoleIntSettings
         {
-            MaxEngineers,
-            MaxVigilantes,
+            VentUseCooldownEngineer,
+            MaxTimeInVentsEngineer,
             VigilanteKillCooldown,
             VigilanteNumOfKills,
-            MaxSheriff
+            MaxEngineers,
+            MaxVigilantes,
+            MaxGuardianAngels,
+            GuardianAngelGuardDuration,
+            GuardianAngelGuardCooldown,
+            MaxRevengers,
+            MaxTrackers,
+            TrackerCooldown,
+            TrackerDuration,
+            TrackerPingFrequency,
+            RevengerSelfKillCooldown,
+            RevengerKillCooldown,
+            RevengerAudioDelay,
+            RevengerNumOfKills,
+            MaxVIPs,
+            ScanCooldown,
+            VIPNumOfScans,
+            MaxSheriff,
+            NumImposters,
+            KillCooldown,
+            SabotageCooldown
         }
     }
 }

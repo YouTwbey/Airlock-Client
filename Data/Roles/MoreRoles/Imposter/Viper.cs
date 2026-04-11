@@ -25,10 +25,10 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
-        public static float SecondsUntilDisolve = 30;
+        public static float SecondsUntilDisolve = 15;
         List<NetworkedBody> bodiesToDisolve = new List<NetworkedBody>();
         public override void OnPlayerKilled(PlayerState playerKilled)
         {

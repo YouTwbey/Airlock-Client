@@ -22,7 +22,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Duelist",
             RoleType = "Neutral",
             Description = "Kill Duelist:",
-            AC_Description = "Kill the other duelist, before the first meeting or you both die. Other Duelist: ",
+            AC_Description = "Kill the other duelist, before the first meeting or you both die.",
             Team = GameTeam.Crewmember,
             Amount = 0
         };
@@ -47,10 +47,12 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                 {
                     PlayerState rival = validIds[Random.Range(0, validIds.Count)];
                     playerToKill = rival;
-                    otherDuelist = rival.gameObject.AddComponent<OtherDuelist>();
-                    otherDuelist.mainDuelist = this;
-                    otherDuelist.playerToKill = PlayerWithRole;
-                    MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, otherDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante));
+                    OtherDuelist = rival.gameObject.AddComponent<OtherDuelist>();
+                    OtherDuelist.MainDuelist = this;
+                    OtherDuelist.playerToKill = PlayerWithRole;
+
+                    Data.Name = "Duelist: " + (OtherDuelist.PlayerWithRole != null ? OtherDuelist.GetColorName(OtherDuelist.PlayerWithRole.ColorId) : "No Target");
+                    MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, playerToKill.NetworkName.Value, GameRole.Vigilante);
                 }
                 else
                 {
@@ -60,7 +62,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             }
             else
             {
-                Logging.Error("Cannot addd role outside of More Roles.");
+                Logging.Error("Cannot add role outside of More Roles.");
             }
         }
 
@@ -72,25 +74,25 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             {
                 playerToKill = null;
 
-                if (otherDuelist != null)
-                    otherDuelist.playerToKill = null;
+                if (OtherDuelist != null)
+                    OtherDuelist.playerToKill = null;
             }
         }
 
         public override void OnVotingBegan(PlayerState bodyReported, PlayerState reportingPlayer)
         {
-            if (playerToKill != null)
+            if (this.PlayerWithRole.IsAlive && OtherDuelist.PlayerWithRole.IsAlive)
             {
                 AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
                 AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
 
                 playerToKill = null;
-                if (otherDuelist != null)
-                    otherDuelist.playerToKill = null;
+                if (OtherDuelist != null)
+                    OtherDuelist.playerToKill = null;
             }
         }
 
-        OtherDuelist otherDuelist;
+        OtherDuelist OtherDuelist;
     }
     public class OtherDuelist : SubRole
     {
@@ -103,12 +105,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Amount = 0
         };
 
-        public Duelist mainDuelist;
+        public Duelist MainDuelist;
         public PlayerState playerToKill;
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, mainDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante));
+            Data.Name = "Duelist: " + (MainDuelist.PlayerWithRole != null ? GetColorName(MainDuelist.PlayerWithRole.ColorId) : "No Target");
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, MainDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante);
         }
 
         public override void OnPlayerKilled(PlayerState playerKilled)
@@ -116,7 +119,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             if (playerKilled == playerToKill)
             {
                 playerToKill = null;
-                if (mainDuelist != null)
+                if (MainDuelist != null)
                 {
                     playerToKill = null;
                 }
@@ -130,6 +133,26 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                 AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
                 AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
                 playerToKill = null;
+            }
+        }
+
+        public static string GetColorName(int colorIndex)
+        {
+            switch (colorIndex)
+            {
+                case 0: return "Red";
+                case 1: return "Blue";
+                case 2: return "Green";
+                case 3: return "Pink";
+                case 4: return "Orange";
+                case 5: return "Yellow";
+                case 6: return "Black";
+                case 7: return "White";
+                case 8: return "Purple";
+                case 9: return "Brown";
+                case 10: return "Cyan";
+                case 11: return "Lime";
+                default: return "No Target";
             }
         }
     }

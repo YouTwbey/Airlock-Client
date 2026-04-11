@@ -199,6 +199,10 @@
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\MelonLoader\Il2CppAssemblies\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
@@ -253,6 +257,7 @@
     <Compile Include="Data\Roles\MoreRoles\Neutral\Trapper.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Troll.cs" />
     <Compile Include="Data\Roles\MoreRoles\Neutral\Vulture.cs" />
+    <Compile Include="Handlers\LobbyBrowserHandler.cs" />
     <Compile Include="Handlers\PetHandler.cs" />
     <Compile Include="Managers\Dev\CommandManager.cs" />
     <Compile Include="Managers\Gamemode\ContainmentManager.cs" />

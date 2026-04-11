@@ -16,7 +16,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
     {
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Janitor (Point)",
+            Name = "Janitor",
             RoleType = "Imposter",
             Description = "Remove Bodies",
             AC_Description = "Pointing near a body will remove it. You can only remove one body every time a meeting ends.",
@@ -26,7 +26,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
 

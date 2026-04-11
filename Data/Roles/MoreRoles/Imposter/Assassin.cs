@@ -7,6 +7,7 @@ using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
 using UnityEngine;
+using static Il2CppFusion.Simulation;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -31,7 +32,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
             foreach (PlayerState player in ((MoreRolesManager)AirlockClientGamemode.Current).Crewmates)
             {
-                if (!player.GetComponent<Troll>()&& player.IsConnected && player != PlayerWithRole)
+                if (!player.GetComponent<Troll>() && player.IsConnected && player != PlayerWithRole)
                 {
                     validIds.Add(player.PlayerId);
                 }
@@ -40,7 +41,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             if (validIds.Count == 0) Destroy(this);
 
             playerToKill = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, playerToKill.NetworkName.Value));
+            Data.Name = "Target: " + (playerToKill != null ? GetColorName(playerToKill.ColorId) : "No Target");
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         PlayerState playerToKill;
@@ -59,6 +61,26 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             {
                 AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
                 playerToKill = null;
+            }
+        }
+
+        public static string GetColorName(int colorIndex)
+        {
+            switch (colorIndex)
+            {
+                case 0: return "Red";
+                case 1: return "Blue";
+                case 2: return "Green";
+                case 3: return "Pink";
+                case 4: return "Orange";
+                case 5: return "Yellow";
+                case 6: return "Black";
+                case 7: return "White";
+                case 8: return "Purple";
+                case 9: return "Brown";
+                case 10: return "Cyan";
+                case 11: return "Lime";
+                default: return "No Target";
             }
         }
     }
