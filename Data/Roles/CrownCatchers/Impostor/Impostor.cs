@@ -50,7 +50,7 @@ namespace AirlockClient.Data.Roles.CrownCatchers.Impostor
             PlayersTime += Time.deltaTime;
 
             float totalTime = PlayersTime;
-            if (playerCrownTimes.ContainsKey(PlayerWithRole.PlayerId))
+            if (playerCrownTimes.ContainsKey(PlayerWithRole.PlayerId) && CrownRunnersManager.state.GameModeStateValue.GameState == GameplayStates.Task)
                 totalTime += playerCrownTimes[PlayerWithRole.PlayerId];
 
             if (totalTime >= 45)
