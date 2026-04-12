@@ -213,9 +213,9 @@ namespace AirlockClient.Managers.Gamemode
 
         public override bool OnGameEnd(ref GameTeam teamThatWon)
         {
+            Crowned.playerCrownTimes.Clear();
             Crowned.All.Clear();
             Catcher.All.Clear();
-            Crowned.playerCrownTimes.Clear();
             foreach (PlayerState player in Spawn.ActivePlayerStates)
             {
                 player.HatId = savedHatIDs[player.PlayerId];

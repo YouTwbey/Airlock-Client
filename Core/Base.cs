@@ -37,6 +37,17 @@ namespace AirlockClient.Core
         static List<MenuManager> menus = new List<MenuManager>();
         static GameObject makePublic;
 
+        public static GameObject Orbiter1;
+        public static GameObject Orbiter7;
+        public static GameObject Orbiter2;
+        public static GameObject Orbiter3;
+        public static GameObject Orbiter4;
+        public static GameObject Orbiter5;
+        public static GameObject Orbiter8;
+        public static GameObject Orbiter9;
+        public static GameObject Orbiter10;
+        public static GameObject Orbiter11;
+
         public override void OnInitializeMelon()
         {
             foreach (System.Type type in System.Reflection.Assembly.GetExecutingAssembly().GetTypes())
@@ -93,8 +104,6 @@ namespace AirlockClient.Core
                 if (polusScene)
                 {
                     polusScene._ejection.gameObject.SetActive(true);
-                    Destroy(GameObject.Find("OrbitingCrewmates"));
-
                     foreach (Transform obj in polusScene.GetComponentsInChildren<Transform>(true))
                     {
                         switch (obj.name)
@@ -112,6 +121,7 @@ namespace AirlockClient.Core
                                 break;
                         }
                     }
+                    HandleTitleOrbitor();
                 }
             }
 
@@ -290,6 +300,50 @@ namespace AirlockClient.Core
                         }
                     }
                 }
+            }
+        }
+        public static void HandleTitleOrbitor()
+        {
+            Orbiter1 = GameObject.Find("Orbiter (1)");
+            Orbiter7 = GameObject.Find("Orbiter (7)");
+            Orbiter2 = GameObject.Find("Orbiter (2)");
+            Orbiter3 = GameObject.Find("Orbiter (3)");
+            Orbiter4 = GameObject.Find("Orbiter (4)");
+            Orbiter5 = GameObject.Find("Orbiter (5)");
+            Orbiter8 = GameObject.Find("Orbiter (8)");
+            Orbiter9 = GameObject.Find("Orbiter (9)");
+            Orbiter10 = GameObject.Find("Orbiter (10)");
+            Orbiter11 = GameObject.Find("Orbiter (11)");
+
+            GameObject[] orbiters = new GameObject[]
+            {
+                Orbiter1, Orbiter7, Orbiter2, Orbiter3, Orbiter4, Orbiter5,
+                Orbiter8, Orbiter9, Orbiter10, Orbiter11
+            };
+
+            float[] yPositions = new float[]
+            {
+                -5.32f,    // Orbiter1
+                -7.3309f,  // Orbiter7
+                -9.32f,    // Orbiter2
+                -11.2727f, // Orbiter3
+                -12.8037f, // Orbiter4
+                -14.4491f, // Orbiter5
+                -15.7619f, // Orbiter8
+                -17.0328f, // Orbiter9
+                -18.1656f, // Orbiter10
+                -19.4546f  // Orbiter11
+            };
+
+            for (int i = 0; i < orbiters.Length; i++)
+            {
+                Destroy(orbiters[i].GetComponent<Orbiter>());
+                orbiters[i].AddComponent<OrbiterManager>();
+                orbiters[i].transform.rotation = Quaternion.Euler(270, 180, 0);
+
+                OrbiterManager manager = orbiters[i].GetComponent<OrbiterManager>();
+                manager.yPosition = yPositions[i];
+                manager.isActive = i == 0;
             }
         }
     }

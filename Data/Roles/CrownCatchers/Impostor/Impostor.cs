@@ -1,4 +1,5 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockAPI.Data;
+using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
@@ -47,7 +48,8 @@ namespace AirlockClient.Data.Roles.CrownCatchers.Impostor
 
         void Update()
         {
-            PlayersTime += Time.deltaTime;
+            if (PlayerWithRole != null && CrownRunnersManager.state.GameModeStateValue.GameState == GameplayStates.Task && CurrentMode.Name == "Crown Runners")
+                PlayersTime += Time.deltaTime;
 
             float totalTime = PlayersTime;
             if (playerCrownTimes.ContainsKey(PlayerWithRole.PlayerId) && CrownRunnersManager.state.GameModeStateValue.GameState == GameplayStates.Task)
@@ -63,12 +65,19 @@ namespace AirlockClient.Data.Roles.CrownCatchers.Impostor
         {
             if (PlayerWithRole == null) return;
 
+            if (CrownRunnersManager.state.GameModeStateValue.GameState != GameplayStates.Task) return;
+
             int id = PlayerWithRole.PlayerId;
 
             if (playerCrownTimes.ContainsKey(id))
                 playerCrownTimes[id] += PlayersTime;
             else
                 playerCrownTimes.Add(id, PlayersTime);
+        }
+
+        public override void OnGameEnd(GameTeam teamThatWon)
+        {
+            PlayersTime = 0;
         }
     }
 }
