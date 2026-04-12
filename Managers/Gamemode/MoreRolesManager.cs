@@ -3,13 +3,9 @@ using AirlockAPI.Data;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Core;
-
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
-<<<<<<< Updated upstream
-=======
 using AirlockClient.Data.Roles.MoreRoles.Modifiers;
->>>>>>> Stashed changes
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using Il2CppInterop.Runtime;
@@ -35,8 +31,6 @@ namespace AirlockClient.Managers.Gamemode
     {
         public static Dictionary<string, SubRoleData> SubRoleToData;
         public static Dictionary<string, System.Type> SubRoleToType;
-<<<<<<< Updated upstream
-=======
         public static Dictionary<string, ModifierData> ModifierToData;
         public static Dictionary<string, System.Type> ModifierToType;
         public static int MaxBodiesEatenCount = 3;
@@ -45,7 +39,6 @@ namespace AirlockClient.Managers.Gamemode
         public static RoleManager Rolemanager;
         public static SpawnManager Spawn;
         public static NetworkedKillBehaviour Killing;
->>>>>>> Stashed changes
 
         public static void FetchRoles()
         {
@@ -117,11 +110,8 @@ namespace AirlockClient.Managers.Gamemode
             if (System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role) != null)
             {
                 SubRoleData roleData = (SubRoleData)System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role).GetField("Data").GetValue(null);
-<<<<<<< Updated upstream
                 Logging.Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
-=======
                 Logging.Debug_Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
->>>>>>> Stashed changes
             }
         }
 
@@ -426,7 +416,7 @@ namespace AirlockClient.Managers.Gamemode
                         {
                             return true;
                         }
-                        else if (!armorer.HasTakenHit && killer.KnownGameRole != GameRole.Sheriff && killer.KnownGameRole != GameRole.Tracker && killer.KnownGameRole != GameRole.VIP && killer.KnownGameRole != GameRole.GuardianAngel)
+                        else if (!armorer.HasTakenHit && GetTrueRole(killer) != GameRole.Sheriff && GetTrueRole(killer) != GameRole.Tracker && GetTrueRole(killer) != GameRole.VIP && GetTrueRole(killer) != GameRole.GuardianAngel)
                         {
                             armorer.HasTakenHit = true;
                             return false;
@@ -470,7 +460,7 @@ namespace AirlockClient.Managers.Gamemode
             Others.Clear();
             SubRole.All.Clear();
             AssignedSubRoles.Clear();
-            AssigneModifiers.Clear();
+            AssignedModifiers.Clear();
             Modifier.All.Clear();
 
 
@@ -516,8 +506,7 @@ namespace AirlockClient.Managers.Gamemode
                             else if (data.Team == GameTeam.Impostor)
                             {
                                 roleAssignments.Add(() => AssignRole(SubRoleToType[type], Imposters, data));
-<<<<<<< Updated upstream
-=======
+
                             }
                             else if (data.Team == GameTeam.Other)
                             {
@@ -526,7 +515,6 @@ namespace AirlockClient.Managers.Gamemode
                                 {
                                     AssignRole(SubRoleToType[type], allPlayers, data);
                                 });
->>>>>>> Stashed changes
                             }
                             break;
                         }
@@ -875,84 +863,6 @@ namespace AirlockClient.Managers.Gamemode
 
         public static GameTeam GetTrueTeam(PlayerState player)
         {
-<<<<<<< Updated upstream
-            if (true)
-            {
-                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
-                {
-                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    Role.IsDisplayingRole = true;
-                    RPC_SendSubRole(Player.PlayerId, Data.Name);
-                    string ogName = Player.NetworkName.Value;
-
-                    yield return new WaitForSeconds(1);
-
-                    Player.NetworkName = Data.Name;
-
-                    yield return new WaitForSeconds(3);
-
-                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-
-                    yield return new WaitForSeconds(5);
-
-                    Player.NetworkName = ogName;
-                    Role.IsDisplayingRole = false;
-
-                    yield return new WaitForSeconds(3);
-                    if (roleToChange != GameRole.NotSet)
-                    {
-                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
-                    }
-                }
-            }
-            else
-            {
-                // Old Code
-                if (Player != null && Role != null && Data != null && CurrentMode.Name != "Sandbox")
-                {
-                    if (roleToChange != GameRole.NotSet && displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    Role.IsDisplayingRole = true;
-                    RPC_SendSubRole(Player.PlayerId, Data.Name);
-                    string ogName = Player.NetworkName.Value;
-                    yield return new WaitForSeconds(1);
-                    Player.NetworkName = "WMWMWMWMWMWMWMWM";
-                    yield return new WaitForSeconds(3);
-                    Player.NetworkName = Data.Name;
-                    if (roleToChange != GameRole.NotSet && !displayRoleInstant)
-                    {
-                        Current.Role.AlterPlayerRole(roleToChange, Player.PlayerId);
-                    }
-                    yield return new WaitForSeconds(2);
-                    if (string.IsNullOrEmpty(additional))
-                    {
-                        Player.NetworkName = Data.Description;
-                        yield return new WaitForSeconds(3);
-                    }
-                    else
-                    {
-                        Player.NetworkName = Data.Description;
-                        yield return new WaitForSeconds(1.5f);
-                        Player.NetworkName = additional;
-                        yield return new WaitForSeconds(1.5f);
-                    }
-                    Player.NetworkName = ogName;
-
-                    if (roleToChange != GameRole.NotSet)
-                    {
-                        Player.LocomotionPlayer.TaskPlayer._minigameManager.AssignTasks(Player.LocomotionPlayer.TaskPlayer);
-                    }
-
-                    Role.IsDisplayingRole = false;
-=======
             foreach (Il2CppSystem.Collections.Generic.KeyValuePair<GameRole, Il2CppSystem.Collections.Generic.List<int>> roleEntry in Rolemanager.gameRoleToPlayerIds)
             {
                 foreach (int id in roleEntry.Value)
@@ -964,12 +874,12 @@ namespace AirlockClient.Managers.Gamemode
                             return Rolemanager.GetTeam(roleEntry.Key);
                         }
                     }
->>>>>>> Stashed changes
                 }
             }
 
             return GameTeam.None;
         }
+
 
         public static GameRole GetTrueRoleMR(PlayerState player)
         {

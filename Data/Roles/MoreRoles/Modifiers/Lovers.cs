@@ -1,4 +1,6 @@
 ﻿using AirlockClient.Attributes;
+using AirlockClient.Data.Roles.MoreRoles.Imposter;
+using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
@@ -37,7 +39,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 
             foreach (PlayerState player in spawnManager.ActivePlayerStates)
             {
-                if (player.IsConnected && player != PlayerWithModifier && player.GetComponent<Modifier>() == null)
+                if (player.IsConnected && player != PlayerWithModifier && player.GetComponent<Modifier>() == null && player.GetComponent<Assassin>() == null && player.GetComponent<Lawyer>() == null && player.GetComponent<Executioner>() == null)
                 {
                     validIds.Add(player.PlayerId);
                 }

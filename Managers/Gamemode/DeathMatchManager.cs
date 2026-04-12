@@ -1,5 +1,7 @@
 ﻿using AirlockClient.AC;
 using AirlockClient.Attributes;
+using AirlockClient.Data.Roles.CrownCatchers.Impostor;
+using AirlockClient.Data.Roles.CrownCatchers.Crewmate;
 using AirlockClient.Managers.Debug;
 using Il2CppFusion;
 using Il2CppSG.Airlock;

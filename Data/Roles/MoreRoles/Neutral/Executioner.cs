@@ -47,8 +47,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             if (validIds.Count == 0) Destroy(this);
 
             playerToVoteOut = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
-            Data.Name = "Target: " + (playerToVoteOut != null ? GetColorName(playerToVoteOut.ColorId) : "No Target");
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, playerToVoteOut.NetworkName.Value);
+
+
+            PlayerWithRole.SoulLinkID = playerToVoteOut.PlayerId;
+
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         PlayerState playerToVoteOut;

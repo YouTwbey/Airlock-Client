@@ -38,7 +38,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         {
             if (arsonist != null && arsonist.PlayerWithRole != null)
             {
-                if (killer.KnownGameRole != GameRole.GuardianAngel && killer.KnownGameRole != GameRole.Tracker && killer != arsonist.PlayerWithRole && killer.KnownGameRole != GameRole.Revenger && killer.KnownGameRole != GameRole.Sheriff && killer.KnownGameRole != GameRole.VIP)
+                if (MoreRolesManager.GetTrueRoleMR(killer) != GameRole.GuardianAngel && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Tracker && killer != arsonist.PlayerWithRole && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Revenger && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Sheriff && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.VIP)
                 {
                     if (FindObjectOfType<VoteManager>())
                     {
@@ -54,7 +54,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             }
             else 
             {
-                if (killer.KnownGameRole != GameRole.GuardianAngel && killer.KnownGameRole != GameRole.Tracker && killer.KnownGameRole != GameRole.Revenger && killer.KnownGameRole != GameRole.Sheriff && killer.KnownGameRole != GameRole.VIP)
+                if (MoreRolesManager.GetTrueRoleMR(killer) != GameRole.GuardianAngel && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Tracker && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Revenger && killer.KnownGameRole != GameRole.Sheriff && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.VIP)
                 {
                     if (FindObjectOfType<VoteManager>())
                     {

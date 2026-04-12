@@ -102,22 +102,23 @@ namespace AirlockClient.Patches
             }
 
             Deafener deafener = Object.FindObjectOfType<Deafener>();
-            if (deafener != null && deafener.PlayerWithRole != null && deafener.CanMutePlayer && action == (int)ProximityTargetedAction.Kill)
+            if (deafener != null && deafener.PlayerWithRole != null && deafener.CanMutePlayer && action == (int)ProximityTargetedAction.Kill && deafener.PlayerWithRole.SoulLinkID == -1)
             {
                 deafener.PlayerToMute = target;
+                deafener.PlayerWithRole.SoulLinkID = deafener.PlayerToMute.PlayerId;
                 deafener.OriginalRole = MoreRolesManager.GetTrueRoleMR(target);
                 return false;
             }
-            else if (deafener != null && deafener.PlayerWithRole != null && !deafener.CanMutePlayer && action == (int)ProximityTargetedAction.Kill)
+            else if (deafener != null && deafener.PlayerWithRole != null && !deafener.CanMutePlayer && action == (int)ProximityTargetedAction.Kill && deafener.PlayerWithRole.SoulLinkID == deafener.PlayerWithRole.PlayerId)
             {
-                Logging.Log("Deafener has already chosen a player");
+                Logging.Debug_Log("Deafener has already chosen a player");
                 return true;
             }
             return true;
         }
         private static IEnumerator RestoreFromSnapshot(PlayerSnapshot snapshot)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(0.5f);
 
             snapshot.Player.ColorId = snapshot.ColorId;
             snapshot.Player.HandsId = snapshot.HandsId;
@@ -126,9 +127,10 @@ namespace AirlockClient.Patches
         }
         private static IEnumerator DelayHatRestore(PlayerSnapshot snapshot)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(0.5f);
 
-            snapshot.Player.HatId = snapshot.HatId;
+            snapshot.Player.HatId = 12;
+            PlayerSavedState.SetHat(snapshot.Player.PlayerId, snapshot.HatId);
         }
     }
     public class PlayerSnapshot

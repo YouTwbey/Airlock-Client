@@ -1,14 +1,19 @@
-﻿using Il2CppSystem.Collections.Generic;
-using Il2CppSG.Airlock;
+﻿using Il2CppSG.Airlock;
 using AirlockAPI.Handlers;
+using Il2CppFusion;
+using Il2CppSG.Airlock.Network;
+using static AirlockAPI.Managers.NetworkManager;
+using AirlockAPI.Attributes;
+using AirlockAPI.Data;
+using Il2CppSystem.IO;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace AirlockClient.Attributes
 {
     public class AirlockClientGamemode : CustomGameHandler
     {
         public Dictionary<PlayerState, SubRole> AssignedSubRoles = new Dictionary<PlayerState, SubRole>();
-<<<<<<< Updated upstream
-=======
         public Dictionary<PlayerState, Modifier> AssignedModifiers = new Dictionary<PlayerState, Modifier>();
         public static List<PlayerRef> AirlockClientUsers = new List<PlayerRef>();
         SpawnManager spawn;
@@ -48,7 +53,6 @@ namespace AirlockClient.Attributes
                 AirlockClientUsers.Remove(plr);
             }
         }
->>>>>>> Stashed changes
 
         public static AirlockClientGamemode Get()
         {

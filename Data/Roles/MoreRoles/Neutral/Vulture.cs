@@ -21,7 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Vulture)",
+            Name = "Vulture",
             RoleType = "Neutral",
             Description = "Eat Corpses",
             AC_Description = $"Point Near a dead body makes you eat said body, you must eat {MoreRolesManager.MaxBodiesEatenCount} bodies to win",

@@ -39,9 +39,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             }
 
             if (validIds.Count == 0) Destroy(this);
-
+            
             playerToKill = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
-            Data.Name = "Target: " + (playerToKill != null ? GetColorName(playerToKill.ColorId) : "No Target");
+
+            PlayerWithRole.SoulLinkID = playerToKill.PlayerId;
+
             MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 

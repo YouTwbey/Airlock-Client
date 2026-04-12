@@ -52,7 +52,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
         {
-
+            
         }
 
         public System.Collections.IEnumerator DelaySpectator()
@@ -60,6 +60,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             yield return new WaitForSeconds(2f);
 
             PlayerToMute.IsSpectating = true;
+        }
+
+        public override void OnGameEnd(GameTeam teamThatWon)
+        {
+            PlayerToMute = null;
         }
     }
 }

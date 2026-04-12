@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using AirlockAPI.Data;
+using HarmonyLib;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
 using MelonLoader;
@@ -52,11 +53,14 @@ namespace AirlockClient.Patches
 
         public static void Postfix(NetworkedLocomotionPlayer __instance)
         {
-            StateIdToPlayerId[__instance._playerState.PlayerId] = __instance.PlayerID;
-            PlayerSavedState.Init(__instance.PlayerID, __instance._playerState.ColorId, __instance._playerState.HatId);
+            if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
+            {
+                StateIdToPlayerId[__instance._playerState.PlayerId] = __instance.PlayerID;
+                PlayerSavedState.Init(__instance.PlayerID, __instance._playerState.ColorId, __instance._playerState.HatId);
 
-            if (__instance._playerState.ColorId != 18)
-                __instance._playerState.ColorId = 18;
+                if (__instance._playerState.ColorId != 18)
+                    __instance._playerState.ColorId = 18;
+            }
         }
     }
 
@@ -65,10 +69,13 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(NetworkedLocomotionPlayer __instance)
         {
-            __instance.PState.ColorId = 18;
+            if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
+            {
+                __instance.PState.ColorId = 18;
 
-            if (PlayerSavedState.TryGet(__instance.PlayerID, out int color, out int hat))
-                MelonCoroutines.Start(RestoreAfterDelay(__instance, color, hat));
+                if (PlayerSavedState.TryGet(__instance.PlayerID, out int color, out int hat))
+                    MelonCoroutines.Start(RestoreAfterDelay(__instance, color, hat));
+            }
         }
 
         private static IEnumerator RestoreAfterDelay(NetworkedLocomotionPlayer player, int color, int hat)
@@ -89,10 +96,13 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(PlayerState __instance, ref int i)
         {
-            if (i == 18) return;
+            if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
+            {
+                if (i == 18) return;
 
-            if (BreakColorsPatch.StateIdToPlayerId.TryGetValue(__instance.PlayerId, out int playerId))
-                PlayerSavedState.SetColor(playerId, i);
+                if (BreakColorsPatch.StateIdToPlayerId.TryGetValue(__instance.PlayerId, out int playerId))
+                    PlayerSavedState.SetColor(playerId, i);
+            }
         }
     }
 
@@ -101,9 +111,12 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(NetworkedLocomotionPlayer __instance, ref int hatId)
         {
-            if (hatId == 18) return;
+            if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
+            {
+                if (hatId == 18) return;
 
-            PlayerSavedState.SetHat(__instance.PlayerID, hatId);
+                PlayerSavedState.SetHat(__instance.PlayerID, hatId);
+            }
         }
     }
     [HarmonyPatch(typeof(NetworkedLocomotionPlayer),nameof(NetworkedLocomotionPlayer.RPC_SpawnInitialization))]

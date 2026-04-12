@@ -51,7 +51,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                     OtherDuelist.MainDuelist = this;
                     OtherDuelist.playerToKill = PlayerWithRole;
 
-                    Data.Name = "Duelist: " + (OtherDuelist.PlayerWithRole != null ? OtherDuelist.GetColorName(OtherDuelist.PlayerWithRole.ColorId) : "No Target");
+                    PlayerWithRole.SoulLinkID = playerToKill.PlayerId;
                     MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, playerToKill.NetworkName.Value, GameRole.Vigilante);
                 }
                 else
@@ -110,8 +110,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         void Start()
         {
-            Data.Name = "Duelist: " + (MainDuelist.PlayerWithRole != null ? GetColorName(MainDuelist.PlayerWithRole.ColorId) : "No Target");
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, MainDuelist.PlayerWithRole.NetworkName.Value, GameRole.Vigilante);
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, "", GameRole.Vigilante);
         }
 
         public override void OnPlayerKilled(PlayerState playerKilled)

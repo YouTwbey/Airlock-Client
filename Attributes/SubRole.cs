@@ -81,5 +81,6 @@ namespace AirlockClient.Attributes
         public virtual void OnAllVotesCast() { }
         public virtual void OnRoleRemoved() { }
         public virtual void OnGameEnd(GameTeam teamThatWon) { }
+        public virtual void OnSpellCast(PlayerState cursed) { }
     }
 }

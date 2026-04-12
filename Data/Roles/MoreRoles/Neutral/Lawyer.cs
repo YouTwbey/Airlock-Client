@@ -50,8 +50,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
                 {
                     Client = validIds[Random.Range(0, validIds.Count)];
 
-                    Data.Name = "Client: " + (Client != null ? GetColorName(Client.ColorId) : "No Target");
-                    MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, Client.NetworkName.Value);
+                    PlayerWithRole.SoulLinkID = Client.PlayerId;
+                    MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
                 }
                 else
                 {

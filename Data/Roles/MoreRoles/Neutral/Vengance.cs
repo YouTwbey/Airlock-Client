@@ -14,6 +14,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
     {
         public PlayerState PlayerWithRoleVoted;
         public bool PlayerWithRoleSkipped = false;
+        public VoteManager voteManager;
 
         public static SubRoleData Data = new SubRoleData
         {
@@ -26,12 +27,20 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         };
         void Start()
         {
+            voteManager = FindObjectOfType<VoteManager>();
             MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         public override void OnPlayerVoted(PlayerState votedPlayer)
         {
-            PlayerWithRoleVoted = votedPlayer;
+            if (voteManager.SheriffId == -1)
+            {
+                PlayerWithRoleVoted = votedPlayer;
+            }
+            else
+            {
+                PlayerWithRoleSkipped = true;
+            }
         }
 
         public override void OnPlayerVotedSkip()
