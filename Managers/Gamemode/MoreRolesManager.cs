@@ -34,7 +34,7 @@ namespace AirlockClient.Managers.Gamemode
         public static Dictionary<string, ModifierData> ModifierToData;
         public static Dictionary<string, System.Type> ModifierToType;
         public static int MaxBodiesEatenCount = 3;
-        public static int BomberCooldown = 0;
+        public static int BomberCooldownVar = 25;
         public static int TasksAssignedCount = 4;
         public static RoleManager Rolemanager;
         public static SpawnManager Spawn;
@@ -202,7 +202,7 @@ namespace AirlockClient.Managers.Gamemode
             TextMeshProUGUI amountBC = bomberCooldownSetting.transform.Find("Amount").GetComponent<TextMeshProUGUI>();
 
             roleNameBC.text = "Bomber Coolown";
-            amountBC.text = "(" + BomberCooldown.ToString() + ")";
+            amountBC.text = "(" + BomberCooldownVar.ToString() + ")";
 
             decreaseBC.onClick.AddListener((UnityAction)(() =>
             {
@@ -287,17 +287,17 @@ namespace AirlockClient.Managers.Gamemode
         }
         void ChangeBomberCooldown(TextMeshProUGUI BomberTime, int changeby)
         {
-            BomberCooldown += changeby;
-            if (BomberCooldown < 0)
+            BomberCooldownVar += changeby;
+            if (BomberCooldownVar < 0)
             {
-                BomberCooldown = 60;
+                BomberCooldownVar = 60;
             }
-            else if (BomberCooldown > 60)
+            else if (BomberCooldownVar > 60)
             {
-                BomberCooldown = 0;
+                BomberCooldownVar = 0;
             }
 
-            BomberTime.text = "(" + BomberCooldown.ToString() + ")";
+            BomberTime.text = "(" + BomberCooldownVar.ToString() + ")";
         }
         void ChangeDissolveTime(TextMeshProUGUI DisolveTime, int changeby)
         {
@@ -754,25 +754,25 @@ namespace AirlockClient.Managers.Gamemode
             }
             GUILayout.EndHorizontal();
 
-            //GUILayout.BeginHorizontal();
-            //GUILayout.Label($"[Bomber] Explode Cooldown: {BomberCooldown}s", GUILayout.Width(160));
-            //if (GUILayout.Button("-", GUILayout.Width(25)))
-            //{
-            //BomberCooldown -= 5;
-            //if (BomberCooldown < 0)
-            //{
-            //BomberCooldown = 60;
-            //}
-            //}
-            //if (GUILayout.Button("+", GUILayout.Width(25)))
-            //{
-            //BomberCooldown += 5;
-            //if (BomberCooldown > 60)
-            //{
-            //BomberCooldown = 0;
-            //}
-            //}
-            //GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            GUILayout.Label($"[Bomber] Explode Cooldown: {BomberCooldownVar}s", GUILayout.Width(160));
+            if (GUILayout.Button("-", GUILayout.Width(25)))
+            {
+                BomberCooldownVar -= 5;
+                if (BomberCooldownVar < 0)
+                {
+                    BomberCooldownVar = 60;
+                }
+            }
+            if (GUILayout.Button("+", GUILayout.Width(25)))
+            {
+                BomberCooldownVar += 5;
+                if (BomberCooldownVar > 60)
+                {
+                    BomberCooldownVar = 0;
+                }
+            }
+            GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
             GUILayout.Label($"[Viper] Dissolve Time: {Viper.SecondsUntilDisolve}s", GUILayout.Width(160));

@@ -228,7 +228,15 @@ namespace AirlockClient.Managers.Gamemode
             if (!showDebug) return;
 
             if (Keyboard.current.numpad1Key.wasPressedThisFrame)
-                Impostor.PlayerWithRole.SetNetworkName("Mechanic");
+                foreach (PlayerState player in Spawn.ActivePlayerStates)
+                {
+                    if (player.IsConnected != true)
+                        continue;
+                    if (player.PlayerId != 9)
+                        continue;
+
+                    player.NetworkName = "Jevil";
+                }
 
             if (Impostor == null)
             {

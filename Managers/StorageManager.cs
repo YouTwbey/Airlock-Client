@@ -1,8 +1,11 @@
 ﻿using AirlockClient.Managers.Debug;
+using MelonLoader;
 using MelonLoader.Utils;
+using System;
 using System.IO;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.Networking;
 using static UnityEngine.Object;
 
 namespace AirlockClient.Managers
@@ -23,6 +26,8 @@ namespace AirlockClient.Managers
         public static Sprite InfectedIcon;
         public static Sprite ContainmentIcon;
         public static Sprite SheriffIcon;
+        public static Sprite DeathMatchIcon;
+        public static Sprite CrownRunnersIcon;
 
         // HideNSeek
         public static Sprite DangerMeter0;
@@ -65,37 +70,82 @@ namespace AirlockClient.Managers
 
             if (Bundle != null && Logo == null)
             {
-                Logo = LoadSprite("airlockclient/main/logo.png");
-                ModStamp = LoadSprite("airlockclient/main/modstamp.png");
+                Logo = LoadSprite("AirlockClient.Data.Sprite.Logo.png");
+                ModStamp = LoadModStamp("AirlockClient.Data.Sprite.ModStamp.png");
                 AirlockClient_UI = LoadGameObject("airlockclient/main/airlockclient_ui.prefab");
 
-                MoreRolesIcon = LoadSprite("airlockclient/icons/moreroles.png");
-                HideNSeekIcon = LoadSprite("airlockclient/icons/hidenseek.png");
-                FreeRoamIcon = LoadSprite("airlockclient/icons/freeroam.png");
-                LightsOutIcon = LoadSprite("airlockclient/icons/lightsout.png");
-                InfectedIcon = LoadSprite("airlockclient/icons/infected.png");
-                ContainmentIcon = LoadSprite("airlockclient/icons/containment.png");
-                SheriffIcon = LoadSprite("airlockclient/icons/sheriff.png");
+                MoreRolesIcon = LoadSprite("AirlockClient.Data.Sprite.MoreRolesIcon.png");
+                HideNSeekIcon = LoadSprite("AirlockClient.Data.Sprite.HideNSeekIcon.png");
+                FreeRoamIcon = LoadSprite("AirlockClient.Data.Sprite.FreeRoamIcon.png");
+                LightsOutIcon = LoadSprite("AirlockClient.Data.Sprite.LightsOutIcon.png");
+                InfectedIcon = LoadSprite("AirlockClient.Data.Sprite.InfectedIcon.png");
+                //ContainmentIcon = LoadSprite("AirlockClient.Data.Sprite.containment.png");
+                //SheriffIcon = LoadSprite("AirlockClient.Data.Sprite.sheriff.png");
+                DeathMatchIcon = LoadSprite("AirlockClient.Data.Sprite.DeathMatchIcon.png");
+                CrownRunnersIcon = LoadSprite("AirlockClient.Data.Sprite.CrownRunnersTemp.png");
 
-                DangerMeter0 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/0.png");
-                DangerMeter1 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/1.png");
-                DangerMeter2 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/2.png");
-                DangerMeter3 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/3.png");
-                DangerMeter4 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/4.png");
-                DangerMeter5 = LoadSprite("airlockclient/gamemodes/hidenseek/dangermeter/5.png");
-                DangerMusic0 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/0.wav");
-                DangerMusic1 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/1.wav");
-                DangerMusic2 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/2.wav");
-                DangerMusic3 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/3.wav");
-                DangerMusic4 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/4.wav");
-                DangerMusic5 = LoadAudio("airlockclient/gamemodes/hidenseek/dangermeter/5.wav");
-                SeekerMusic = LoadAudio("airlockclient/gamemodes/hidenseek/seeker.mp3");
+                DangerMeter0 = LoadSprite("AirlockClient.Data.Sprite.0.png");
+                DangerMeter1 = LoadSprite("AirlockClient.Data.Sprite.1.png");
+                DangerMeter2 = LoadSprite("AirlockClient.Data.Sprite.2.png");
+                DangerMeter3 = LoadSprite("AirlockClient.Data.Sprite.3.png");
+                DangerMeter4 = LoadSprite("AirlockClient.Data.Sprite.4.png");
+                DangerMeter5 = LoadSprite("AirlockClient.Data.Sprite.5.png");
+                DangerMusic0 = LoadAudio("AirlockClient.Data.AudioClip.0.wav");
+                DangerMusic1 = LoadAudio("AirlockClient.Data.AudioClip.1.wav");
+                DangerMusic2 = LoadAudio("AirlockClient.Data.AudioClip.2.wav");
+                DangerMusic3 = LoadAudio("AirlockClient.Data.AudioClip.3.wav");
+                DangerMusic4 = LoadAudio("AirlockClient.Data.AudioClip.4.wav");
+                DangerMusic5 = LoadAudio("AirlockClient.Data.AudioClip.5.wav");
+                SeekerMusic = LoadAudio("AirlockClient.Data.AudioClip.Seeker.wav");
             }
         }
 
-        static Sprite LoadSprite(string name)
+        public static Sprite LoadSprite(string resourcePath, float targetWidth = 80f)
         {
-            return Load<Sprite>(name);
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath);
+            if (stream == null) return null;
+
+            MemoryStream ms = new MemoryStream();
+            stream.CopyTo(ms);
+            byte[] bytes = ms.ToArray();
+
+            Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+            tex.filterMode = FilterMode.Bilinear;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            ImageConversion.LoadImage(tex, bytes);
+
+            float ppu = tex.width / targetWidth;
+
+            return Sprite.Create(
+                tex,
+                new Rect(0, 0, tex.width, tex.height),
+                new Vector2(0.5f, 0.5f),
+                ppu,
+                0,
+                SpriteMeshType.FullRect,
+                Vector4.zero,
+                false
+            );
+        }
+
+        public static Sprite LoadModStamp(string resourcePath)
+        {
+            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath);
+            if (stream == null) return null;
+            MemoryStream ms = new MemoryStream();
+            stream.CopyTo(ms);
+            byte[] bytes = ms.ToArray();
+            Texture2D tex = new Texture2D(1, 1);
+            ImageConversion.LoadImage(tex, bytes);
+            return Sprite.Create(
+                tex,
+                new Rect(0, 0, tex.width, tex.height),
+                new Vector2(0.5f, 0.5f),
+                100, 0,
+                SpriteMeshType.FullRect,
+                new Vector4(0, 0, 0, 0),
+                false, null
+            );
         }
 
         static GameObject LoadGameObject(string name)
@@ -105,10 +155,62 @@ namespace AirlockClient.Managers
 
         static AudioClip LoadAudio(string name)
         {
-            return Load<AudioClip>(name);
+            var assembly = Assembly.GetExecutingAssembly();
+
+            var stream = assembly.GetManifestResourceStream(name);
+
+            byte[] data = new byte[stream.Length];
+            stream.Read(data, 0, data.Length);
+
+            using var ms = new MemoryStream(data);
+            using var reader = new BinaryReader(ms);
+
+            reader.ReadBytes(4); 
+            reader.ReadInt32();
+            reader.ReadBytes(4);
+
+            reader.ReadBytes(4);
+            int fmtSize = reader.ReadInt32();
+            reader.ReadInt16();
+            int channels = reader.ReadInt16();
+            int sampleRate = reader.ReadInt32();
+            reader.ReadInt32();
+            reader.ReadInt16();
+            int bitDepth = reader.ReadInt16();
+            if (fmtSize > 16) reader.ReadBytes(fmtSize - 16);
+
+            string chunkId = "";
+            int chunkSize = 0;
+            while (chunkId != "data")
+            {
+                chunkId = new string(reader.ReadChars(4));
+                chunkSize = reader.ReadInt32();
+                if (chunkId != "data") reader.ReadBytes(chunkSize);
+            }
+
+            byte[] rawSamples = reader.ReadBytes(chunkSize);
+            int bytesPerSample = bitDepth / 8;
+            int sampleCount = rawSamples.Length / bytesPerSample;
+            float[] samples = new float[sampleCount];
+
+            for (int i = 0; i < sampleCount; i++)
+            {
+                samples[i] = bitDepth switch
+                {
+                    8 => (rawSamples[i] - 128) / 128f,
+                    16 => BitConverter.ToInt16(rawSamples, i * 2) / 32768f,
+                    24 => (rawSamples[i * 3] | (rawSamples[i * 3 + 1] << 8) | ((sbyte)rawSamples[i * 3 + 2] << 16)) / 8388608f,
+                    32 => BitConverter.ToSingle(rawSamples, i * 4),
+                    _ => throw new NotSupportedException($"Unsupported bit depth: {bitDepth}")
+                };
+            }
+
+            AudioClip clip = AudioClip.Create(name, sampleCount / channels, channels, sampleRate, false);
+            clip.SetData(samples, 0);
+            return clip;
         }
 
-        static T Load<T>(string name) where T : Object
+        static T Load<T>(string name) where T : UnityEngine.Object
         {
             return Bundle.LoadAsset<T>("assets/" + name);
         }

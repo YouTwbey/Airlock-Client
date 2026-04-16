@@ -31,30 +31,47 @@ namespace AirlockClient.Patches
                     if (CurrentMode.Name == "More Roles")
                     {
                         rend.sprite = StorageManager.MoreRolesIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Hide N Seek")
                     {
                         rend.sprite = StorageManager.HideNSeekIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Sandbox")
                     {
                         rend.sprite = StorageManager.FreeRoamIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Lights Out")
                     {
                         rend.sprite = StorageManager.LightsOutIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Infection")
                     {
                         rend.sprite = StorageManager.InfectedIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Containment")
                     {
                         rend.sprite = StorageManager.ContainmentIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Round Up")
                     {
                         rend.sprite = StorageManager.SheriffIcon;
+                        rend.preserveAspect = true;
+                    }
+                    else if (CurrentMode.Name == "DeathMatch")
+                    {
+                        rend.sprite = StorageManager.DeathMatchIcon;
+                        rend.preserveAspect = true;
+                    }
+                    else if (CurrentMode.Name == "Crown Runners")
+                    {
+                        rend.sprite = StorageManager.CrownRunnersIcon;
+                        rend.preserveAspect = true;
                     }
                     else
                     {

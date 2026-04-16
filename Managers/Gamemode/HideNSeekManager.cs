@@ -10,6 +10,7 @@ using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Sabotage;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements.Experimental;
 using static AirlockAPI.Managers.NetworkManager;
 using static AirlockClient.Data.Enums;
@@ -167,6 +168,9 @@ namespace AirlockClient.Managers.Gamemode
 
         void Update()
         {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                DangerMeterHandler.Init(GameObject.Find("PlayerState (9)").transform);
+
             if (State.InTaskState())
             {
                 if (GameStarted == false)
@@ -290,6 +294,8 @@ namespace AirlockClient.Managers.Gamemode
                 }
             }
         }
+
+
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role)
         {

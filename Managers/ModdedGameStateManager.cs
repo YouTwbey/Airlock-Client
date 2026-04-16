@@ -277,7 +277,7 @@ namespace AirlockClient.Managers
                 }
                 else
                 {
-                    //state._preventMatchEnding.Value = false;
+                    state._preventMatchEnding.Value = false;
                 }
             }
         }

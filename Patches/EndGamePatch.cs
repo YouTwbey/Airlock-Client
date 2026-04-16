@@ -74,7 +74,7 @@ namespace AirlockClient.Patches
                     Logging.Debug_Log("Lawyer isnt null checking if they can win.");
                     if (lawyer.LawyerWinsWithClient)
                     {
-                        Logging.Debug_Log("lawyer's client wasnt voted out they can win checking if their client won.");
+                        Logging.Debug_Log("lawyer's client wasnt voted out they can win, checking if their client won.");
                         if (GetTrueTeam(lawyer.Client) == winningTeam)
                         {
                             Logging.Debug_Log($"Client TrueTeam: {GetTrueTeam(lawyer.Client)}, WinningTeam: {winningTeam}");

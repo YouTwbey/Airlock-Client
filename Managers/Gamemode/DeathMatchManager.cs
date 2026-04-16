@@ -164,7 +164,7 @@ namespace AirlockClient.Managers.Gamemode
                     target.gameObject.AddComponent<Vigilante>();
                     target.NetworkName = "<#0FF>" + rawName;
                     target.HatId = 74;
-                    target.SkinId = 179;
+                    target.SkinId = 161;
                     target.HandsId = 128;
                 }
                 else if (rolesToAssign[i] == GameRole.Impostor)
@@ -172,7 +172,7 @@ namespace AirlockClient.Managers.Gamemode
                     target.gameObject.AddComponent<Impostors>();
                     target.NetworkName = "<#F00>" + rawName;
                     target.HatId = 115;
-                    target.SkinId = 163;
+                    target.SkinId = 161;
                     target.HandsId = 132;
                 }
             }
@@ -260,9 +260,10 @@ namespace AirlockClient.Managers.Gamemode
             {
                 if (!player.IsConnected)
                     continue;
-
-                player.IsAlive = false;
-                player.IsAlive = true;
+                if (GetTrueRoleDM(player) == GameRole.Impostor)
+                {
+                    AntiCheat.KillPlayerWithAntiCheat(player, player);
+                }
             }
         }
     }
