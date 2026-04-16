@@ -39,7 +39,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 
             foreach (PlayerState player in spawnManager.ActivePlayerStates)
             {
-                if (player.IsConnected && player != PlayerWithModifier && player.GetComponent<Modifier>() == null && player.GetComponent<Assassin>() == null && player.GetComponent<Lawyer>() == null && player.GetComponent<Executioner>() == null)
+                if (player.IsConnected && player != PlayerWithModifier && player.GetComponent<Modifier>() == null && player.GetComponent<Assassin>() == null && player.GetComponent<Lawyer>() == null && player.GetComponent<Executioner>() == null && player.GetComponent<Silencer>())
                 {
                     validIds.Add(player.PlayerId);
                 }

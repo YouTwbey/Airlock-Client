@@ -35,7 +35,6 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         void Start()
         {
             MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
-            SNIPE_COOLDOWN = ModdedGameStateManager.Instance.GetRoleSetting(Enums.RoleIntSettings.KillCooldown).Variable.Value;
 
             MelonCoroutines.Start(SnipeCooldown());
         }

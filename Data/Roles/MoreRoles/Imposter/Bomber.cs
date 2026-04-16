@@ -10,6 +10,7 @@ using AirlockClient.Managers;
 using AirlockClient.AC;
 using System;
 using Il2CppSystem;
+using System.Collections;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -31,9 +32,10 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         void Start()
         {
             MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(BomberCooldown());
         }
 
-        bool canExplode = true;
+        bool canExplode = false;
         bool gameEnded = false;
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
         {
@@ -48,7 +50,6 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             if ((PlayerWithRole.LocomotionPlayer._prevLeftHandPose == HandPoses.Point || PlayerWithRole.LocomotionPlayer._prevRightHandPose == HandPoses.Point || input.handPoses == new Vector2Int(1, 2)) && PlayerWithRole.IsAlive && canExplode && !gameEnded && ModdedGameStateManager.Instance.state.InTaskState())
             {
-                //if (MoreRolesManager.BomberCooldown - )
                 foreach (NetworkedLocomotionPlayer player in FindObjectsOfType<NetworkedLocomotionPlayer>())
                 {
                     if (player != null)
@@ -67,6 +68,12 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
                 canExplode = false;
             }
+        }
+
+        public IEnumerator BomberCooldown()
+        {
+            yield return new WaitForSeconds(MoreRolesManager.BomberCooldownVar + 10);
+            canExplode = true;
         }
     }
 }
