@@ -931,7 +931,7 @@ namespace AirlockClient.Managers.Gamemode
             if (!_pendingDisplay.ContainsKey(player.PlayerId))
             {
                 _pendingDisplay[player.PlayerId] = (null, "", data, GameRole.NotSet, false);
-                Logging.Debug_Log($"[QueueModifierDisplay] No existing role for {player.NetworkName.Value}, storing modifier only");
+                MelonCoroutines.Start(WaitAndDisplay(player, null));
             }
             else
             {
@@ -943,47 +943,39 @@ namespace AirlockClient.Managers.Gamemode
 
         private static System.Collections.IEnumerator WaitAndDisplay(PlayerState player, SubRole role)
         {
-            Logging.Debug_Log($"[WaitAndDisplay] Waiting for player: {player.NetworkName.Value}");
-
             yield return new WaitForSeconds(0.5f);
 
             if (!_pendingDisplay.TryGetValue(player.PlayerId, out var pending))
-            {
-                Logging.Debug_Log($"[WaitAndDisplay] No pending display found for {player.NetworkName.Value}");
                 yield break;
-            }
 
             _pendingDisplay.Remove(player.PlayerId);
 
-            Logging.Debug_Log($"[WaitAndDisplay] Displaying — Role: {pending.subRole?.Name}, Modifier: {pending.modifier?.Name}, Additional: {pending.additional}");
-
-            SubRoleData subRoleData = pending.subRole;
-            ModifierData modData = pending.modifier;
-            string additional = pending.additional;
-
-            if (subRoleData == null || player == null || CurrentMode.Name == "Sandbox")
-            {
-                Logging.Debug_Log($"[WaitAndDisplay] Bailing — subRoleData null: {subRoleData == null}, player null: {player == null}");
+            if (player == null || CurrentMode.Name == "Sandbox")
                 yield break;
-            }
+
+            if (pending.subRole == null && pending.modifier == null)
+                yield break;
 
             if (pending.roleToChange != GameRole.NotSet && pending.displayRoleInstant)
                 Current.Role.AlterPlayerRole(pending.roleToChange, player.PlayerId);
 
-            role.IsDisplayingRole = true;
-            RPC_SendSubRole(player.PlayerId, subRoleData.Name);
+            if (role != null) role.IsDisplayingRole = true;
+            if (pending.subRole != null)
+                RPC_SendSubRole(player.PlayerId, pending.subRole.Name);
+
             string ogName = player.NetworkName.Value;
 
             yield return new WaitForSeconds(1);
 
-            string displayName = !string.IsNullOrEmpty(additional)
-                ? subRoleData.Name[0] + ":" + additional
-                : subRoleData.Name;
+            string displayName = pending.subRole != null
+                ? (!string.IsNullOrEmpty(pending.additional)
+                    ? pending.subRole.Name[0] + ":" + pending.additional
+                    : pending.subRole.Name)
+                : "";
 
-            if (modData != null)
-                displayName += "+" + modData.Name;
+            if (pending.modifier != null)
+                displayName += (displayName.Length > 0 ? "+" : "") + pending.modifier.Name;
 
-            Logging.Debug_Log($"[WaitAndDisplay] Setting name to: {displayName}");
             player.NetworkName = displayName;
 
             yield return new WaitForSeconds(3);
@@ -994,7 +986,7 @@ namespace AirlockClient.Managers.Gamemode
             yield return new WaitForSeconds(5);
 
             player.NetworkName = ogName;
-            role.IsDisplayingRole = false;
+            if (role != null) role.IsDisplayingRole = false;
 
             yield return new WaitForSeconds(3);
 
@@ -1018,6 +1010,8 @@ namespace AirlockClient.Managers.Gamemode
 
             return roleName;
         }
+
+
     }
 }
 

@@ -101,7 +101,7 @@ namespace AirlockClient.Patches
                 }
             }
 
-            Deafener deafener = Object.FindObjectOfType<Deafener>();
+            Silencer deafener = Object.FindObjectOfType<Silencer>();
             if (deafener != null && deafener.PlayerWithRole != null && deafener.CanMutePlayer && action == (int)ProximityTargetedAction.Kill && deafener.PlayerWithRole.SoulLinkID == -1)
             {
                 deafener.PlayerToMute = target;

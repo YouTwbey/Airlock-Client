@@ -22,7 +22,7 @@ namespace AirlockClient.Patches
 
         public static void SetHat(int id, int hat)
         {
-            if (hat == 18) return;
+            if (hat == 18 || hat == 12) return;
             _store.TryGetValue(id, out var current);
             _store[id] = (current.color, hat);
         }

@@ -71,9 +71,9 @@ namespace AirlockClient.Managers.Gamemode
                 ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.TagCooldown, 999);
                 ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.ShortTasks, 0);
                 ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.MaxVigilantes, 1);
-                ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.VigilanteKillCooldown, 15);
+                ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.VigilanteKillCooldown, 0);
                 ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.VigilanteNumOfKills, 50);
-                ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.KillCooldown, 15);
+                ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.KillCooldown, 0);
                 ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.TagNumTasksAssigned, 0);
                 ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.TagTotalTasks, 9999);
                 if (State._preventMatchEnding.Value == false)
@@ -264,6 +264,8 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     AntiCheat.KillPlayerWithAntiCheat(player, player);
                 }
+
+                player.IsAlive = true;
             }
         }
     }
