@@ -1,6 +1,5 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
-using AirlockClient.Data.Roles.MoreRoles.Broken;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
@@ -9,7 +8,6 @@ using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.UI.Moderation;
-using Il2CppSG.Platform;
 using Il2CppSystem.IO;
 using MelonLoader;
 using System;
