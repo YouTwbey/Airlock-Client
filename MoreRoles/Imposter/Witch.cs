@@ -82,7 +82,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                 foreach (PlayerState player in spellsCasted.Keys)
                 {
                     RemoveSpell(player, false);
-                    Logging.Log($"ejected: {ejectedPlayer}, clearing: {player.PlayerModerationUsername ?? "nobody"}");
+                    Logging.Debug_Log($"ejected: {ejectedPlayer}, clearing: {player.PlayerModerationUsername ?? "nobody"}");
                 }
                 return;
             }
@@ -92,7 +92,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                 foreach (PlayerState player in spellsCasted.Keys)
                 {
                     RemoveSpell(player, true);
-                    Logging.Log($"voted: {ejectedPlayer} killing: {player.PlayerModerationUsername ?? "nobody"}");
+                    Logging.Debug_Log($"voted: {ejectedPlayer} killing: {player.PlayerModerationUsername ?? "nobody"}");
                 }
             }
         }

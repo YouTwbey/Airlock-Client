@@ -110,7 +110,7 @@ namespace AirlockClient.Managers.Gamemode
             if (System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role) != null)
             {
                 SubRoleData roleData = (SubRoleData)System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role).GetField("Data").GetValue(null);
-                Logging.Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
+                Logging.Debug_Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
                 Logging.Debug_Log("ROLE: " + roleData.Name + " | " + roleData.AC_Description);
             }
         }
@@ -912,7 +912,7 @@ namespace AirlockClient.Managers.Gamemode
             {
                 var existing = _pendingDisplay[player.PlayerId];
                 _pendingDisplay[player.PlayerId] = (data, additional, existing.modifier, roleToChange, displayRoleInstant);
-                Logging.Log($"[QueueRoleDisplay] Merged with existing modifier: {existing.modifier?.Name}");
+                Logging.Debug_Log($"[QueueRoleDisplay] Merged with existing modifier: {existing.modifier?.Name}");
             }
 
             MelonCoroutines.Start(WaitAndDisplay(player, role));
@@ -926,7 +926,7 @@ namespace AirlockClient.Managers.Gamemode
                 return;
             }
 
-            Logging.Log($"[QueueModifierDisplay] Player: {player.NetworkName.Value}, Modifier: {data.Name}");
+            Logging.Debug_Log($"[QueueModifierDisplay] Player: {player.NetworkName.Value}, Modifier: {data.Name}");
 
             if (!_pendingDisplay.ContainsKey(player.PlayerId))
             {

@@ -43,12 +43,12 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
                     if (FindObjectOfType<VoteManager>())
                     {
                         FindObjectOfType<VoteManager>().RPC_CallVote(PlayerWithRole.PlayerId, killer.PlayerId, true);
-                        Logging.Log($"Arsonist isnt null and somebody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
+                        Logging.Debug_Log($"Arsonist isnt null and somebody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
                         return;
                     }
                     else
                     {
-                        Logging.Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()} or {arsonist.PlayerWithRole.PlayerModerationUsername ?? "nobody"} is arsonist");
+                        Logging.Debug_Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()} or {arsonist.PlayerWithRole.PlayerModerationUsername ?? "nobody"} is arsonist");
                     }
                 }
             }
@@ -59,13 +59,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
                     if (FindObjectOfType<VoteManager>())
                     {
                         FindObjectOfType<VoteManager>().RPC_CallVote(PlayerWithRole.PlayerId, killer.PlayerId, true);
-                        Logging.Log($"Arsonist is null or nobody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
+                        Logging.Debug_Log($"Arsonist is null or nobody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
                         return;
                     }
                 }
                 else
                 {
-                    Logging.Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()}");
+                    Logging.Debug_Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()}");
                 } 
                     
             }
