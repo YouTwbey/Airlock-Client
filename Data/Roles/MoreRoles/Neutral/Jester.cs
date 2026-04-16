@@ -2,6 +2,7 @@
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Network;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 
@@ -13,6 +14,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
     /// </summary>
     public class Jester : SubRole
     {
+        public GameStateManager state;
+        public NetworkedKillBehaviour killing;
+
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Jester",
@@ -25,7 +29,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            state = FindObjectOfType<GameStateManager>();
+            killing = FindObjectOfType<NetworkedKillBehaviour>();
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
@@ -34,7 +40,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             {
                 if (ejectedPlayer == PlayerWithRole)
                 {
-                    ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, -1, GameplayStates.Task, 0);
+                    killing.AlterRole(GameRole.Sheriff, PlayerWithRole.PlayerId, 0);
+                    state.EndGame(GameTeam.Other);
                 }
             }
         }

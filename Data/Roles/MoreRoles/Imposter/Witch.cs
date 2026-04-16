@@ -1,12 +1,14 @@
-﻿using AirlockClient.AC;
+﻿using System.Collections.Generic;
+using AirlockClient.AC;
 using AirlockClient.Attributes;
+using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
-using System.Collections.Generic;
+using static UnityEngine.GraphicsBuffer;
 
-namespace AirlockClient.Data.Roles.MoreRoles.Broken
+namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
     /// <summary>
     /// Imposter Role
@@ -26,26 +28,37 @@ namespace AirlockClient.Data.Roles.MoreRoles.Broken
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         public Dictionary<PlayerState, string> spellsCasted = new Dictionary<PlayerState, string>();
 
-        void AddSpell(PlayerState state)
+        void AddSpell(PlayerState target)
         {
-            if (!spellsCasted.ContainsKey(state))
+            if (!spellsCasted.ContainsKey(target))
             {
-                AntiCheat.CastSpellWithAntiCheat(this, state);
+                spellsCasted[target] = target.NetworkName.Value;
+                AntiCheat.CastSpellWithAntiCheat(this, target);
             }
         }
 
-        void RemoveSpell(PlayerState state, bool toggleKill = false)
+
+        void RemoveSpell(PlayerState target, bool toggleKill = false)
         {
-            if (spellsCasted.ContainsKey(state))
+            if (spellsCasted.ContainsKey(target))
             {
-                AntiCheat.RemoveSpellWithAntiCheat(this, state, toggleKill);
+                string OGName = spellsCasted[target];
+
+                AntiCheat.RemoveSpellWithAntiCheat(this, target, toggleKill);
+
+                // Note: Remove these two lines if you want it to keep the [†] as a sign of death from the witch post meeting
+                if (target.NetworkName.Value.Contains("[†]"))
+                    target.NetworkName = OGName;
+
+                spellsCasted.Remove(target);
             }
         }
+
 
         public override void OnGameEnd(GameTeam teamThatWon)
         {
@@ -55,24 +68,53 @@ namespace AirlockClient.Data.Roles.MoreRoles.Broken
             }
         }
 
-        public override void OnPlayerKilled(PlayerState playerKilled)
+        public override void OnSpellCast(PlayerState cursed)
         {
-            AddSpell(playerKilled);
+            AddSpell(cursed);
         }
 
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
         {
-            foreach (PlayerState player in spellsCasted.Keys)
+            var witchPlayer = FindObjectOfType<Witch>().PlayerWithRole;
+
+            if (ejectedPlayer == witchPlayer)
             {
-                RemoveSpell(player, true);
+                foreach (PlayerState player in spellsCasted.Keys)
+                {
+                    RemoveSpell(player, false);
+                    Logging.Debug_Log($"ejected: {ejectedPlayer}, clearing: {player.PlayerModerationUsername ?? "nobody"}");
+                }
+                return;
+            }
+
+            if (witchPlayer != null && witchPlayer.IsAlive)
+            {
+                foreach (PlayerState player in spellsCasted.Keys)
+                {
+                    RemoveSpell(player, true);
+                    Logging.Debug_Log($"voted: {ejectedPlayer} killing: {player.PlayerModerationUsername ?? "nobody"}");
+                }
             }
         }
 
         public override void OnVotingBegan(PlayerState bodyReported, PlayerState reportingPlayer)
         {
-            foreach (PlayerState player in spellsCasted.Keys)
+            foreach (KeyValuePair<PlayerState, string> Spell in spellsCasted)
             {
-                player.NetworkName.Value = "[†] " + spellsCasted[player];
+                PlayerState Target = Spell.Key;
+                if (Target.IsAlive && !Target.NetworkName.Value.Contains("[†]"))
+                    Target.NetworkName = "[†] " + Spell.Value;
+            }
+        }
+
+        public override void OnPlayerKilled(PlayerState playerKilled)
+        {
+            if (playerKilled == PlayerWithRole)
+            {
+                foreach (PlayerState player in spellsCasted.Keys)
+                {
+                    RemoveSpell(player, false);
+                }
             }
         }
     }

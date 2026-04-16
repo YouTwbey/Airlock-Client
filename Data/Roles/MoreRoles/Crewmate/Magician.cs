@@ -24,7 +24,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         bool canRecieveVanish;

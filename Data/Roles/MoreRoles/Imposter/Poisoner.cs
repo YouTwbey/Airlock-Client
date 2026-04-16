@@ -26,7 +26,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         public override void OnPlayerKilled(PlayerState playerKilled)

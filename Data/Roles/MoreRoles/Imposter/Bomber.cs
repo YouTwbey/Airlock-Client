@@ -8,6 +8,9 @@ using Il2CppSG.Airlock.XR;
 using MelonLoader;
 using AirlockClient.Managers;
 using AirlockClient.AC;
+using System;
+using Il2CppSystem;
+using System.Collections;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -18,7 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
     {
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Bomber (Point)",
+            Name = "Bomber",
             RoleType = "Imposter",
             Description = "Explode others",
             AC_Description = "When pointing, you will kill yourself but others near you.",
@@ -28,10 +31,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(BomberCooldown());
         }
 
-        bool canExplode = true;
+        bool canExplode = false;
         bool gameEnded = false;
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
         {
@@ -64,6 +68,12 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
                 canExplode = false;
             }
+        }
+
+        public IEnumerator BomberCooldown()
+        {
+            yield return new WaitForSeconds(MoreRolesManager.BomberCooldownVar + 10);
+            canExplode = true;
         }
     }
 }

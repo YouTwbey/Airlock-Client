@@ -7,7 +7,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
     /// <summary>
     /// Crewmate Role
-    /// Sherrif has to kill imposter. If they kill a crewmate, they will die and the crewmate lives.
+    /// Sheriff has to kill imposter. If they kill a crewmate, they will die and the crewmate lives.
     /// </summary>
     public class Sheriff : SubRole
     {
@@ -23,7 +23,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, "", GameRole.Vigilante));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, "", GameRole.Vigilante);
         }
     }
 }
