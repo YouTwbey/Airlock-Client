@@ -10,6 +10,7 @@ using Il2CppSG.Airlock.Roles;
 using Il2CppSG.Airlock.Sabotage;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements.Experimental;
 using static AirlockAPI.Managers.NetworkManager;
 using static AirlockClient.Data.Enums;
@@ -56,7 +57,7 @@ namespace AirlockClient.Managers.Gamemode
         public override bool OnGameStart()
         {
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.MaxInfected, 1);
-            ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.NumImposters, 1);
+            ModdedGameStateManager.Instance.SetRoleSetting(RoleIntSettings.NumImposters, 1);
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.TagCooldown, 10);
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.TagTotalTasks, 200);
 
@@ -167,6 +168,9 @@ namespace AirlockClient.Managers.Gamemode
 
         void Update()
         {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                DangerMeterHandler.Init(GameObject.Find("PlayerState (9)").transform);
+
             if (State.InTaskState())
             {
                 if (GameStarted == false)
@@ -258,13 +262,13 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (totalAlive == 0)
                 {
-                    State.GameEndReasonIndex = State.LowCrewmateCountWin;
+                    //State.GameEndReasonIndex = State.LowCrewmateCountWin;
                     State.EndGame(GameTeam.Impostor);
                 }
 
                 if (!seeker.PlayerWithRole.IsConnected)
                 {
-                    State.GameEndReasonIndex = State.NoImpostorsLeftWin;
+                    //State.GameEndReasonIndex = S;
                     State.EndGame(GameTeam.Crewmember);
                 }
             }
@@ -290,6 +294,8 @@ namespace AirlockClient.Managers.Gamemode
                 }
             }
         }
+
+
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role)
         {

@@ -7,7 +7,7 @@ using UnityEngine;
 using Il2CppSG.Airlock;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Managers.Debug;
-using AirlockClient.Data.Roles.MoreRoles.Broken;
+
 
 namespace AirlockClient.Patches
 {
@@ -68,18 +68,18 @@ namespace AirlockClient.Patches
         }
     }
 
-    [HarmonyPatch(typeof(VoteManager), nameof(VoteManager.OnEndVoteComplete))]
-    public class WitchKillingPatch
-    {
-        public static void Prefix(VoteManager __instance)
-        {
-            foreach (SubRole role in SubRole.All)
-            {
-                if (role.GetComponent<Witch>())
-                {
-                    role.OnPlayerEjected(null, GameRole.NotSet);
-                }
-            }
-        }
-    }
+    //[HarmonyPatch(typeof(VoteManager), nameof(VoteManager.OnEndVoteComplete))]
+    //public class WitchKillingPatch
+    //{
+    //    public static void Prefix(VoteManager __instance)
+    //    {
+    //        foreach (SubRole role in SubRole.All)
+    //        {
+    //            if (role.GetComponent<Witch>())
+    //            {
+    //                role.OnPlayerEjected(null, GameRole.NotSet);
+    //            }
+    //        }
+    //    }
+    //}
 }
