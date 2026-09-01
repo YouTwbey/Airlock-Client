@@ -1,8 +1,8 @@
 ﻿using AirlockAPI.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Venting;
-using Il2CppSG.Airlock.XR;
+using SG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock.Venting;
+using SG.Airlock.XR;
 using System.Collections.Generic;
 using UnityEngine;
 

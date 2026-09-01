@@ -1,9 +1,9 @@
 ﻿using AirlockClient.AC;
 using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
 using System.Collections;
 using UnityEngine;
 
@@ -32,7 +32,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
         public override void OnPlayerKilled(PlayerState playerKilled)
         {
-            MelonCoroutines.Start(DelayedKill(playerKilled));
+            CoroutineHandler.Start(DelayedKill(playerKilled));
         }
 
         IEnumerator DelayedKill(PlayerState target)

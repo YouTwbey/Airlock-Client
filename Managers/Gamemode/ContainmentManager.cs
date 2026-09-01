@@ -1,5 +1,5 @@
 ﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock.Sabotage;
+using SG.Airlock.Sabotage;
 using UnityEngine;
 
 namespace AirlockClient.Managers.Gamemode

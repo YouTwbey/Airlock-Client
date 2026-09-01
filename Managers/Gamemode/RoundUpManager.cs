@@ -1,6 +1,6 @@
 ﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
+using SG.Airlock;
+using SG.Airlock.Roles;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;

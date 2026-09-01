@@ -1,4 +1,4 @@
-﻿using Il2CppSG.Airlock.Roles;
+﻿using SG.Airlock.Roles;
 using UnityEngine;
 
 namespace AirlockClient.Attributes

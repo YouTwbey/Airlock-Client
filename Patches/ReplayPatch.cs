@@ -1,7 +1,7 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Managers;
 using HarmonyLib;
-using Il2CppSG.Airlock.Cutscenes;
+using SG.Airlock.Cutscenes;
 
 namespace AirlockClient.Patches
 {

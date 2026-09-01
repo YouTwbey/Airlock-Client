@@ -5,7 +5,7 @@ using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
-using Il2CppSG.Airlock.Network;
+using SG.Airlock.Network;
 
 namespace AirlockClient.Patches
 {

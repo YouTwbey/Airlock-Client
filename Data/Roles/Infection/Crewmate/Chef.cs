@@ -1,5 +1,5 @@
 ﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock.Roles;
+using SG.Airlock.Roles;
 
 namespace AirlockClient.Data.Roles.Infection.Crewmate
 {

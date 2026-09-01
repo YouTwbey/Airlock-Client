@@ -1,7 +1,7 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock.Roles;
+
 using AirlockClient.Managers.Gamemode;
 using AirlockClient.AC;
 using UnityEngine;

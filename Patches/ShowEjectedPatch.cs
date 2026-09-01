@@ -1,10 +1,10 @@
-﻿using Il2CppFusion;
-using Il2CppSG.Airlock.Cutscenes;
-using Il2CppSG.Airlock.Roles;
+﻿using Fusion;
+using SG.Airlock.Cutscenes;
+using SG.Airlock.Roles;
 using HarmonyLib;
 using AirlockClient.Attributes;
 using UnityEngine;
-using Il2CppSG.Airlock;
+using SG.Airlock;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Data.Roles.MoreRoles.Broken;

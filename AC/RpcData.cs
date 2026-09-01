@@ -1,4 +1,4 @@
-﻿using Il2CppFusion;
+﻿using Fusion;
 
 namespace AirlockClient.AC
 {

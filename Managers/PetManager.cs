@@ -1,7 +1,7 @@
 ﻿using AirlockClient.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.XR;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.XR;
 using UnityEngine;
 
 namespace AirlockClient.Managers
@@ -49,7 +49,7 @@ namespace AirlockClient.Managers
 
             SpriteRenderer rend = debugPet.AddComponent<SpriteRenderer>();
             rend.useLightProbes = true;
-            rend.sprite = StorageManager.ModStamp;
+            rend.sprite = StorageManager.Instance.ModStamp;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
+
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter

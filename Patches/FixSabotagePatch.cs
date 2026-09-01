@@ -2,7 +2,7 @@
 using AirlockAPI.Data;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
-using Il2CppSG.Airlock.Sabotage;
+using SG.Airlock.Sabotage;
 
 namespace AirlockClient.Patches
 {

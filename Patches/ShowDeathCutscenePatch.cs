@@ -1,7 +1,7 @@
 ﻿using AirlockClient.Attributes;
 using HarmonyLib;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
+using Fusion;
+using SG.Airlock;
 using UnityEngine;
 
 namespace AirlockClient.Patches
