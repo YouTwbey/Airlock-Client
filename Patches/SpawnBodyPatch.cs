@@ -1,9 +1,9 @@
 ﻿using AirlockClient.AC;
 using AirlockAPI.Data;
 using HarmonyLib;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
+using Fusion;
+using SG.Airlock;
+using SG.Airlock.Network;
 using UnityEngine;
 
 namespace AirlockClient.Patches

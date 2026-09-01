@@ -2,12 +2,12 @@
 using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System.Collections.Generic;
 using UnityEngine;
-using static Il2CppFusion.Simulation;
+using static Fusion.Simulation;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {

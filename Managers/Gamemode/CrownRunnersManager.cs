@@ -1,10 +1,10 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.CrownCatchers.Crewmate;
 using AirlockClient.Data.Roles.CrownCatchers.Impostor;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
+using Fusion;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;

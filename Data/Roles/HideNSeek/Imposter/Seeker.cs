@@ -1,9 +1,10 @@
 ﻿using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System.Collections;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace AirlockClient.Data.Roles.HideNSeek.Imposter
 
         void Start()
         {
-            MelonCoroutines.Start(HideNSeekManager.DisplayRoleInfo(PlayerWithRole, this));
+			CoroutineHandler.Start(HideNSeekManager.DisplayRoleInfo(PlayerWithRole, this));
         }
 
         bool GameStart;
@@ -29,7 +30,7 @@ namespace AirlockClient.Data.Roles.HideNSeek.Imposter
         {
             if (ModdedGameStateManager.Instance.state.InTaskState() && !GameStart)
             {
-                MelonCoroutines.Start(StartTimer());
+				CoroutineHandler.Start(StartTimer());
                 GameStart = true;
             }
         }

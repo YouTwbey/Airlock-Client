@@ -1,13 +1,14 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Debug;
 using HarmonyLib;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Graphics;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Graphics;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+
 using System.Collections;
 using UnityEngine;
 using static AirlockClient.Managers.Gamemode.MoreRolesManager;
@@ -130,7 +131,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
             {
-                MelonCoroutines.Start(CosmeticHelper.RevertAllAfterDelay());
+				CoroutineHandler.Start(CosmeticHelper.RevertAllAfterDelay());
             }
         }
     }
@@ -142,7 +143,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
             {
-                MelonCoroutines.Start(CosmeticHelper.RevertAllAfterDelay());
+                CoroutineHandler.Start(CosmeticHelper.RevertAllAfterDelay());
             }
         }
     }

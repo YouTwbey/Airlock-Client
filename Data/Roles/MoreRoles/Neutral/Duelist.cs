@@ -2,9 +2,9 @@
 using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -92,7 +92,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             }
         }
 
-        OtherDuelist OtherDuelist;
+        public OtherDuelist OtherDuelist;
     }
     public class OtherDuelist : SubRole
     {

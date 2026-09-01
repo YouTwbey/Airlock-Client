@@ -3,12 +3,13 @@ using AirlockAPI.Data;
 using AirlockClient.Attributes;
 using AirlockClient.Core;
 using AirlockClient.Data;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Dev;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Settings;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock.Settings;
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -30,8 +31,8 @@ namespace AirlockClient.Managers
         [AirlockRpc("JoinedModdedGame", RpcTarget.All, RpcCaller.Host)]
         public static void JoinedModdedGame()
         {
-            Base.SceneStorage.AddComponent<PetManager>();
-            Base.SceneStorage.AddComponent<CommandManager>();
+            AirlockClientManager.SceneStorage.AddComponent<PetManager>();
+            AirlockClientManager.SceneStorage.AddComponent<CommandManager>();
         }
 
         void Start()
@@ -46,7 +47,7 @@ namespace AirlockClient.Managers
                 Destroy(this);
             }
 
-            MelonCoroutines.Start(FetchBlacklist());
+			CoroutineHandler.Start(FetchBlacklist());
         }
 
         List<string> BlacklistedUsers = new List<string>();

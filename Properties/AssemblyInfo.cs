@@ -1,12 +1,5 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
-using MelonLoader;
-using AirlockClient.Data;
-using AirlockClient.Core;
-
-[assembly: MelonInfo(typeof(Base), Info.Name, Info.Version, Info.Developer, Info.DownloadLink)]
-[assembly: MelonColor(Info.ColorA, Info.ColorR, Info.ColorG, Info.ColorB)]
-[assembly: MelonGame("Schell Games", null)]
 
 [assembly: AssemblyTitle("AirlockClient")]
 [assembly: AssemblyDescription("")]

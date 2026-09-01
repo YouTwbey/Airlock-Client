@@ -1,11 +1,12 @@
-﻿using AirlockClient.Core;
-using UnityEngine.UI;
-using UnityEngine;
-using static AirlockClient.Data.Info;
-using Il2CppTMPro;
-using AirlockAPI.Managers;
+﻿using AirlockAPI.Managers;
+using AirlockClient.Core;
+using AirlockClient.Handlers;
 using System.Collections;
-using MelonLoader;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+using static AirlockClient.Data.Info;
+
 
 namespace AirlockClient.Managers
 {
@@ -28,7 +29,7 @@ namespace AirlockClient.Managers
                 watermark.alignment = TextAlignmentOptions.Top;
                 watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: {(int)NetworkManager.GetPing()} | FPS: {(int)(1 / Time.deltaTime)}";
 
-                MelonCoroutines.Start(UpdateWatermark());
+				CoroutineHandler.Start(UpdateWatermark());
             }
         }
 
@@ -43,12 +44,13 @@ namespace AirlockClient.Managers
 
         public static void CreateModStamp()
         {
+            StorageManager.Instance.ModStamp = StorageManager.Instance.LoadModStamp("AirlockClient.Data.Sprite.ModStamp.png");
             int uiLayer = LayerMask.NameToLayer("UI");
 
             if (IsVR)
             {
                 uiCameraObject = new GameObject("ModUICamera");
-                uiCameraObject.transform.parent = Base.SceneStorage.transform;
+                uiCameraObject.transform.parent = AirlockClientManager.SceneStorage.transform;
                 uiCamera = uiCameraObject.AddComponent<Camera>();
                 uiCamera.clearFlags = CameraClearFlags.Nothing;
                 uiCamera.cullingMask = 1 << uiLayer;
@@ -62,7 +64,7 @@ namespace AirlockClient.Managers
                 if (listener != null) GameObject.Destroy(listener);
 
                 canvasObject = new GameObject("ModUICanvas");
-                canvasObject.transform.parent = Base.SceneStorage.transform;
+                canvasObject.transform.parent = AirlockClientManager.SceneStorage.transform;
                 canvasObject.layer = uiLayer;
 
                 Canvas canvas = canvasObject.AddComponent<Canvas>();
@@ -83,14 +85,14 @@ namespace AirlockClient.Managers
                 stampObj.transform.localPosition = new Vector3(32.4f, 32.4f, 0);
                 stampObj.transform.localScale = new Vector3(5, 5, 5);
 
-                if (Base.InGame)
+                if (AirlockClientManager.InGame)
                 {
                     ApplyWatermark();
                 }
             }
             else
             {
-                if (Base.InGame)
+                if (AirlockClientManager.InGame)
                 {
                     ApplyWatermark();
                     stampObj.transform.SetParent(GameObject.Find("3DHUD_Canvas").transform, false);
@@ -106,7 +108,7 @@ namespace AirlockClient.Managers
             }
 
             SpriteRenderer modStamp = stampObj.AddComponent<SpriteRenderer>();
-            modStamp.sprite = StorageManager.ModStamp;
+            modStamp.sprite = StorageManager.Instance.ModStamp;
             modStamp.color = new Color(1, 1, 1, 0.5f);
         }
     }

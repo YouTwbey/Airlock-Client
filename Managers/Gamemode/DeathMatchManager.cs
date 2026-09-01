@@ -4,15 +4,16 @@ using AirlockClient.Data.Roles.CrownCatchers.Crewmate;
 using AirlockClient.Data.Roles.CrownCatchers.Impostor;
 using AirlockClient.Data.Roles.DeathMatch.Crewmates;
 using AirlockClient.Data.Roles.DeathMatch.Impostors;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Debug;
-using Il2CppFusion;
-using Il2CppFusion.CodeGen;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Minigames;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Sabotage;
-using MelonLoader;
+using Fusion;
+using Fusion.CodeGen;
+using SG.Airlock;
+using SG.Airlock.Minigames;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.Sabotage;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -228,7 +229,7 @@ namespace AirlockClient.Managers.Gamemode
 
             if (KilledAllPlayers == false && State.GameModeStateValue.GameState == GameplayStates.Task)
             {
-                MelonCoroutines.Start(DelayedKillAllPlayers(1));
+				CoroutineHandler.Start(DelayedKillAllPlayers(1));
             }
 
             if (VigilanteTeamPoints >= 50)

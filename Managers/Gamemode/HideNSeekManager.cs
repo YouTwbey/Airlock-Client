@@ -4,17 +4,15 @@ using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using AirlockClient.Data.Roles.HideNSeek.Imposter;
 using AirlockClient.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Sabotage;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.Sabotage;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements.Experimental;
 using static AirlockAPI.Managers.NetworkManager;
 using static AirlockClient.Data.Enums;
-using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -36,7 +34,7 @@ namespace AirlockClient.Managers.Gamemode
         {
             SeekerMusic = new GameObject("SeekerMusic").AddComponent<AudioSource>();
             SeekerMusic.loop = true;
-            SeekerMusic.clip = StorageManager.SeekerMusic;
+            SeekerMusic.clip = StorageManager.Instance.SeekerMusic;
             SeekerMusic.volume = 0.2f;
 
             foreach (AudioMixerGroup group in Resources.FindObjectsOfTypeAll<AudioMixerGroup>())
@@ -117,7 +115,7 @@ namespace AirlockClient.Managers.Gamemode
                 if (SeekMusic == null)
                 {
                     SeekMusic = new GameObject("LISTENER_SeekerMusic").AddComponent<AudioSource>();
-                    SeekMusic.clip = StorageManager.SeekerMusic;
+                    SeekMusic.clip = StorageManager.Instance.SeekerMusic;
                     SeekMusic.volume = 0.2f;
                     SeekMusic.loop = true;
 

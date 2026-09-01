@@ -1,8 +1,8 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using static AirlockClient.AC.AntiCheat;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral

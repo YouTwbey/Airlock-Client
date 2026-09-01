@@ -1,6 +1,6 @@
 ﻿using AirlockClient.Attributes;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock;
 using System.Collections.Generic;
 
 namespace AirlockClient.Managers.Gamemode

@@ -3,9 +3,9 @@ using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
@@ -68,7 +68,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             }
         }
 
-        public override void OnSpellCast(PlayerState cursed)
+        public void OnSpellCast(PlayerState cursed)
         {
             AddSpell(cursed);
         }

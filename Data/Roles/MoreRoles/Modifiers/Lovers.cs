@@ -3,10 +3,10 @@ using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -35,11 +35,17 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
             {
                 spawnManager = FindObjectOfType<SpawnManager>();
             }
+
             List<int> validIds = new List<int>();
 
             foreach (PlayerState player in spawnManager.ActivePlayerStates)
             {
-                if (player.IsConnected && player != PlayerWithModifier && player.GetComponent<Modifier>() == null && player.GetComponent<Assassin>() == null && player.GetComponent<Lawyer>() == null && player.GetComponent<Executioner>() == null && player.GetComponent<Silencer>())
+                if (player != PlayerWithModifier &&
+                    player.GetComponent<Modifier>() == null &&
+                    player.GetComponent<Assassin>() == null &&
+                    player.GetComponent<Lawyer>() == null &&
+                    player.GetComponent<Executioner>() == null &&
+                    player.GetComponent<Silencer>() == null)
                 {
                     validIds.Add(player.PlayerId);
                 }

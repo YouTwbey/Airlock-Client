@@ -1,6 +1,6 @@
 ﻿using AirlockClient.Managers.Debug;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
+using SG.Airlock;
+using SG.Airlock.Network;
 using UnityEngine;
 
 namespace AirlockClient.Handlers

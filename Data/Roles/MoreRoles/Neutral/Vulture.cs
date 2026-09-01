@@ -1,11 +1,11 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
+
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 {

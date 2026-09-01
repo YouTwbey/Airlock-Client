@@ -1,11 +1,11 @@
-﻿using AirlockClient.Attributes;
+﻿using AirlockClient.AC;
+using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using AirlockClient.Managers.Gamemode;
+using SG.Airlock.Roles;
 using System.Collections;
 using UnityEngine;
-using AirlockClient.Managers.Gamemode;
-using AirlockClient.AC;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 {
@@ -39,7 +39,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
             {
                 if (PlayerWithModifier.MicrophoneOutput <= 0.1f && PlayerWithModifier.IsAlive && !isCheckInProgress)
                 {
-                    MelonCoroutines.Start(MicTimer());
+                    CoroutineHandler.Start(MicTimer());
                 }
             }
         }

@@ -6,24 +6,21 @@ using AirlockClient.Core;
 using AirlockClient.Data.Roles.MoreRoles.Crewmate;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Modifiers;
-using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
-using Il2CppInterop.Runtime;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSystem.Runtime.Serialization;
-using Il2CppTMPro;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using TMPro;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
-using UnityEngine.UI;
 using static AirlockAPI.Managers.NetworkManager;
+using Il2CppInterop.Runtime;
+using AirlockClient.Handlers;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -118,7 +115,6 @@ namespace AirlockClient.Managers.Gamemode
         GameObject UI;
         void Start()
         {
-            //UI = Instantiate(StorageManager.AirlockClient_UI);
             //SetupUI();
             Rolemanager = FindObjectOfType<RoleManager>();
             Spawn = FindObjectOfType<SpawnManager>();
@@ -162,12 +158,12 @@ namespace AirlockClient.Managers.Gamemode
                 roleName.text = subrole.ToString();
                 amount.text = "(1)";
 
-                decrease.onClick.AddListener((UnityAction)(() =>
+                decrease.add_onClick((Il2CppSystem.Action)(() =>
                 {
                     ChangeRoleAmount(amount, subrole, -1);
                 }));
 
-                increase.onClick.AddListener((UnityAction)(() =>
+                increase.add_onClick((Il2CppSystem.Action)(() =>
                 {
                     ChangeRoleAmount(amount, subrole, 1);
                 }));
@@ -184,11 +180,11 @@ namespace AirlockClient.Managers.Gamemode
             roleNameBE.text = "Bodies Eaten";
             amountBE.text = "(" + (MaxBodiesEatenCount == 0 ? 1 : MaxBodiesEatenCount).ToString() + ")";
 
-            decreaseBE.onClick.AddListener((UnityAction)(() =>
+            decreaseBE.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeMaxBodiesEatenAmount(amountBE, -1);
             }));
-            increaseBE.onClick.AddListener((UnityAction)(() =>
+            increaseBE.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeMaxBodiesEatenAmount(amountBE, 1);
             }));
@@ -204,11 +200,11 @@ namespace AirlockClient.Managers.Gamemode
             roleNameBC.text = "Bomber Coolown";
             amountBC.text = "(" + BomberCooldownVar.ToString() + ")";
 
-            decreaseBC.onClick.AddListener((UnityAction)(() =>
+            decreaseBC.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeBomberCooldown(amountBC, -5);
             }));
-            increaseBC.onClick.AddListener((UnityAction)(() =>
+            increaseBC.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeBomberCooldown(amountBC, 5);
             }));
@@ -223,11 +219,11 @@ namespace AirlockClient.Managers.Gamemode
             rolenameVDC.text = "Disolve Time";
             amountVDC.text = "(" + ViperDisolveTimeSetting.ToString() + ")";
 
-            decreaseVDC.onClick.AddListener((UnityAction)(() =>
+            decreaseVDC.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeDissolveTime(amountVDC, -5);
             }));
-            increaseVDC.onClick.AddListener((UnityAction)(() =>
+            increaseVDC.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeDissolveTime(amountVDC, 5);
             }));
@@ -242,11 +238,11 @@ namespace AirlockClient.Managers.Gamemode
             rolenameWTA.text = "Disolve Time";
             amountWTA.text = "(" + WorkerTasksAssigned.ToString() + ")";
 
-            decreaseWTA.onClick.AddListener((UnityAction)(() =>
+            decreaseWTA.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeTotalAssignedTasks(amountWTA, -1);
             }));
-            increaseWTA.onClick.AddListener((UnityAction)(() =>
+            increaseWTA.add_onClick((Il2CppSystem.Action)(() =>
             {
                 ChangeTotalAssignedTasks(amountWTA, 1);
             }));
@@ -915,7 +911,7 @@ namespace AirlockClient.Managers.Gamemode
                 Logging.Debug_Log($"[QueueRoleDisplay] Merged with existing modifier: {existing.modifier?.Name}");
             }
 
-            MelonCoroutines.Start(WaitAndDisplay(player, role));
+			CoroutineHandler.Start(WaitAndDisplay(player, role));
         }
 
         public static void QueueModifierDisplay(PlayerState player, ModifierData data)
@@ -931,7 +927,7 @@ namespace AirlockClient.Managers.Gamemode
             if (!_pendingDisplay.ContainsKey(player.PlayerId))
             {
                 _pendingDisplay[player.PlayerId] = (null, "", data, GameRole.NotSet, false);
-                MelonCoroutines.Start(WaitAndDisplay(player, null));
+                CoroutineHandler.Start(WaitAndDisplay(player, null));
             }
             else
             {

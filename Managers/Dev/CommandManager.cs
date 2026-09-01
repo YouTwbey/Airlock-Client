@@ -1,6 +1,6 @@
-﻿using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.UI;
+﻿using Fusion;
+using SG.Airlock;
+using SG.Airlock.UI;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -8,7 +8,7 @@ using UnityEngine;
 using AirlockAPI.Attributes;
 using static AirlockAPI.Managers.NetworkManager;
 using AirlockAPI.Data;
-using Il2CppSG.Airlock.Network;
+using SG.Airlock.Network;
 
 namespace AirlockClient.Managers.Dev
 {

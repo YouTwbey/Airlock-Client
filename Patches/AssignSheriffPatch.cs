@@ -4,7 +4,7 @@ using AirlockClient.Data.Roles.MoreRoles.Modifiers;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Debug;
 using HarmonyLib;
-using Il2CppSG.Airlock;
+using SG.Airlock;
 using static UnityEngine.Object;
 
 namespace AirlockClient.Patches

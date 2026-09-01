@@ -1,13 +1,15 @@
-﻿using Il2CppSG.Airlock;
+﻿using SG.Airlock;
 using AirlockAPI.Handlers;
-using Il2CppFusion;
-using Il2CppSG.Airlock.Network;
+using Fusion;
+using SG.Airlock.Network;
 using static AirlockAPI.Managers.NetworkManager;
 using AirlockAPI.Attributes;
 using AirlockAPI.Data;
-using Il2CppSystem.IO;
+using System.IO;
 using System.Linq;
 using System.Collections.Generic;
+using System.IO;
+using Il2CppSystem.IO;
 
 namespace AirlockClient.Attributes
 {

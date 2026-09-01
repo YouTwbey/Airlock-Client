@@ -1,8 +1,8 @@
-﻿using AirlockClient.Managers.Gamemode;
+﻿using AirlockClient.Handlers;
+using AirlockClient.Managers.Gamemode;
 using AirlockClient.Patches;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,8 +47,8 @@ namespace AirlockClient.Managers
                 });
             }
 
-            MelonCoroutines.Start(ApplyRandomCosmetics(snapshots));
-            MelonCoroutines.Start(new MixupManager().RevertAfterSeconds(snapshots, revertDelay));
+            CoroutineHandler.Start(ApplyRandomCosmetics(snapshots));
+            CoroutineHandler.Start(new MixupManager().RevertAfterSeconds(snapshots, revertDelay));
         }
 
         private static readonly Dictionary<int, int> _originalHats = new();

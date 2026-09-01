@@ -2,10 +2,10 @@
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
 using AirlockClient.Patches;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+
 using System.Collections.Generic;
 using UnityEngine;
 

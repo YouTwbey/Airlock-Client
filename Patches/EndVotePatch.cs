@@ -1,6 +1,6 @@
 ﻿using AirlockClient.Attributes;
 using HarmonyLib;
-using Il2CppSG.Airlock;
+using SG.Airlock;
 
 namespace AirlockClient.Patches
 {

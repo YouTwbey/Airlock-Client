@@ -1,8 +1,9 @@
 ﻿using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,7 +42,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                 PlayerToMute.IsSpectating = false;
                 MoreRolesManager.Killing.AlterRole(OriginalRole, PlayerToMute.PlayerId);
 
-                MelonCoroutines.Start(DelaySpectatingForTaskState());
+                CoroutineHandler.Start(DelaySpectatingForTaskState());
             }
         }
 
@@ -51,7 +52,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             {
                 PlayerToMute.IsSpectating = false;
 
-                MelonCoroutines.Start(DelaySpectator());
+                CoroutineHandler.Start(DelaySpectator());
             }
         }
 
