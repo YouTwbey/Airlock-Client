@@ -1,10 +1,10 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.Infection.Imposter;
 using AirlockClient.Data.Roles.Infection.Crewmate;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Customization;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
+using SG.Airlock;
+using SG.Airlock.Customization;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
 using AirlockClient.AC;
 
 namespace AirlockClient.Managers.Gamemode

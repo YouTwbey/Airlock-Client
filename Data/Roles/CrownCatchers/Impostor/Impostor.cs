@@ -1,10 +1,11 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace AirlockClient.Data.Roles.CrownCatchers.Impostor
         {
             PlayerWithRole.ActivePowerUps = PowerUps.None;
             PlayerWithRole.HatId = CrownRunnersManager.Crown;
-            MelonCoroutines.Start(DelayedAlterRole());
+            CoroutineHandler.Start(DelayedAlterRole());
         }
 
         public IEnumerator DelayedAlterRole()

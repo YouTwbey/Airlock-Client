@@ -1,8 +1,9 @@
 ﻿using AirlockAPI.Data;
+using AirlockClient.Handlers;
 using HarmonyLib;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Network;
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,7 +47,7 @@ namespace AirlockClient.Patches
         }
     }
 
-    [HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.RPC_OnEnterCustomization))]
+    //[HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.RPC_OnEnterCustomization))]
     public class BreakColorsPatch
     {
         internal static readonly Dictionary<int, int> StateIdToPlayerId = new();
@@ -64,7 +65,7 @@ namespace AirlockClient.Patches
         }
     }
 
-    [HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.RPC_OnExitCustomization))]
+    //[HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.RPC_OnExitCustomization))]
     public class BreakColorsPatch2
     {
         public static void Prefix(NetworkedLocomotionPlayer __instance)
@@ -74,7 +75,7 @@ namespace AirlockClient.Patches
                 __instance.PState.ColorId = 18;
 
                 if (PlayerSavedState.TryGet(__instance.PlayerID, out int color, out int hat))
-                    MelonCoroutines.Start(RestoreAfterDelay(__instance, color, hat));
+                    CoroutineHandler.Start(RestoreAfterDelay(__instance, color, hat));
             }
         }
 
@@ -91,7 +92,7 @@ namespace AirlockClient.Patches
         }
     }
 
-    [HarmonyPatch(typeof(PlayerState), nameof(PlayerState.UpdateColorID))]
+    //[HarmonyPatch(typeof(PlayerState), nameof(PlayerState.UpdateColorID))]
     public class BreakColorsPatch4
     {
         public static void Prefix(PlayerState __instance, ref int i)
@@ -106,7 +107,7 @@ namespace AirlockClient.Patches
         }
     }
 
-    [HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.OnHatChange))]
+    //[HarmonyPatch(typeof(NetworkedLocomotionPlayer), nameof(NetworkedLocomotionPlayer.OnHatChange))]
     public class BreakColorsPatch5
     {
         public static void Prefix(NetworkedLocomotionPlayer __instance, ref int hatId)
@@ -119,7 +120,7 @@ namespace AirlockClient.Patches
             }
         }
     }
-    [HarmonyPatch(typeof(NetworkedLocomotionPlayer),nameof(NetworkedLocomotionPlayer.RPC_SpawnInitialization))]
+    //[HarmonyPatch(typeof(NetworkedLocomotionPlayer),nameof(NetworkedLocomotionPlayer.RPC_SpawnInitialization))]
     public class savecosmetics
     {
         public static void Postfix(NetworkedLocomotionPlayer __instance, ref int color, ref int hat, ref int hands, ref int skin)

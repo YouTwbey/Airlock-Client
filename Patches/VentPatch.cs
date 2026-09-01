@@ -1,7 +1,7 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
 using HarmonyLib;
-using Il2CppSG.Airlock.Network;
+using SG.Airlock.Network;
 
 namespace AirlockClient.Patches
 {

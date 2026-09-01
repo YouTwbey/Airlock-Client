@@ -1,10 +1,10 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Handlers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
+
 
 namespace AirlockClient.Data.Roles.HideNSeek.Crewmate
 {
@@ -29,7 +29,7 @@ namespace AirlockClient.Data.Roles.HideNSeek.Crewmate
             VentsLeft = NumOfVents;
 
             DefaultColorId = PlayerWithRole.ColorId;
-            MelonCoroutines.Start(HideNSeekManager.DisplayRoleInfo(PlayerWithRole, this));
+            CoroutineHandler.Start(HideNSeekManager.DisplayRoleInfo(PlayerWithRole, this));
         }
 
         public override void OnPlayerDied(PlayerState killer)

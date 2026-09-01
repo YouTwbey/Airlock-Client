@@ -2,9 +2,9 @@
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using static UnityEngine.Object;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate

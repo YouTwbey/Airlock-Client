@@ -1,8 +1,8 @@
 ﻿using AirlockAPI.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Venting;
-using Il2CppSG.Airlock.XR;
+using SG.Airlock;
+using SG.Airlock.Roles;
+using SG.Airlock.Venting;
+using SG.Airlock.XR;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -81,6 +81,5 @@ namespace AirlockClient.Attributes
         public virtual void OnAllVotesCast() { }
         public virtual void OnRoleRemoved() { }
         public virtual void OnGameEnd(GameTeam teamThatWon) { }
-        public virtual void OnSpellCast(PlayerState cursed) { }
     }
 }

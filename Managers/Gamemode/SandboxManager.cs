@@ -1,18 +1,15 @@
-﻿using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using AirlockClient.Data.Roles.MoreRoles.Crewmate;
-using AirlockClient.Data.Roles.MoreRoles.Imposter;
-using AirlockClient.Data.Roles.MoreRoles.Neutral;
+﻿using SG.Airlock.Network;
+using SG.Airlock;
+using SG.Airlock.Roles;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Attributes;
-using Il2CppSG.Airlock.Minigames;
+using SG.Airlock.Minigames;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using static AirlockClient.Managers.Gamemode.MoreRolesManager;
-using Il2CppInterop.Runtime;
 using System.Collections.Generic;
 using System.Linq;
+using Il2CppInterop.Runtime;
 
 namespace AirlockClient.Managers.Gamemode
 {

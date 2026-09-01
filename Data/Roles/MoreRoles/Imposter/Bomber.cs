@@ -1,16 +1,16 @@
-﻿using AirlockClient.Attributes;
-using AirlockClient.Managers.Gamemode;
-using UnityEngine;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
+﻿using AirlockClient.AC;
+using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
-using AirlockClient.AC;
+using AirlockClient.Managers.Gamemode;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
 using System;
-using Il2CppSystem;
+using System;
 using System.Collections;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -32,7 +32,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         void Start()
         {
             MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
-            MelonCoroutines.Start(BomberCooldown());
+			CoroutineHandler.Start(BomberCooldown());
         }
 
         bool canExplode = false;

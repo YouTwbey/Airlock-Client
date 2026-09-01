@@ -1,7 +1,7 @@
 ﻿using AirlockClient.Managers.Debug;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
+using Fusion;
+using SG.Airlock;
+using SG.Airlock.Network;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Object;

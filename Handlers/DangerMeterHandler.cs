@@ -44,7 +44,7 @@ namespace AirlockClient.Handlers
                     GameObject DangerMeter = new GameObject("UI_DangerMeter");
                     DangerMeter.layer = LayerMask.NameToLayer("UI");
                     SpriteRenderer rend = DangerMeter.AddComponent<SpriteRenderer>();
-                    rend.sprite = StorageManager.DangerMeter0;
+                    rend.sprite = StorageManager.Instance.DangerMeter0;
                     DangerMeter.transform.parent = UI.transform;
                     DangerMeter.transform.localPosition = mainPos;
                     DangerMeter.transform.localScale = new Vector3(7.5f, 7.5f, 7.5f);
@@ -75,12 +75,12 @@ namespace AirlockClient.Handlers
 
                     manager.AllDangerLevels = new List<AudioSource> { manager.DangerLevel0, manager.DangerLevel1, manager.DangerLevel2, manager.DangerLevel3, manager.DangerLevel4, manager.DangerLevel5 };
 
-                    manager.DangerLevel0.clip = StorageManager.DangerMusic0;
-                    manager.DangerLevel1.clip = StorageManager.DangerMusic1;
-                    manager.DangerLevel2.clip = StorageManager.DangerMusic2;
-                    manager.DangerLevel3.clip = StorageManager.DangerMusic3;
-                    manager.DangerLevel4.clip = StorageManager.DangerMusic4;
-                    manager.DangerLevel5.clip = StorageManager.DangerMusic5;
+                    manager.DangerLevel0.clip = StorageManager.Instance.DangerMusic0;
+                    manager.DangerLevel1.clip = StorageManager.Instance.DangerMusic1;
+                    manager.DangerLevel2.clip = StorageManager.Instance.DangerMusic2;
+                    manager.DangerLevel3.clip = StorageManager.Instance.DangerMusic3;
+                    manager.DangerLevel4.clip = StorageManager.Instance.DangerMusic4;
+                    manager.DangerLevel5.clip = StorageManager.Instance.DangerMusic5;
 
                     manager.DangerLevel1.volume = 0;
                     manager.DangerLevel2.volume = 0;
@@ -111,7 +111,7 @@ namespace AirlockClient.Handlers
                     GameObject DangerMeter = new GameObject("UI_DangerMeter");
                     DangerMeter.layer = LayerMask.NameToLayer("UI");
                     SpriteRenderer rend = DangerMeter.AddComponent<SpriteRenderer>();
-                    rend.sprite = StorageManager.DangerMeter0;
+                    rend.sprite = StorageManager.Instance.DangerMeter0;
                     DangerMeter.transform.parent = UI.transform;
                     DangerMeter.transform.localPosition = mainPos;
                     DangerMeter.transform.localScale = new Vector3(0.075f, 0.075f, 0.075f);
@@ -142,12 +142,12 @@ namespace AirlockClient.Handlers
 
                     manager.AllDangerLevels = new List<AudioSource> { manager.DangerLevel0, manager.DangerLevel1, manager.DangerLevel2, manager.DangerLevel3, manager.DangerLevel4, manager.DangerLevel5 };
 
-                    manager.DangerLevel0.clip = StorageManager.DangerMusic0;
-                    manager.DangerLevel1.clip = StorageManager.DangerMusic1;
-                    manager.DangerLevel2.clip = StorageManager.DangerMusic2;
-                    manager.DangerLevel3.clip = StorageManager.DangerMusic3;
-                    manager.DangerLevel4.clip = StorageManager.DangerMusic4;
-                    manager.DangerLevel5.clip = StorageManager.DangerMusic5;
+                    manager.DangerLevel0.clip = StorageManager.Instance.DangerMusic0;
+                    manager.DangerLevel1.clip = StorageManager.Instance.DangerMusic1;
+                    manager.DangerLevel2.clip = StorageManager.Instance.DangerMusic2;
+                    manager.DangerLevel3.clip = StorageManager.Instance.DangerMusic3;
+                    manager.DangerLevel4.clip = StorageManager.Instance.DangerMusic4;
+                    manager.DangerLevel5.clip = StorageManager.Instance.DangerMusic5;
 
                     manager.DangerLevel1.volume = 0;
                     manager.DangerLevel2.volume = 0;
@@ -254,12 +254,12 @@ namespace AirlockClient.Handlers
             {
                 switch (level)
                 {
-                    case 0: MeterRenderer.sprite = StorageManager.DangerMeter0; break;
-                    case 1: MeterRenderer.sprite = StorageManager.DangerMeter1; break;
-                    case 2: MeterRenderer.sprite = StorageManager.DangerMeter2; break;
-                    case 3: MeterRenderer.sprite = StorageManager.DangerMeter3; break;
-                    case 4: MeterRenderer.sprite = StorageManager.DangerMeter4; break;
-                    case 5: MeterRenderer.sprite = StorageManager.DangerMeter5; break;
+                    case 0: MeterRenderer.sprite = StorageManager.Instance.DangerMeter0; break;
+                    case 1: MeterRenderer.sprite = StorageManager.Instance.DangerMeter1; break;
+                    case 2: MeterRenderer.sprite = StorageManager.Instance.DangerMeter2; break;
+                    case 3: MeterRenderer.sprite = StorageManager.Instance.DangerMeter3; break;
+                    case 4: MeterRenderer.sprite = StorageManager.Instance.DangerMeter4; break;
+                    case 5: MeterRenderer.sprite = StorageManager.Instance.DangerMeter5; break;
                 }
             }
 

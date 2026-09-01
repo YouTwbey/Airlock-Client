@@ -2,8 +2,8 @@
 using AirlockClient.Managers;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
+using SG.Airlock;
+using SG.Airlock.Roles;
 using System;
 using System.Collections.Generic;
 using System.Linq;

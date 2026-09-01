@@ -1,11 +1,11 @@
 ﻿using AirlockAPI.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Minigames;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Venting;
-using Il2CppSG.Airlock.XR;
-using Il2CppSG.GlobalEvents;
+using SG.Airlock;
+using SG.Airlock.Minigames;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.Venting;
+using SG.Airlock.XR;
+using SG.GlobalEvents;
 using System.Collections.Generic;
 using UnityEngine;
 

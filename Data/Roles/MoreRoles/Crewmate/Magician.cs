@@ -1,9 +1,9 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {

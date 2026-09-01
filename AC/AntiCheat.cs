@@ -3,21 +3,20 @@ using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.UI.Moderation;
-using Il2CppSystem.IO;
-using MelonLoader;
+using Fusion;
+using System.IO;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.UI.Moderation;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using Il2CppSystem.IO;
 
 namespace AirlockClient.AC
 {
@@ -75,7 +74,7 @@ namespace AirlockClient.AC
                 Chat = FindObjectOfType<ChatManager>();
                 encrypt = SHA256.Create();
 
-                MelonCoroutines.Start(FetchBlacklist());
+                StartCoroutine("FetchBlacklist");
             }
             else
             {
@@ -475,7 +474,7 @@ namespace AirlockClient.AC
                 {
                     if (!CurrentMode.Modded && !ColorToName.ContainsValue(player.NetworkName.Value) && player.NetworkName.Value != "Color###")
                     {
-                        string formattedName = Regex.Replace(player.PlayerModerationUsername, @"\d", "");
+                        string formattedName = player.PlayerModerationUsername.Replace(@"\d", "");
                         if (formattedName != "" && !formattedName.Contains(player.NetworkName.Value))
                         {
                             if (player.GetComponent<SubRole>())

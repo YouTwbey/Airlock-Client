@@ -1,9 +1,9 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
-using Il2CppSG.Airlock.Cutscenes;
-using Il2CppSG.Airlock.Localization;
-using Il2CppTMPro;
+using SG.Airlock.Cutscenes;
+using SG.Airlock.Localization;
+using TMPro;
 
 namespace AirlockClient.Patches
 {

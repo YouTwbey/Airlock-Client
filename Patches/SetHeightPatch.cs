@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using Il2CppSG.LightUI;
+using SG.LightUI;
 
 namespace AirlockClient.Patches
 {

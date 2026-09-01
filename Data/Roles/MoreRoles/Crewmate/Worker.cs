@@ -2,15 +2,15 @@
 using AirlockClient.Managers;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using Il2CppFusion;
-using Il2CppFusion.Photon.Realtime;
+using Fusion;
+using Fusion.Photon.Realtime;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Minigames;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using Il2CppSystem.Runtime.InteropServices;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Minigames;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
+using System.Runtime.InteropServices;
+
 using System;
 using System.CodeDom;
 using System.Threading;

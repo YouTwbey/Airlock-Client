@@ -1,8 +1,8 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -46,7 +46,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             {
                 Vote vote = new Vote();
                 vote.Voter = PlayerWithRole.PlayerId;
-                vote.VotedAgainst = new Il2CppSystem.Nullable<Il2CppFusion.PlayerRef>(playerToVote.PlayerId);
+                vote.VotedAgainst = new Il2CppSystem.Nullable<Fusion.PlayerRef>(playerToVote.PlayerId);
 
                 FindObjectOfType<VoteManager>()._votes.Add(vote);
             }

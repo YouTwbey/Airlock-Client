@@ -1,4 +1,4 @@
-﻿using Il2CppSG.Airlock;
+﻿using SG.Airlock;
 using System.Collections.Generic;
 
 namespace AirlockClient.Attributes
