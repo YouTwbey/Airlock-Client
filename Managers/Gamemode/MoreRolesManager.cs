@@ -100,15 +100,6 @@ namespace AirlockClient.Managers.Gamemode
             return true;
         }
 
-        public override bool OnGameStart()
-        {
-            if (ModdedGameStateManager.Instance == null)
-            {
-                Logging.Warn("ModdedGameStateManager.Instance is null");
-                return true;
-            }
-            return true;
-        }
         public static void RPC_SendSubRole(int playerId, string role)
         {
             SendRpc("SendSubRole", playerId, role);
