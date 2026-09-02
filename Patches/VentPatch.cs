@@ -10,15 +10,9 @@ namespace AirlockClient.Patches
     {
         public static bool Prefix(NetworkedLocomotionPlayer __instance)
         {
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return AntiCheat.Instance.VerifyVent(__instance.PState);
         }
     }
 
@@ -27,15 +21,9 @@ namespace AirlockClient.Patches
     {
         public static bool Prefix(NetworkedLocomotionPlayer __instance)
         {
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return AntiCheat.Instance.VerifyVent(__instance.PState);
         }
     }
 }

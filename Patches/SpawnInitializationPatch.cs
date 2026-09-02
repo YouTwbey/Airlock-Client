@@ -1,4 +1,5 @@
 ﻿using AirlockAPI.Data;
+using AirlockAPI.Handlers;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers;
@@ -27,7 +28,7 @@ namespace AirlockClient.Patches
 
                     if (CurrentMode.Name == "Sandbox")
                     {
-                        ((SandboxManager)AirlockClientGamemode.Current).playerDidSpawn = true;
+                        ((SandboxManager)CustomGameHandler.Current).playerDidSpawn = true;
                         __instance.PState.IsSpectating = false;
                         __instance.PState.IsAlive = true;
                     }
@@ -51,6 +52,8 @@ namespace AirlockClient.Patches
 
                 //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
             }
+
+            AirlockClientGamemode.RPC_AirlockClientVerification();
         }
     }
 }

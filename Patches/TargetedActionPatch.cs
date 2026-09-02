@@ -13,6 +13,7 @@ using System.Collections;
 using UnityEngine;
 using AirlockClient.Handlers;
 using AirlockClient.Attributes;
+// ReSharper disable InconsistentNaming
 
 namespace AirlockClient.Patches
 {
@@ -24,8 +25,6 @@ namespace AirlockClient.Patches
             PlayerState perp = GameObject.Find("PlayerState (" + perpetrator.PlayerId + ")").GetComponent<PlayerState>();
             PlayerState target = GameObject.Find("PlayerState (" + targetedPlayer.PlayerId + ")").GetComponent<PlayerState>();
 
-            target.IsSpectating = false;
-
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
                 if (!AntiCheat.Instance.VerifyKill(perp, target, action))
@@ -34,135 +33,147 @@ namespace AirlockClient.Patches
                 }
             }
 
-            foreach (SubRole role in SubRole.All)
+            foreach (var role in SubRole.All)
             {
-                if (role is Arsonist)
+                switch (role)
                 {
-                    if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
+                    case Arsonist:
                     {
-                        try
+                        if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
                         {
-                            if (role.PlayerWithRole == perp)
+                            try
                             {
-                                Logging.Debug_Log($"{perp.NetworkName.Value} has douced {target.NetworkName.Value}!");
-                                return false;
+                                if (role.PlayerWithRole == perp)
+                                {
+                                    Logging.Debug_Log($"{perp.NetworkName.Value} has doused {target.NetworkName.Value}!");
+                                    return false;
+                                }
+                            }
+                            catch
+                            {
+                                // ignored
                             }
                         }
-                        catch { }
+
+                        break;
                     }
-                }
-                else if (role is Sniper)
-                {
-                    if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
+                    case Sniper:
                     {
-                        try
+                        if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
                         {
-                            if (role.PlayerWithRole == perp)
+                            try
                             {
-                                return false;
+                                if (role.PlayerWithRole == perp)
+                                {
+                                    return false;
+                                }
+                            }
+                            catch
+                            {
+                                // ignored
                             }
                         }
-                        catch { }
+
+                        break;
                     }
-                }
-                else if (role is Witch)
-                {
-                    if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
+                    case Witch witch:
                     {
-                        try
+                        if (witch.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
                         {
-                            if (role.PlayerWithRole == perp)
+                            try
                             {
-                                Logging.Debug_Log($"{perp.NetworkName.Value} has cursed {target.NetworkName.Value}!");
-                                ((Witch)role).OnSpellCast(target);
-                                return false;
+                                if (witch.PlayerWithRole == perp)
+                                {
+                                    Logging.Debug_Log($"{perp.NetworkName.Value} has cursed {target.NetworkName.Value}!");
+                                    witch.OnSpellCast(target);
+                                    return false;
+                                }
+                            }
+                            catch
+                            {
+                                // ignored
                             }
                         }
-                        catch { }
+
+                        break;
                     }
-                }
-                else if (role is Duelist)
-                {
-                    OtherDuelist other = ((Duelist)role).OtherDuelist;
-                    if (other != null && action == (int)ProximityTargetedAction.Kill)
+                    case Duelist duelist:
                     {
-                        try
+                        var other = duelist.OtherDuelist;
+                        if (other != null && action == (int)ProximityTargetedAction.Kill)
                         {
-                            PlayerState DuelistPlayer = role.PlayerWithRole;
-                            PlayerState OtherDuelistPlayer = other.PlayerWithRole;
+                            try
+                            {
+                                var duelistPlayer = duelist.PlayerWithRole;
+                                var otherDuelistPlayer = other.PlayerWithRole;
                             
-                            if (perp == role.PlayerWithRole)
-                            {
-                                if (target == OtherDuelistPlayer)
+                                if (perp == duelist.PlayerWithRole)
                                 {
-                                    DuelistPlayer.SoulLinkID = -1;
-                                    OtherDuelistPlayer.SoulLinkID = -1;
+                                    if (target == otherDuelistPlayer)
+                                    {
+                                        duelistPlayer.SoulLinkID = -1;
+                                        otherDuelistPlayer.SoulLinkID = -1;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
                                 }
-                                else
+                                else if (perp == other.PlayerWithRole)
                                 {
-                                    return false;
+                                    if (target == duelistPlayer)
+                                    {
+                                        duelistPlayer.SoulLinkID = -1;
+                                        otherDuelistPlayer.SoulLinkID = -1;
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
                                 }
                             }
-                            else if (perp == other.PlayerWithRole)
+                            catch
                             {
-                                if (target == DuelistPlayer)
-                                {
-                                    DuelistPlayer.SoulLinkID = -1;
-                                    OtherDuelistPlayer.SoulLinkID = -1;
-                                }
-                                else
-                                {
-                                    return false;
-                                }
+                                // ignored
                             }
                         }
-                        catch { }
+
+                        break;
                     }
-                }
-                else if (role is Viper)
-                {
-                    if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
+                    case Viper:
                     {
-                        if (role.PlayerWithRole == perp)
+                        if (role.PlayerWithRole != null && action == (int)ProximityTargetedAction.Kill)
                         {
-                            PlayerSavedState.TryGet(target.PlayerId, out int savedColor, out int savedHat);
-
-                            PlayerSnapshot snapshot = new PlayerSnapshot
+                            if (role.PlayerWithRole == perp)
                             {
-                                Player = target,
-                                ColorId = savedColor,
-                                HatId = savedHat,
-                                HandsId = target.HandsId,
-                                SkinId = target.SkinId,
-                                Name = target.NetworkName.Value
-                            };
+                                PlayerSavedState.TryGet(target.PlayerId, out int savedColor, out int savedHat);
 
-                            target.ColorId = 18;
+                                PlayerSnapshot snapshot = new PlayerSnapshot
+                                {
+                                    Player = target,
+                                    ColorId = savedColor,
+                                    HatId = savedHat,
+                                    HandsId = target.HandsId,
+                                    SkinId = target.SkinId,
+                                    Name = target.NetworkName.Value
+                                };
 
-                            CoroutineHandler.Start(RestoreFromSnapshot(snapshot));
+                                target.ColorId = 18;
+
+                                CoroutineHandler.Start(RestoreFromSnapshot(snapshot));
+                            }
                         }
+
+                        break;
                     }
-                }
-                else if (role is Silencer)
-                {
-                    if (role.PlayerWithRole != null && ((Silencer)role).CanMutePlayer && action == (int)ProximityTargetedAction.Kill && role.PlayerWithRole.SoulLinkID == -1)
-                    {
-                        ((Silencer)role).PlayerToMute = target;
-                        role.PlayerWithRole.SoulLinkID = ((Silencer)role).PlayerToMute.PlayerId;
-                        ((Silencer)role).OriginalRole = MoreRolesManager.GetTrueRoleMR(target);
+                    case Silencer silencer when silencer.PlayerWithRole != null && silencer.CanMutePlayer && action == (int)ProximityTargetedAction.Kill && silencer.PlayerWithRole.SoulLinkID == -1:
+                        silencer.PlayerToMute = target;
+                        silencer.PlayerWithRole.SoulLinkID = silencer.PlayerToMute.PlayerId;
+                        silencer.OriginalRole = MoreRolesManager.GetTrueRoleMR(target);
                         return false;
-                    }
-                    else if (role.PlayerWithRole != null && !((Silencer)role).CanMutePlayer && action == (int)ProximityTargetedAction.Kill && role.PlayerWithRole.SoulLinkID == role.PlayerWithRole.PlayerId)
-                    {
+                    case Silencer silencer when silencer.PlayerWithRole != null && !silencer.CanMutePlayer && action == (int)ProximityTargetedAction.Kill && silencer.PlayerWithRole.SoulLinkID == silencer.PlayerWithRole.PlayerId:
                         Logging.Debug_Log("Deafener has already chosen a player");
                         return true;
-                    }
-
-                    if (target == ((Silencer)role).PlayerToMute && perp.IsAlive)
-                    {
-                        role.PlayerWithRole.SoulLinkID = -1;
-                        ((Silencer)role).PlayerToMute = null;
-                    }
                 }
             }
             return true;

@@ -42,14 +42,14 @@ namespace AirlockClient.Managers
         public AudioClip DangerMusic5;
         public AudioClip SeekerMusic;
 
-        void Start()
+        private void Start()
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
             SceneManager.add_sceneLoaded((UnityAction<Scene, LoadSceneMode>)OnSceneLoad);
         }
 
-        void OnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
+        public void OnSceneLoad(Scene scene, LoadSceneMode loadSceneMode)
         {
             LoadAllAssets();
         }
@@ -82,7 +82,7 @@ namespace AirlockClient.Managers
             if (SeekerMusic == null) SeekerMusic = LoadAudio("AirlockClient.Data.AudioClip.Seeker.wav");
         }
 
-        public Sprite LoadSprite(string resourcePath, float targetWidth = 80f)
+        private Sprite LoadSprite(string resourcePath, float targetWidth = 80f)
         {
             Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath);
             if (stream == null)
@@ -91,19 +91,21 @@ namespace AirlockClient.Managers
             }
 
             MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
+            if (stream != null) stream.CopyTo(ms);
             byte[] bytes = ms.ToArray();
 
-            Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
-            tex.filterMode = FilterMode.Bilinear;
-            tex.wrapMode = TextureWrapMode.Clamp;
-            bool success = ImageConversion.LoadImage(tex, bytes);
+            var tex = new Texture2D(2, 2, TextureFormat.RGBA32, false)
+            {
+                filterMode = FilterMode.Bilinear,
+                wrapMode = TextureWrapMode.Clamp
+            };
+            var success = tex.LoadImage(bytes);
 
             Logging.Warn($"{resourcePath}: {success}");
 
-            float ppu = tex.width / targetWidth;
+            var ppu = tex.width / targetWidth;
 
-            Sprite spr = Sprite.Create(
+            var spr = Sprite.Create(
                 tex,
                 new Rect(0, 0, tex.width, tex.height),
                 new Vector2(0.5f, 0.5f),
@@ -121,14 +123,14 @@ namespace AirlockClient.Managers
 
         public Sprite LoadModStamp(string resourcePath)
         {
-            Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath);
+            var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourcePath);
             if (stream == null) return null;
-            MemoryStream ms = new MemoryStream();
+            var ms = new MemoryStream();
             stream.CopyTo(ms);
-            byte[] bytes = ms.ToArray();
-            Texture2D tex = new Texture2D(1, 1);
-            ImageConversion.LoadImage(tex, bytes);
-            Sprite spr = Sprite.Create(
+            var bytes = ms.ToArray();
+            var tex = new Texture2D(1, 1);
+            tex.LoadImage(bytes);
+            var spr = Sprite.Create(
                 tex,
                 new Rect(0, 0, tex.width, tex.height),
                 new Vector2(0.5f, 0.5f),
@@ -141,13 +143,16 @@ namespace AirlockClient.Managers
             return spr;
         }
 
-        public AudioClip LoadAudio(string name)
+        private static AudioClip LoadAudio(string soundName)
         {
             var assembly = Assembly.GetExecutingAssembly();
 
-            var stream = assembly.GetManifestResourceStream(name);
+            var stream = assembly.GetManifestResourceStream(soundName);
 
-            byte[] data = new byte[stream.Length];
+            if (stream == null) return null;
+            
+            var data = new byte[stream.Length];
+            // ReSharper disable once MustUseReturnValue
             stream.Read(data, 0, data.Length);
 
             using var ms = new MemoryStream(data);
@@ -158,17 +163,17 @@ namespace AirlockClient.Managers
             reader.ReadBytes(4);
 
             reader.ReadBytes(4);
-            int fmtSize = reader.ReadInt32();
+            var fmtSize = reader.ReadInt32();
             reader.ReadInt16();
             int channels = reader.ReadInt16();
-            int sampleRate = reader.ReadInt32();
+            var sampleRate = reader.ReadInt32();
             reader.ReadInt32();
             reader.ReadInt16();
             int bitDepth = reader.ReadInt16();
             if (fmtSize > 16) reader.ReadBytes(fmtSize - 16);
 
-            string chunkId = "";
-            int chunkSize = 0;
+            var chunkId = "";
+            var chunkSize = 0;
             while (chunkId != "data")
             {
                 chunkId = new string(reader.ReadChars(4));
@@ -176,12 +181,12 @@ namespace AirlockClient.Managers
                 if (chunkId != "data") reader.ReadBytes(chunkSize);
             }
 
-            byte[] rawSamples = reader.ReadBytes(chunkSize);
-            int bytesPerSample = bitDepth / 8;
-            int sampleCount = rawSamples.Length / bytesPerSample;
-            float[] samples = new float[sampleCount];
+            var rawSamples = reader.ReadBytes(chunkSize);
+            var bytesPerSample = bitDepth / 8;
+            var sampleCount = rawSamples.Length / bytesPerSample;
+            var samples = new float[sampleCount];
 
-            for (int i = 0; i < sampleCount; i++)
+            for (var i = 0; i < sampleCount; i++)
             {
                 samples[i] = bitDepth switch
                 {
@@ -193,7 +198,7 @@ namespace AirlockClient.Managers
                 };
             }
 
-            AudioClip clip = AudioClip.Create(name, sampleCount / channels, channels, sampleRate, false);
+            var clip = AudioClip.Create(soundName, sampleCount / channels, channels, sampleRate, false);
             clip.SetData(samples, 0);
             clip.hideFlags |= HideFlags.HideAndDontSave;
             return clip;

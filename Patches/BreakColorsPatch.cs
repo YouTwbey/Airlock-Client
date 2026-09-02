@@ -54,14 +54,13 @@ namespace AirlockClient.Patches
 
         public static void Postfix(NetworkedLocomotionPlayer __instance)
         {
-            if (CurrentMode.IsHosting && CurrentMode.Modded && CurrentMode.Name == "More Roles")
-            {
-                StateIdToPlayerId[__instance._playerState.PlayerId] = __instance.PlayerID;
-                PlayerSavedState.Init(__instance.PlayerID, __instance._playerState.ColorId, __instance._playerState.HatId);
+            if (!CurrentMode.IsHosting || !CurrentMode.Modded || CurrentMode.Name != "More Roles") return;
+            
+            StateIdToPlayerId[__instance._playerState.PlayerId] = __instance.PlayerID;
+            PlayerSavedState.Init(__instance.PlayerID, __instance._playerState.ColorId, __instance._playerState.HatId);
 
-                if (__instance._playerState.ColorId != 18)
-                    __instance._playerState.ColorId = 18;
-            }
+            if (__instance._playerState.ColorId != 18)
+                __instance._playerState.ColorId = 18;
         }
     }
 

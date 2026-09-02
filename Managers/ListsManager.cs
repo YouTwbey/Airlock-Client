@@ -4,7 +4,7 @@ namespace AirlockClient.Managers
 {
     public static class ListsManager
     {
-        public static List<(int id, string name)> hats = new()
+        public static List<(int id, string name)> hats = new List<(int id, string name)>()
         {
             (12, "No Hat"),
             (13, "Balloon"),
@@ -161,7 +161,7 @@ namespace AirlockClient.Managers
             (250, "JohnJuniper"),
         };
 
-        public static List<(int id, string name)> hands = new()
+        public static List<(int id, string name)> hands = new List<(int id, string name)>()
         {
             (127, "No Gloves"),
             (128, "VigilanteGloves"),
@@ -200,7 +200,7 @@ namespace AirlockClient.Managers
             (242, "BurgerTime"),
         };
 
-        public static List<(int id, string name)> skins = new()
+        public static List<(int id, string name)> skins = new List<(int id, string name)>()
         {
             (161, "No Skin"),
             (162, "Mechanic"),

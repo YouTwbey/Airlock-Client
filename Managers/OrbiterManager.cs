@@ -6,9 +6,9 @@ namespace AirlockClient.Managers
     {
         private Vector3 startPosition;
         private Vector3 endPosition;
-        private float speed = 0.1f;
-        public float t = 0f;
-        public bool isActive = false;
+        private const float speed = 0.1f;
+        public float t;
+        public bool isActive;
         public float yPosition = -5.32f;
 
         void Start()

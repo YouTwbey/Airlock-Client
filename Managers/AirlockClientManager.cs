@@ -25,7 +25,7 @@ namespace AirlockClient.Managers
     public class AirlockClientManager : MonoBehaviour
     {
         public static bool InGame;
-        bool bonusMapsAdded = false;
+        bool bonusMapsAdded;
         public static GameObject SceneStorage;
         public static string SceneName = "";
 
@@ -34,7 +34,6 @@ namespace AirlockClient.Managers
         static List<GamemodeSelectionMenu> selectModeMenus = new List<GamemodeSelectionMenu>();
         static List<TitleMenu> titleMenus = new List<TitleMenu>();
         static List<MenuManager> menus = new List<MenuManager>();
-        static GameObject makePublic;
 
         public static GameObject Orbiter1;
         public static GameObject Orbiter7;

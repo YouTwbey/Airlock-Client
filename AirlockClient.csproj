@@ -12,15 +12,17 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -34,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AC\AntiCheat.cs" />
+    <Compile Include="AC\AntiCheatRewrite.cs" />
     <Compile Include="AC\RpcData.cs" />
     <Compile Include="Attributes\AirlockClientGamemode.cs" />
     <Compile Include="Attributes\QueuedWin.cs" />
@@ -205,31 +208,41 @@
     <Reference Include="Il2CppInterop.Generator, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
+    <Reference Include="BepInEx.Unity.IL2CPP">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppInterop.HarmonySupport, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.HarmonySupport.dll</HintPath>
+    <Reference Include="Epic.OnlineServices">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Epic.OnlineServices.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppInterop.Runtime, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
+    <Reference Include="Fusion.Addressables">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Addressables.dll</HintPath>
     </Reference>
-    <Reference Include="Il2Cppmscorlib, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
+    <Reference Include="Fusion.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Fusion.Realtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Realtime.dll</HintPath>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Photon3Unity3D.dll</HintPath>
     </Reference>
+    <Reference Include="Fusion.Runtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Runtime.dll</HintPath>
     <Reference Include="PhotonRealtime">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonRealtime.dll</HintPath>
     </Reference>
+    <Reference Include="Fusion.Scripts">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Scripts.dll</HintPath>
     <Reference Include="PhotonVoice">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.dll</HintPath>
     </Reference>
+    <Reference Include="Fusion.Sockets">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Sockets.dll</HintPath>
     <Reference Include="PhotonVoice.API">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.API.dll</HintPath>
     </Reference>
+    <Reference Include="Il2CppInterop.Common, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
     <Reference Include="PhotonVoice.Fusion">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.Fusion.dll</HintPath>
     </Reference>
@@ -248,23 +261,23 @@
     <Reference Include="SG.Core">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SG.EosSDK2">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.EosSDK2.dll</HintPath>
+    <Reference Include="Il2CppSG.Airlock">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Airlock.dll</HintPath>
     </Reference>
-    <Reference Include="SG.FusionSimulator">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.FusionSimulator.dll</HintPath>
+    <Reference Include="Il2CppSG.Core">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Core.dll</HintPath>
     </Reference>
-    <Reference Include="SG.GlobalEvents">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.GlobalEvents.dll</HintPath>
+    <Reference Include="Il2CppSG.FusionSimulator">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.FusionSimulator.dll</HintPath>
     </Reference>
-    <Reference Include="SG.LightTween">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.LightTween.dll</HintPath>
+    <Reference Include="Il2CppSG.GlobalEvents">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.GlobalEvents.dll</HintPath>
     </Reference>
-    <Reference Include="SG.LightUI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.LightUI.dll</HintPath>
+    <Reference Include="Il2CppSG.LightTween">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.LightTween.dll</HintPath>
     </Reference>
-    <Reference Include="SG.OVRMetricsToolkitExtension">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.OVRMetricsToolkitExtension.dll</HintPath>
+    <Reference Include="Il2CppSG.LightUI">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.LightUI.dll</HintPath>
     </Reference>
     <Reference Include="SG.Platform">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.dll</HintPath>

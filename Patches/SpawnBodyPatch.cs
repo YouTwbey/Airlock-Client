@@ -13,15 +13,9 @@ namespace AirlockClient.Patches
     {
         public static bool Prefix(PlayerRef id, NetworkRigidbodyObsolete rb)
         {
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifySpawnBody(GameObject.Find("PlayerState (" + id.PlayerId + ")").GetComponent<PlayerState>(), rb))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return AntiCheat.Instance.VerifySpawnBody(GameObject.Find("PlayerState (" + id.PlayerId + ")").GetComponent<PlayerState>(), rb);
         }
     }
 }

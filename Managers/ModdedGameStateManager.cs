@@ -1,7 +1,6 @@
 ﻿using AirlockAPI.Attributes;
 using AirlockAPI.Data;
 using AirlockClient.Attributes;
-using AirlockClient.Core;
 using AirlockClient.Data;
 using AirlockClient.Handlers;
 using AirlockClient.Managers.Debug;
@@ -50,8 +49,8 @@ namespace AirlockClient.Managers
 			CoroutineHandler.Start(FetchBlacklist());
         }
 
-        List<string> BlacklistedUsers = new List<string>();
-        const string BlacklistUrl = "https://raw.githubusercontent.com/YouTwbey/Airlock-Client/main/AC/blacklisted_user_list.txt";
+        private readonly List<string> BlacklistedUsers = new List<string>();
+        private const string BlacklistUrl = "https://raw.githubusercontent.com/YouTwbey/Airlock-Client/main/AC/blacklisted_user_list.txt";
 
         System.Collections.IEnumerator FetchBlacklist()
         {
