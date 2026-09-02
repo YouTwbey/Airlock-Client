@@ -208,6 +208,7 @@
     <Reference Include="Il2CppInterop.Generator, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx.Unity.IL2CPP">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     </Reference>
@@ -222,27 +223,32 @@
     </Reference>
     <Reference Include="Fusion.Realtime">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Realtime.dll</HintPath>
+    </Reference>
     <Reference Include="Photon3Unity3D">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Photon3Unity3D.dll</HintPath>
     </Reference>
     <Reference Include="Fusion.Runtime">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Runtime.dll</HintPath>
+    </Reference>
     <Reference Include="PhotonRealtime">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonRealtime.dll</HintPath>
     </Reference>
     <Reference Include="Fusion.Scripts">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Scripts.dll</HintPath>
+    </Reference>
     <Reference Include="PhotonVoice">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.dll</HintPath>
     </Reference>
     <Reference Include="Fusion.Sockets">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Sockets.dll</HintPath>
+    </Reference>
     <Reference Include="PhotonVoice.API">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.API.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Common, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
+    </Reference>
     <Reference Include="PhotonVoice.Fusion">
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.Fusion.dll</HintPath>
     </Reference>
