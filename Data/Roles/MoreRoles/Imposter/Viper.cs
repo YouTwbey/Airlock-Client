@@ -18,17 +18,18 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Viper",
             RoleType = "Imposter",
             Description = "Disolve Bodies",
-            AC_Description = "Anyone you kill, their bodies will be put on a timer before they fully disolve.",
+            AC_Description = "Your vicims bodies will dissolve",
+            AC_Color = Color.green,
             Team = GameTeam.Impostor,
             Amount = 0
         };
 
         void Start()
         {
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
-        public static float SecondsUntilDisolve = 15;
+        public static float SecondsUntilDisolve = 30;
         List<NetworkedBody> bodiesToDisolve = new List<NetworkedBody>();
         public override void OnPlayerKilled(PlayerState playerKilled)
         {

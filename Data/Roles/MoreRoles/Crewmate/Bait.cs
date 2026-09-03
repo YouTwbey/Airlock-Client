@@ -1,11 +1,10 @@
 ﻿using AirlockClient.Attributes;
-using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
-using SG.Airlock;
-using SG.Airlock.Roles;
-
-using static UnityEngine.Object;
+using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Roles;
+using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -14,61 +13,30 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
     /// </summary>
     public class Bait : SubRole
     {
-        public Arsonist arsonist = null;
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Bait",
             RoleType = "Crewmate",
             Description = "Auto Report Body",
-            AC_Description = "When an imposter kills you, they will automatically report your body.",
+            AC_Description = "Imposter automatically reports your body",
+            AC_Color = Color.yellow,
             Team = GameTeam.Crewmember,
             Amount = 0
         };
 
         void Start()
         {
-            if (arsonist == null)
-            {
-                arsonist = FindObjectOfType<Arsonist>();
-            }
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
         public override void OnPlayerDied(PlayerState killer)
         {
-            if (arsonist != null && arsonist.PlayerWithRole != null)
+            if (FindObjectOfType<VoteManager>())
             {
-                if (MoreRolesManager.GetTrueRoleMR(killer) != GameRole.GuardianAngel && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Tracker && killer != arsonist.PlayerWithRole && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Revenger && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Sheriff && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.VIP)
-                {
-                    if (FindObjectOfType<VoteManager>())
-                    {
-                        FindObjectOfType<VoteManager>().RPC_CallVote(PlayerWithRole.PlayerId, killer.PlayerId, true);
-                        Logging.Debug_Log($"Arsonist isnt null and somebody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
-                        return;
-                    }
-                    else
-                    {
-                        Logging.Debug_Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()} or {arsonist.PlayerWithRole.PlayerModerationUsername ?? "nobody"} is arsonist");
-                    }
-                }
+                FindObjectOfType<VoteManager>().RPC_CallVote(PlayerWithRole.PlayerId, killer.PlayerId, true);
+                return;
             }
-            else 
-            {
-                if (MoreRolesManager.GetTrueRoleMR(killer) != GameRole.GuardianAngel && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Tracker && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.Revenger && killer.KnownGameRole != GameRole.Sheriff && MoreRolesManager.GetTrueRoleMR(killer) != GameRole.VIP)
-                {
-                    if (FindObjectOfType<VoteManager>())
-                    {
-                        FindObjectOfType<VoteManager>().RPC_CallVote(PlayerWithRole.PlayerId, killer.PlayerId, true);
-                        Logging.Debug_Log($"Arsonist is null or nobody has the role. calling meeting because killer didnt have any of the specified roles: {killer.KnownGameRole.ToString()}");
-                        return;
-                    }
-                }
-                else
-                {
-                    Logging.Debug_Log($"'killer' had one of the specified gameroles: {killer.KnownGameRole.ToString()}");
-                } 
-                    
-            }
+
             Logging.Error("VoteManager happens to be null in OnPlayerDied.");
         }
     }

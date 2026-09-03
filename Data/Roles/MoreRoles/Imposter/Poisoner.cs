@@ -20,14 +20,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Poisoner",
             RoleType = "Imposter",
             Description = "20 Sec Delay",
-            AC_Description = "A poisoner's kills are delayed by 20 seconds.",
+            AC_Description = "Kills are delayed by 20 seconds",
+            AC_Color = new Color(150, 0, 150),
             Team = GameTeam.Impostor,
             Amount = 0
         };
 
         void Start()
         {
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
         public override void OnPlayerKilled(PlayerState playerKilled)

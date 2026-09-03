@@ -1,8 +1,7 @@
-﻿using AirlockClient.Handlers;
-using AirlockClient.Managers.Gamemode;
-using AirlockClient.Patches;
-using SG.Airlock;
-using SG.Airlock.Network;
+﻿using AirlockClient.AC;
+using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Network;
+using MelonLoader;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using UnityEngine;
 
 namespace AirlockClient.Managers
 {
+
     public class MixupManager
     {
         public class PlayerSnapshot
@@ -22,9 +22,33 @@ namespace AirlockClient.Managers
             public string Name;
         }
 
+        private IEnumerator RevertAfterSeconds(List<PlayerSnapshot> snapshots, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            foreach (PlayerSnapshot snap in snapshots)
+            {
+                snap.Player.LocomotionPlayer.PlayPowerUpVFX(PowerUps.Vanish, true, true, false, false);
+
+                snap.Player.ColorId = snap.Player.PlayerId + 20;
+            }
+
+            foreach (PlayerSnapshot snap in snapshots)
+            {
+                if (snap.Player != null)
+                {
+                    snap.Player.HatId = snap.HatId;
+                    snap.Player.HandsId = snap.HandsId;
+                    snap.Player.SkinId = snap.SkinId;
+                    snap.Player.ColorId = snap.ColorId;
+                    snap.Player.NetworkName = snap.Name;
+                }
+            }
+        }
+
         public static void TriggerMixUp(float revertDelay)
         {
-            SpawnManager spawnManager = MoreRolesManager.Spawn;
+            SpawnManager spawnManager = ModdedGameStateManager.Instance.state.SpawnManager;
             if (spawnManager == null || spawnManager.ActivePlayerStates == null)
                 return;
 
@@ -34,85 +58,53 @@ namespace AirlockClient.Managers
             {
                 if (player == null || !player.IsAlive) continue;
 
-                PlayerSavedState.TryGet(player.PlayerId, out int savedColor, out int savedHat);
-
                 snapshots.Add(new PlayerSnapshot
                 {
                     Player = player,
-                    HatId = savedHat != 0 ? savedHat : player.HatId,
+                    HatId = player.HatId,
                     HandsId = player.HandsId,
                     SkinId = player.SkinId,
-                    ColorId = savedColor != 0 ? savedColor : player.ColorId,
                     Name = player.CachedName ?? "Player###"
                 });
+
+                player.ColorId = player.PlayerId + 20;
             }
 
-            CoroutineHandler.Start(ApplyRandomCosmetics(snapshots));
-            CoroutineHandler.Start(new MixupManager().RevertAfterSeconds(snapshots, revertDelay));
+            SwapAvatrs(snapshots);
+            MelonCoroutines.Start(new MixupManager().RevertAfterSeconds(snapshots, revertDelay));
         }
 
-        private static readonly Dictionary<int, int> _originalHats = new();
-
-        private static IEnumerator ApplyRandomCosmetics(List<PlayerSnapshot> snapshots)
+        public static void SwapAvatrs(List<PlayerSnapshot> snapshots)
         {
-            List<int> availableColors = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-            availableColors = availableColors.OrderBy(_ => Random.value).ToList();
-
-            for (int i = 0; i < snapshots.Count; i++)
-            {
-                PlayerSnapshot snapshot = snapshots[i];
-
-                _originalHats[snapshot.Player.PlayerId] = snapshot.HatId;
-
-                var randomSkin = ListsManager.skins[Random.Range(0, ListsManager.skins.Count)];
-                var randomHands = ListsManager.hands[Random.Range(0, ListsManager.hands.Count)];
-                string randomName = ListsManager.Usernames[Random.Range(0, ListsManager.Usernames.Count)];
-                int randomColor = availableColors[i % availableColors.Count];
-
-                snapshot.Player.ColorId = randomColor;
-                snapshot.Player.SkinId = randomSkin.id;
-                snapshot.Player.HandsId = randomHands.id;
-                snapshot.Player.SetNetworkName(randomName);
-                snapshot.Player.LocomotionPlayer.PlayPowerUpVFX(PowerUps.Vanish, true, true, false, false);
-            }
-
-            yield return new WaitForSeconds(0.5f);
-
             foreach (PlayerSnapshot snapshot in snapshots)
             {
-                if (snapshot.Player == null) continue;
-                var randomHat = ListsManager.hats[Random.Range(0, ListsManager.hats.Count)];
-                snapshot.Player.HatId = randomHat.id;
+                List<PlayerSnapshot> randomSnapshots = snapshots.ToArray().ToList();
+                randomSnapshots.Remove(snapshot);
+
+                PlayerSnapshot randomSnapshot = randomSnapshots[Random.Range(0, randomSnapshots.Count)];
+
+                AntiCheat.ChangeHatWithAntiCheat(snapshot.Player, randomSnapshot.HatId);
+                AntiCheat.ChangeSkinWithAntiCheat(snapshot.Player, randomSnapshot.SkinId);
+                AntiCheat.ChangeGlovesWithAntiCheat(snapshot.Player, randomSnapshot.HandsId);
+                snapshot.Player.ColorId = GetFreeColor();
+                snapshot.Player.NetworkName = randomSnapshot.Name;
+
+                snapshot.Player.LocomotionPlayer.PlayPowerUpVFX(PowerUps.Vanish, true, true, false, false);
             }
         }
 
-        private IEnumerator RevertAfterSeconds(List<PlayerSnapshot> snapshots, float delay)
+        public static int GetFreeColor()
         {
-            yield return new WaitForSeconds(delay);
+            List<int> allColors = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
-            foreach (PlayerSnapshot snap in snapshots)
+            foreach (PlayerState player in ModdedGameStateManager.Instance.state.SpawnManager.ActivePlayerStates)
             {
-                if (snap.Player == null) continue;
-
-                snap.Player.LocomotionPlayer.PlayPowerUpVFX(PowerUps.Vanish, true, true, false, false);
-                snap.Player.ColorId = snap.ColorId;
-                snap.Player.HandsId = snap.HandsId;
-                snap.Player.SkinId = snap.SkinId;
-                snap.Player.NetworkName = snap.Name;
+                allColors.Remove(player.ColorId);
             }
 
-            yield return new WaitForSeconds(0.5f);
+            int randomColor = allColors[Random.Range(0, allColors.Count)];
 
-            foreach (PlayerSnapshot snap in snapshots)
-            {
-                if (snap.Player == null) continue;
-
-                if (_originalHats.TryGetValue(snap.Player.PlayerId, out int originalHat))
-                {
-                    snap.Player.HatId = originalHat;
-                    _originalHats.Remove(snap.Player.PlayerId);
-                }
-            }
+            return randomColor;
         }
     }
 }

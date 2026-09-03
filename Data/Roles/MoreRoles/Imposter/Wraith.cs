@@ -2,6 +2,7 @@
 using AirlockClient.Managers.Gamemode;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -11,7 +12,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             Name = "Wraith",
             RoleType = "Imposter",
-            Description = "Kill when dead",
+            Description = "Haunt others as a ghost",
+            AC_Description = "Haunt others as a ghost",
+            AC_Color = new Color(255, 0, 0, 150),
             Team = GameTeam.Impostor,
             Amount = 0
         };
