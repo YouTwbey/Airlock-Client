@@ -17,8 +17,8 @@ namespace AirlockClient.Managers.Gamemode
 
         public override bool OnGameStart()
         {
-            ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchIntSettings.SabotageCooldown, 0);
-            ModdedGameStateManager.Instance.SetMatchSetting(Data.Enums.MatchBoolSettings.AllowDoorSabotage, false);
+            ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.SabotageCooldown, 0);
+            ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleBoolSettings.AllowDoorSabotage, false);
             return true;
         }
 

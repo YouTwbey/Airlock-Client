@@ -1,9 +1,8 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
-using UnityEngine;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -18,15 +17,14 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Mayor",
             RoleType = "Crewmate",
             Description = "Votes doubled",
-            AC_Description = "Your meeting votes are doubled",
-            AC_Color = new Color(20, 255, 122),
+            AC_Description = "During meetings, your votes are doubled.",
             Team = GameTeam.Crewmember,
             Amount = 0
         };
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         PlayerState playerToVote;
@@ -48,7 +46,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             {
                 Vote vote = new Vote();
                 vote.Voter = PlayerWithRole.PlayerId;
-                vote.VotedAgainst = new Il2CppSystem.Nullable<Il2CppFusion.PlayerRef>(playerToVote.PlayerId);
+                vote.VotedAgainst = new Il2CppSystem.Nullable<Fusion.PlayerRef>(playerToVote.PlayerId);
 
                 FindObjectOfType<VoteManager>()._votes.Add(vote);
             }

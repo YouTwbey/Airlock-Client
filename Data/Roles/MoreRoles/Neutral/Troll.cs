@@ -1,15 +1,17 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
-using UnityEngine;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+
 
 namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 {
     public class Troll : SubRole
     {
+        public GameStateManager state;
+        public NetworkedKillBehaviour killing;
         /// <summary>
         /// A neutral role that needs to die to win.
         /// </summary>
@@ -18,20 +20,22 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Name = "Troll",
             RoleType = "Neutral",
             Description = "Death = Win",
-            AC_Description = "Get yourself taken out",
-            AC_Color = Color.white,
-            Team = GameTeam.Crewmember,
+            AC_Description = "You need to be killed to win.",
+            Team = GameTeam.Other,
             Amount = 0
         };
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            killing = FindObjectOfType<NetworkedKillBehaviour>();
+            state = FindObjectOfType<GameStateManager>();
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         public override void OnPlayerDied(PlayerState killer)
         {
-            ModdedGameStateManager.Instance.QueueWin(PlayerWithRole, -1, GameplayStates.Task, 0);
+            killing.AlterRole(GameRole.Sheriff, PlayerWithRole.PlayerId, 0);
+            state.EndGame(GameTeam.Other);
         }
     }
 }
