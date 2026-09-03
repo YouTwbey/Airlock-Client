@@ -1,4 +1,4 @@
-using AirlockClient.AC;
+﻿using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Gamemode;

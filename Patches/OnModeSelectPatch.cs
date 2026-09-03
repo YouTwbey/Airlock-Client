@@ -1,9 +1,9 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Managers;
 using HarmonyLib;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.UI.TitleScreen;
-using Il2CppSG.LightUI;
+using SG.Airlock;
+using SG.Airlock.UI.TitleScreen;
+using SG.LightUI;
 using UnityEngine;
 using UnityEngine.UI;
 using static UnityEngine.Object;
@@ -30,35 +30,52 @@ namespace AirlockClient.Patches
 
                     if (CurrentMode.Name == "More Roles")
                     {
-                        rend.sprite = StorageManager.MoreRolesIcon;
+                        rend.sprite = StorageManager.Instance.MoreRolesIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Hide N Seek")
                     {
-                        rend.sprite = StorageManager.HideNSeekIcon;
+                        rend.sprite = StorageManager.Instance.HideNSeekIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Sandbox")
                     {
-                        rend.sprite = StorageManager.FreeRoamIcon;
+                        rend.sprite = StorageManager.Instance.FreeRoamIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Lights Out")
                     {
-                        rend.sprite = StorageManager.LightsOutIcon;
+                        rend.sprite = StorageManager.Instance.LightsOutIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Infection")
                     {
-                        rend.sprite = StorageManager.InfectedIcon;
+                        rend.sprite = StorageManager.Instance.InfectedIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Containment")
                     {
-                        rend.sprite = StorageManager.ContainmentIcon;
+                        rend.sprite = StorageManager.Instance.ContainmentIcon;
+                        rend.preserveAspect = true;
                     }
                     else if (CurrentMode.Name == "Round Up")
                     {
-                        rend.sprite = StorageManager.SheriffIcon;
+                        rend.sprite = StorageManager.Instance.SheriffIcon;
+                        rend.preserveAspect = true;
+                    }
+                    else if (CurrentMode.Name == "DeathMatch")
+                    {
+                        rend.sprite = StorageManager.Instance.DeathMatchIcon;
+                        rend.preserveAspect = true;
+                    }
+                    else if (CurrentMode.Name == "Crown Runners")
+                    {
+                        rend.sprite = StorageManager.Instance.CrownRunnersIcon;
+                        rend.preserveAspect = true;
                     }
                     else
                     {
-                        rend.sprite = StorageManager.ModStamp;
+                        rend.sprite = StorageManager.Instance.ModStamp;
                     }
 
                     modeIcon.name = "ModdedIcon";

@@ -1,9 +1,9 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
-using Il2CppSG.Airlock.Cutscenes;
-using Il2CppTMPro;
-using Il2CppSG.Airlock.Localization;
+using SG.Airlock.Cutscenes;
+using SG.Airlock.Localization;
+using TMPro;
 
 namespace AirlockClient.Patches
 {
@@ -21,8 +21,6 @@ namespace AirlockClient.Patches
                 if (MoreRolesManager.MyRole != null)
                 {
                     yourRole.GetComponent<UserStringComponent_TMP>().enabled = false;
-                    role.GetComponent<UserStringComponent_TMP>().enabled = false;
-                    desc.GetComponent<UserStringComponent_TMP>().enabled = false;
 
                     if (CurrentMode.Name == "More Roles")
                     {
@@ -32,8 +30,6 @@ namespace AirlockClient.Patches
                 else
                 {
                     yourRole.GetComponent<UserStringComponent_TMP>().enabled = true;
-                    role.GetComponent<UserStringComponent_TMP>().enabled = true;
-                    desc.GetComponent<UserStringComponent_TMP>().enabled = true;
                 }
             }
         }
