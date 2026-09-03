@@ -10,18 +10,12 @@ namespace AirlockClient.Patches
     {
         public static void Prefix()
         {
-            if (CurrentMode.Modded)
+            if (!CurrentMode.Modded) return;
+            if (!CurrentMode.IsHosting) return;
+            if (!ModdedGameStateManager.Instance) return;
+            if (ModdedGameStateManager.Instance.state.InLobbyState())
             {
-                if (CurrentMode.IsHosting)
-                {
-                    if (ModdedGameStateManager.Instance)
-                    {
-                        if (ModdedGameStateManager.Instance.state.InLobbyState())
-                        {
-                            ModdedGameStateManager.Instance.state.RPC_ToggleLobbyDoors(false);
-                        }
-                    }
-                }
+                ModdedGameStateManager.Instance.state.RPC_ToggleLobbyDoors(false);
             }
         }
     }

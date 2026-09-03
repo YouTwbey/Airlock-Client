@@ -12,15 +12,17 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,66 +35,257 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\0Harmony.dll</HintPath>
+    <Compile Include="AC\AntiCheat.cs" />
+    <Compile Include="AC\RpcData.cs" />
+    <Compile Include="Attributes\AirlockClientGamemode.cs" />
+    <Compile Include="Attributes\QueuedWin.cs" />
+    <Compile Include="Attributes\Modifier.cs" />
+    <Compile Include="Attributes\SubRole.cs" />
+    <Compile Include="Attributes\ModifierData.cs" />
+    <Compile Include="Attributes\SubRoleData.cs" />
+    <Compile Include="Core\Base.cs" />
+    <Compile Include="Data\Enums.cs" />
+    <Compile Include="Data\Info.cs" />
+    <Compile Include="Data\Roles\CrownCatchers\Crewmate\Crewmate.cs" />
+    <Compile Include="Data\Roles\CrownCatchers\Impostor\Impostor.cs" />
+    <Compile Include="Data\Roles\DeathMatch\Crewmates\Vigilante.cs" />
+    <Compile Include="Data\Roles\DeathMatch\Impostors\Impostors.cs" />
+    <Compile Include="Data\Roles\HideNSeek\Crewmate\Hider.cs" />
+    <Compile Include="Data\Roles\HideNSeek\Imposter\Seeker.cs" />
+    <Compile Include="Data\Roles\Infection\Crewmate\Chef.cs" />
+    <Compile Include="Data\Roles\Infection\Imposter\Zomburitto.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Bait.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Silencer.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Modifiers\Armor.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Lawyer.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Sheriff.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Worker.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Assassin.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Bomber.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Mixup.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Poisoner.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Sniper.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Trapper.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Viper.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Modifiers\DeputySpeedUp.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Modifiers\Lovers.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Arsonist.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Duelist.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Executioner.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Imposter\Janitor.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Jester.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Crewmate\Mayor.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Modifiers\Muted.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Modifiers\Yapper.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Troll.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Vengance.cs" />
+    <Compile Include="Data\Roles\MoreRoles\Neutral\Vulture.cs" />
+    <Compile Include="Handlers\CoroutineHandler.cs" />
+    <Compile Include="Handlers\LobbyBrowserHandler.cs" />
+    <Compile Include="Handlers\PetHandler.cs" />
+    <Compile Include="Managers\AirlockClientManager.cs" />
+    <Compile Include="Managers\Dev\CommandManager.cs" />
+    <Compile Include="Managers\Gamemode\ContainmentManager.cs" />
+    <Compile Include="Handlers\DangerMeterHandler.cs" />
+    <Compile Include="Managers\Gamemode\CrownRunnersManager.cs" />
+    <Compile Include="Managers\Gamemode\SandboxManager.cs" />
+    <Compile Include="Managers\Debug\Logging.cs" />
+    <Compile Include="Managers\Gamemode\HideNSeekManager.cs" />
+    <Compile Include="Managers\Gamemode\InfectionManager.cs" />
+    <Compile Include="Managers\Gamemode\LightsOutManager.cs" />
+    <Compile Include="Managers\Gamemode\DeathMatchManager.cs" />
+    <Compile Include="Managers\ListsManager.cs" />
+    <Compile Include="Managers\ModdedGameStateManager.cs" />
+    <Compile Include="Managers\ModStamp.cs" />
+    <Compile Include="Managers\OrbiterManager.cs" />
+    <Compile Include="Managers\PetManager.cs" />
+    <Compile Include="Managers\StorageManager.cs" />
+    <Compile Include="Managers\Gamemode\MoreRolesManager.cs" />
+    <Compile Include="Patches\AssignSheriffPatch.cs" />
+    <Compile Include="Patches\BootstrapPatch.cs" />
+    <Compile Include="Patches\BreakColorsPatch.cs" />
+    <Compile Include="Patches\EndGamePatch.cs" />
+    <Compile Include="Patches\EndVotePatch.cs" />
+    <Compile Include="Patches\FixSabotagePatch.cs" />
+    <Compile Include="Patches\IncrementTaskPatch.cs" />
+    <Compile Include="Managers\MixupManager.cs" />
+    <Compile Include="Patches\KickPatch.cs" />
+    <Compile Include="Patches\OnModeSelectPatch.cs" />
+    <Compile Include="Patches\ReplayPatch.cs" />
+    <Compile Include="Patches\RequestPowerupPatch.cs" />
+    <Compile Include="Patches\RpcRecievedPatch.cs" />
+    <Compile Include="Patches\SetHeightPatch.cs" />
+    <Compile Include="Patches\ShowDeathCutscenePatch.cs" />
+    <Compile Include="Patches\ShowEjectedPatch.cs" />
+    <Compile Include="Patches\SpawnBodyPatch.cs" />
+    <Compile Include="Patches\StartGamePatch.cs" />
+    <Compile Include="Patches\TargetedActionPatch.cs" />
+    <Compile Include="Patches\SpawnInitializationPatch.cs" />
+    <Compile Include="Patches\VentPatch.cs" />
+    <Compile Include="Patches\VotePatch.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\PlayerStateExtensions.cs" />
+    <Compile Include="Utils\StaticRefs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Sprite\DeathMatchIcon.png" />
+    <EmbeddedResource Include="Data\Sprite\FreeRoamIcon.png" />
+    <EmbeddedResource Include="Data\Sprite\HideNSeekIcon.png" />
+    <EmbeddedResource Include="Data\Sprite\InfectedIcon.png" />
+    <EmbeddedResource Include="Data\Sprite\LightsOutIcon.png" />
+    <EmbeddedResource Include="Data\Sprite\MoreRolesIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\AudioClip\0.wav" />
+    <EmbeddedResource Include="Data\AudioClip\1.wav" />
+    <EmbeddedResource Include="Data\AudioClip\2.wav" />
+    <EmbeddedResource Include="Data\AudioClip\3.wav" />
+    <EmbeddedResource Include="Data\AudioClip\4.wav" />
+    <EmbeddedResource Include="Data\AudioClip\5.wav" />
+    <EmbeddedResource Include="Data\AudioClip\Seeker.wav" />
+    <EmbeddedResource Include="Data\Sprite\0.png" />
+    <EmbeddedResource Include="Data\Sprite\1.png" />
+    <EmbeddedResource Include="Data\Sprite\2.png" />
+    <EmbeddedResource Include="Data\Sprite\3.png" />
+    <EmbeddedResource Include="Data\Sprite\4.png" />
+    <EmbeddedResource Include="Data\Sprite\5.png" />
+    <EmbeddedResource Include="Data\Sprite\Logo.png" />
+    <EmbeddedResource Include="Data\Sprite\ModStamp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Sprite\CrownRunnersTemp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="0Harmony, Version=2.10.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="AirlockAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AirlockAPI, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\AirlockAPI\obj\Release\net6.0\AirlockAPI.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Assembly-CSharp.dll</HintPath>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Addressables">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Addressables.dll</HintPath>
+    <Reference Include="BepInEx.Core">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Common">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Common.dll</HintPath>
+    <Reference Include="BepInEx.Preloader.Core">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Preloader.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Realtime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Realtime.dll</HintPath>
+    <Reference Include="BepInEx.Unity.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Unity.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Runtime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Runtime.dll</HintPath>
+    <Reference Include="BepInEx.Unity.IL2CPP">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Scripts">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Scripts.dll</HintPath>
+    <Reference Include="Epic.OnlineServices">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Epic.OnlineServices.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppFusion.Sockets">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppFusion.Sockets.dll</HintPath>
+    <Reference Include="Fusion.Addressables">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Realtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Realtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Runtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Scripts">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Scripts.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Sockets">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Sockets.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Common">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\Il2CppInterop.Common.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Common, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Generator">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\Il2CppInterop.Generator.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Generator, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Generator.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Unity.IL2CPP">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\BepInEx.Unity.IL2CPP.dll</HintPath>
+    </Reference>
+    <Reference Include="Epic.OnlineServices">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Epic.OnlineServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Addressables">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Addressables.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Common">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Realtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Realtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.HarmonySupport">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\Il2CppInterop.HarmonySupport.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\core\Il2CppInterop.HarmonySupport.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppInterop.Runtime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\Il2CppInterop.Runtime.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\core\Il2CppInterop.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Il2Cppmscorlib">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2Cppmscorlib.dll</HintPath>
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\Il2Cppmscorlib.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPhoton3Unity3D">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPhoton3Unity3D.dll</HintPath>
+    <Reference Include="Il2CppSystem.Runtime.Serialization">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\Il2CppSystem.Runtime.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPhotonRealtime">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPhotonRealtime.dll</HintPath>
+    <Reference Include="Photon3Unity3D">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Photon3Unity3D.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPhotonVoice">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPhotonVoice.dll</HintPath>
+    <Reference Include="Fusion.Runtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPhotonVoice.API">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPhotonVoice.API.dll</HintPath>
+    <Reference Include="PhotonRealtime">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonRealtime.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPhotonVoice.Fusion">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPhotonVoice.Fusion.dll</HintPath>
+    <Reference Include="Fusion.Scripts">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Scripts.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppPICO.Platform">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppPICO.Platform.dll</HintPath>
+    <Reference Include="PhotonVoice">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.dll</HintPath>
+    </Reference>
+    <Reference Include="Fusion.Sockets">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Fusion.Sockets.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonVoice.API">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.API.dll</HintPath>
+    </Reference>
+    <Reference Include="Il2CppInterop.Common, Version=1.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\core\Il2CppInterop.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="PhotonVoice.Fusion">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\PhotonVoice.Fusion.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.Airlock">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Airlock.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.AutoPerf">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.AutoPerf.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.AutoPerf.Data">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.AutoPerf.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.AutoPerf.Data.Airlock">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.AutoPerf.Data.Airlock.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.Core">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Core.dll</HintPath>
     </Reference>
     <Reference Include="Il2CppSG.Airlock">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Airlock.dll</HintPath>
@@ -112,186 +305,137 @@
     <Reference Include="Il2CppSG.LightUI">
       <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.LightUI.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Platform">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Platform.dll</HintPath>
+    <Reference Include="SG.FusionSimulator">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\SG.FusionSimulator.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Platform.Oculus">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Platform.Oculus.dll</HintPath>
+    <Reference Include="SG.GlobalEvents">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\SG.GlobalEvents.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Platform.Pico">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Platform.Pico.dll</HintPath>
+    <Reference Include="SG.LightTween">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\SG.LightTween.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Platform.QADebug">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Platform.QADebug.dll</HintPath>
+    <Reference Include="SG.LightUI">
+      <HintPath>..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\BepInEx\interop\SG.LightUI.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Platform.Steam">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Platform.Steam.dll</HintPath>
+    <Reference Include="SG.Platform">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.PlayerLoops">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.PlayerLoops.dll</HintPath>
+    <Reference Include="SG.Platform.Airlock3D">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.Airlock3D.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.SkuBuild">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.SkuBuild.dll</HintPath>
+    <Reference Include="SG.Platform.Oculus">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.Oculus.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.SkuBuild.Oculus">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.SkuBuild.Oculus.dll</HintPath>
+    <Reference Include="SG.Platform.QADebug">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.QADebug.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.SkuBuild.Pico">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.SkuBuild.Pico.dll</HintPath>
+    <Reference Include="SG.Platform.SimulatedXR">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.SimulatedXR.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.SkuBuild.Steam">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.SkuBuild.Steam.dll</HintPath>
+    <Reference Include="SG.Platform.Steam">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Platform.Steam.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.SoundCore">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.SoundCore.dll</HintPath>
+    <Reference Include="SG.PlayerLoops">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.PlayerLoops.dll</HintPath>
     </Reference>
-    <Reference Include="Il2CppSG.Vignettitor">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Il2CppSG.Vignettitor.dll</HintPath>
+    <Reference Include="SG.SkuBuild">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.SkuBuild.dll</HintPath>
     </Reference>
-    <Reference Include="MelonLoader">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\MelonLoader.dll</HintPath>
+    <Reference Include="SG.SkuBuild.Oculus">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.SkuBuild.Oculus.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\net6\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="SG.SkuBuild.Steam">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.SkuBuild.Steam.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Unity.InputSystem">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Unity.InputSystem.dll</HintPath>
+    <Reference Include="SG.SoundCore">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.SoundCore.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.InputSystem.ForUI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
+    <Reference Include="SG.VAT">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.VAT.dll</HintPath>
+    </Reference>
+    <Reference Include="SG.Vignettitor">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\SG.Vignettitor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InputSystem, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Unity.InputSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InputSystem.ForUI, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Unity.InputSystem.ForUI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.InputSystem.RebindingUI">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Unity.InputSystem.RebindingUI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\MelonLoader\Il2CppAssemblies\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\Unity.TextMeshPro.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AssetBundleModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\MelonLoader\Il2CppAssemblies\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.AudioModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.AudioModule.dll</HintPath>
+    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.CoreModule.dll</HintPath>
+    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.ImageConversionModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.ImageConversionModule.dll</HintPath>
+    <Reference Include="UnityEngine.ImageConversionModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.ImageConversionModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.IMGUIModule.dll</HintPath>
+    <Reference Include="UnityEngine.IMGUIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.IMGUIModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.InputLegacyModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.InputLegacyModule.dll</HintPath>
+    <Reference Include="UnityEngine.InputLegacyModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.InputModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.InputModule.dll</HintPath>
+    <Reference Include="UnityEngine.InputModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.InputModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.PhysicsModule.dll</HintPath>
+    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UI.dll</HintPath>
+    <Reference Include="UnityEngine.TextRenderingModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.TextRenderingModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIElementsModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UIElementsModule.dll</HintPath>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UIModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UIModule.dll</HintPath>
+    <Reference Include="UnityEngine.UIElementsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UnityWebRequestModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
-      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us VR\MelonLoader\Il2CppAssemblies\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
     </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AC\AntiCheat.cs" />
-    <Compile Include="AC\RpcData.cs" />
-    <Compile Include="Attributes\AirlockClientGamemode.cs" />
-    <Compile Include="Attributes\QueuedWin.cs" />
-    <Compile Include="Attributes\SubRole.cs" />
-    <Compile Include="Attributes\SubRoleData.cs" />
-    <Compile Include="Core\Base.cs" />
-    <Compile Include="Data\Enums.cs" />
-    <Compile Include="Data\Info.cs" />
-    <Compile Include="Data\Roles\HideNSeek\Crewmate\Hider.cs" />
-    <Compile Include="Data\Roles\HideNSeek\Imposter\Seeker.cs" />
-    <Compile Include="Data\Roles\Infection\Crewmate\Chef.cs" />
-    <Compile Include="Data\Roles\Infection\Imposter\Zomburitto.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Armorer.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Bait.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Sheriff.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Assassin.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Bomber.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Mixup.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Poisoner.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Magician.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Viper.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Witch.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Wraith.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Arsonist.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Duelist.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Executioner.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Imposter\Janitor.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Jester.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Mayor.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Silencer.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Crewmate\Yapper.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Lover.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Trapper.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Troll.cs" />
-    <Compile Include="Data\Roles\MoreRoles\Neutral\Vulture.cs" />
-    <Compile Include="Handlers\PetHandler.cs" />
-    <Compile Include="Managers\Dev\CommandManager.cs" />
-    <Compile Include="Managers\Gamemode\ContainmentManager.cs" />
-    <Compile Include="Handlers\DangerMeterHandler.cs" />
-    <Compile Include="Managers\Gamemode\CriticalCargoManager.cs" />
-    <Compile Include="Managers\Gamemode\SandboxManager.cs" />
-    <Compile Include="Managers\Debug\Logging.cs" />
-    <Compile Include="Managers\Gamemode\HideNSeekManager.cs" />
-    <Compile Include="Managers\Gamemode\InfectionManager.cs" />
-    <Compile Include="Managers\Gamemode\LightsOutManager.cs" />
-    <Compile Include="Managers\Gamemode\RoundUpManager.cs" />
-    <Compile Include="Managers\MixupManager.cs" />
-    <Compile Include="Managers\ModdedGameStateManager.cs" />
-    <Compile Include="Managers\ModStamp.cs" />
-    <Compile Include="Managers\PetManager.cs" />
-    <Compile Include="Managers\StorageManager.cs" />
-    <Compile Include="Managers\Gamemode\MoreRolesManager.cs" />
-    <Compile Include="Patches\EndGamePatch.cs" />
-    <Compile Include="Patches\EndVotePatch.cs" />
-    <Compile Include="Patches\FixSabotagePatch.cs" />
-    <Compile Include="Patches\IncrementTaskPatch.cs" />
-    <Compile Include="Patches\MournSoulmatePatch.cs" />
-    <Compile Include="Patches\OnModeSelectPatch.cs" />
-    <Compile Include="Patches\PlayCutscenePatch.cs" />
-    <Compile Include="Patches\ReplayPatch.cs" />
-    <Compile Include="Patches\RequestPowerupPatch.cs" />
-    <Compile Include="Patches\RpcRecievedPatch.cs" />
-    <Compile Include="Patches\SetHeightPatch.cs" />
-    <Compile Include="Patches\ShowDeathCutscenePatch.cs" />
-    <Compile Include="Patches\ShowEjectedPatch.cs" />
-    <Compile Include="Patches\SpawnBodyPatch.cs" />
-    <Compile Include="Patches\TargetedActionPatch.cs" />
-    <Compile Include="Patches\SpawnInitializationPatch.cs" />
-    <Compile Include="Patches\VentPatch.cs" />
-    <Compile Include="Patches\VotePatch.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Data\airlockclientdata" />
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

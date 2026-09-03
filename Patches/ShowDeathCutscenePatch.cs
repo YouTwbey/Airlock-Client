@@ -1,4 +1,5 @@
-﻿using AirlockClient.Attributes;
+﻿using System.Linq;
+using AirlockClient.Attributes;
 using HarmonyLib;
 using Fusion;
 using SG.Airlock;
@@ -11,12 +12,9 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(PlayerState __instance, PlayerRef victim, PlayerRef killer, bool wasVigilanteKill)
         {
-            foreach (SubRole role in SubRole.All)
+            foreach (var role in SubRole.All.Where(role => role.PlayerWithRole.PlayerId == victim))
             {
-                if (role.PlayerWithRole.PlayerId == victim)
-                {
-                    role.OnPlayerDied(GameObject.Find("PlayerState (" + killer.PlayerId + ")").GetComponent<PlayerState>());
-                }
+                role.OnPlayerDied(GameObject.Find("PlayerState (" + killer.PlayerId + ")").GetComponent<PlayerState>());
             }
         }
     }

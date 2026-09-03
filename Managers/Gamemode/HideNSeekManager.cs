@@ -4,17 +4,16 @@ using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using AirlockClient.Data.Roles.HideNSeek.Imposter;
 using AirlockClient.Handlers;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Cutscenes;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.Sabotage;
+using AirlockClient.Utils;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.Sabotage;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.UIElements.Experimental;
+using UnityEngine.InputSystem;
 using static AirlockAPI.Managers.NetworkManager;
 using static AirlockClient.Data.Enums;
-using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -36,7 +35,7 @@ namespace AirlockClient.Managers.Gamemode
         {
             SeekerMusic = new GameObject("SeekerMusic").AddComponent<AudioSource>();
             SeekerMusic.loop = true;
-            SeekerMusic.clip = StorageManager.SeekerMusic;
+            SeekerMusic.clip = StorageManager.Instance.SeekerMusic;
             SeekerMusic.volume = 0.2f;
 
             foreach (AudioMixerGroup group in Resources.FindObjectsOfTypeAll<AudioMixerGroup>())
@@ -50,14 +49,14 @@ namespace AirlockClient.Managers.Gamemode
 
         public override bool OnTargetedAction(ref PlayerState killer, ref PlayerState victim, ref int action)
         {
-            AntiCheat.KillPlayerWithAntiCheat(killer, victim);
+            killer.KillPlayerWithAntiCheat(victim);
             return false;
         }
 
         public override bool OnGameStart()
         {
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.MaxInfected, 1);
-            ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.NumImposters, 1);
+            ModdedGameStateManager.Instance.SetRoleSetting(RoleIntSettings.NumImposters, 1);
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.TagCooldown, 10);
             ModdedGameStateManager.Instance.SetMatchSetting(MatchIntSettings.TagTotalTasks, 200);
 
@@ -117,7 +116,7 @@ namespace AirlockClient.Managers.Gamemode
                 if (SeekMusic == null)
                 {
                     SeekMusic = new GameObject("LISTENER_SeekerMusic").AddComponent<AudioSource>();
-                    SeekMusic.clip = StorageManager.SeekerMusic;
+                    SeekMusic.clip = StorageManager.Instance.SeekerMusic;
                     SeekMusic.volume = 0.2f;
                     SeekMusic.loop = true;
 
@@ -168,6 +167,9 @@ namespace AirlockClient.Managers.Gamemode
 
         void Update()
         {
+            if (Keyboard.current.numpad0Key.wasPressedThisFrame)
+                DangerMeterHandler.Init(GameObject.Find("PlayerState (9)").transform);
+
             if (State.InTaskState())
             {
                 if (GameStarted == false)
@@ -259,13 +261,13 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (totalAlive == 0)
                 {
-                    State.GameEndReasonIndex = (int)EndGameReasonsData.EndGameReason.NotEnoughCrewmates;
+                    //State.GameEndReasonIndex = State.LowCrewmateCountWin;
                     State.EndGame(GameTeam.Impostor);
                 }
 
                 if (!seeker.PlayerWithRole.IsConnected)
                 {
-                    State.GameEndReasonIndex = (int)EndGameReasonsData.EndGameReason.NotEnoughImpostors;
+                    //State.GameEndReasonIndex = S;
                     State.EndGame(GameTeam.Crewmember);
                 }
             }
@@ -291,6 +293,8 @@ namespace AirlockClient.Managers.Gamemode
                 }
             }
         }
+
+
 
         public static System.Collections.IEnumerator DisplayRoleInfo(PlayerState Player, SubRole Role)
         {

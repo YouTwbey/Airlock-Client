@@ -1,5 +1,5 @@
-﻿using AirlockClient.Attributes;
-using AirlockAPI.Data;
+﻿using AirlockAPI.Data;
+using AirlockAPI.Handlers;
 using AirlockClient.Managers.Gamemode;
 using HarmonyLib;
 using SG.Airlock.Sabotage;
@@ -13,12 +13,12 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.Name == "Hide N Seek")
             {
-                return ((HideNSeekManager)AirlockClientGamemode.Current).AllowSabotagesToBeTurnedOff;
+                return ((HideNSeekManager)CustomGameHandler.Current).AllowSabotagesToBeTurnedOff;
             }
 
             if (CurrentMode.Name == "Containment")
             {
-                ((ContainmentManager)AirlockClientGamemode.Current).OnRepairedSabotage();
+                ((ContainmentManager)CustomGameHandler.Current).OnRepairedSabotage();
             }
 
             return true;

@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 using HarmonyLib;
 using SG.Airlock.Network;
 
@@ -10,15 +11,9 @@ namespace AirlockClient.Patches
     {
         public static bool Prefix(NetworkedLocomotionPlayer __instance)
         {
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return __instance.PState.VerifyVent();
         }
     }
 
@@ -27,15 +22,9 @@ namespace AirlockClient.Patches
     {
         public static bool Prefix(NetworkedLocomotionPlayer __instance)
         {
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVent(__instance.PState))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return __instance.PState.VerifyVent();
         }
     }
 }

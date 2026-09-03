@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using SG.LightUI;
+using UnityEngine;
 
 namespace AirlockClient.Patches
 {
@@ -8,18 +9,9 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(LUIElement __instance, ref float height)
         {
-            if (__instance.name.Contains("Gamemode"))
-            {
-                if (__instance._totalHeight == 30)
-                {
-                    __instance._totalHeight = 31;
-                }
-                else
-                {
-                    __instance._totalHeight = 30;
-                }
-                height = 125;
-            }
+            if (!__instance.name.Contains("Gamemode")) return;
+            __instance._totalHeight = Mathf.Approximately(__instance._totalHeight, 30) ? 31 : 30;
+            height = 125;
         }
     }
 }

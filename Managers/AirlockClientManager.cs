@@ -19,13 +19,14 @@ using TMPro;
 using SG.Airlock.Localization;
 using Il2CppInterop.Runtime;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 
 namespace AirlockClient.Managers
 {
     public class AirlockClientManager : MonoBehaviour
     {
         public static bool InGame;
-        bool bonusMapsAdded = false;
+        bool bonusMapsAdded;
         public static GameObject SceneStorage;
         public static string SceneName = "";
 
@@ -34,7 +35,6 @@ namespace AirlockClient.Managers
         static List<GamemodeSelectionMenu> selectModeMenus = new List<GamemodeSelectionMenu>();
         static List<TitleMenu> titleMenus = new List<TitleMenu>();
         static List<MenuManager> menus = new List<MenuManager>();
-        static GameObject makePublic;
 
         public static GameObject Orbiter1;
         public static GameObject Orbiter7;
@@ -137,6 +137,7 @@ namespace AirlockClient.Managers
                         SceneStorage.AddComponent<PetManager>();
                         SceneStorage.AddComponent<ModdedGameStateManager>();
                         SceneStorage.AddComponent<CommandManager>();
+                        SceneStorage.AddComponent<StaticRefs>();
 
                         if (CurrentMode.Name == "Hide N Seek")
                         {

@@ -18,15 +18,12 @@ namespace AirlockClient.Managers
 
                 foreach (PlayerState state in FindObjectsOfType<PlayerState>())
                 {
-                    if (state != null)
+                    if (state == null) continue;
+                    if (!state.IsSpawned) continue;
+                    
+                    if (state.IsConnected)
                     {
-                        if (state.IsSpawned)
-                        {
-                            if (state.IsConnected)
-                            {
-                                //AssignDebugPet(state.LocomotionPlayer);
-                            }
-                        }
+                        //AssignDebugPet(state.LocomotionPlayer);
                     }
                 }
             }
@@ -38,7 +35,7 @@ namespace AirlockClient.Managers
 
         public void AssignDebugPet(NetworkedLocomotionPlayer player)
         {
-            GameObject debugPet = new GameObject("PET_Debug");
+            var debugPet = new GameObject("PET_Debug");
             debugPet.transform.parent = player.transform;
             debugPet.AddComponent<PetHandler>();
 

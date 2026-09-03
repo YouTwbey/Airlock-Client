@@ -1,5 +1,5 @@
 ﻿using AirlockAPI.Data;
-using AirlockClient.Attributes;
+using AirlockAPI.Handlers;
 using HarmonyLib;
 using SG.Airlock;
 
@@ -12,7 +12,7 @@ namespace AirlockClient.Patches
         {
             if (CurrentMode.Name == "Hide N Seek")
             {
-                AirlockClientGamemode.Current.State._gamemodeTimerCurrent -= 5;
+                CustomGameHandler.Current.State._gamemodeTimerCurrent -= 5;
             }
         }
     }

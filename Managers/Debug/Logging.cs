@@ -29,14 +29,14 @@ namespace AirlockClient.Managers.Debug
         public static void Debug_Log(string message)
         {
 #if DEBUG
-            Msg("[DEBUG] " + message);
+            Log("[DEBUG] " + message);
 #endif
         }
 
         public static void Debug_Warn(string message)
         {
 #if DEBUG
-            Warning("[DEBUG] " + message);
+            Warn("[DEBUG] " + message);
 #endif
         }
 

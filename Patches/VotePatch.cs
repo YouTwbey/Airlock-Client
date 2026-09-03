@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 using HarmonyLib;
 using Fusion;
 using SG.Airlock;
@@ -14,35 +15,23 @@ namespace AirlockClient.Patches
         [HarmonyPrefix]
         public static bool Prefix1(PlayerRef voteAgainstPlayer, PlayerRef sourcePlayer, RpcInfo info)
         {
-            PlayerState voter = GameObject.Find("PlayerState (" + voteAgainstPlayer.PlayerId + ")").GetComponent<PlayerState>();
-            PlayerState voted = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+            var voter = GameObject.Find("PlayerState (" + voteAgainstPlayer.PlayerId + ")").GetComponent<PlayerState>();
+            var voted = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
 
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVote(voter, voted, info))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return voter.VerifyVote(voted, info);
         }
 
         [HarmonyPatch(typeof(VoteManager), nameof(VoteManager.RPC_Vote), new System.Type[] { typeof(PlayerRef), typeof(RpcInfo) })]
         [HarmonyPrefix]
         public static bool Prefix2(PlayerRef sourcePlayer, RpcInfo info)
         {
-            PlayerState voter = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+            var voter = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
 
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyVote(voter, null, info))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return voter.VerifyVote(null, info);
         }
     }
 
@@ -53,35 +42,22 @@ namespace AirlockClient.Patches
         [HarmonyPrefix]
         public static bool Prefix1(int foundPlayer, PlayerRef sourcePlayer, NetworkBool forceVote, RpcInfo info)
         {
-            PlayerState caller = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
-            PlayerState bodyFound = GameObject.Find("PlayerState (" + foundPlayer + ")").GetComponent<PlayerState>();
+            var caller = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+            var bodyFound = GameObject.Find("PlayerState (" + foundPlayer + ")").GetComponent<PlayerState>();
 
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyBodyReport(caller, bodyFound, info))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            return caller.VerifyBodyReport(bodyFound, info);
         }
 
         [HarmonyPatch(typeof(VoteManager), nameof(VoteManager.RPC_CallVote), new System.Type[] { typeof(PlayerRef), typeof(NetworkBool), typeof(RpcInfo) })]
         [HarmonyPrefix]
         public static bool Prefix(PlayerRef sourcePlayer, NetworkBool forceVote, RpcInfo info)
         {
-            PlayerState caller = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
+            var caller = GameObject.Find("PlayerState (" + sourcePlayer.PlayerId + ")").GetComponent<PlayerState>();
 
-            if (CurrentMode.IsHosting && !CurrentMode.Modded)
-            {
-                if (!AntiCheat.Instance.VerifyMeeting(caller, info))
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
+            
+            return caller.VerifyMeeting(info);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace AirlockClient.Patches
     {
         public static void Prefix(NetworkRunner __instance, ref StartGameArgs args)
         {
-            if (CurrentMode.IsHosting && CurrentMode.Modded)
+            if (!CurrentMode.IsHosting || !CurrentMode.Modded) return;
+            var modded = new SessionProperty
             {
-                SessionProperty modded = new SessionProperty();
-                modded._value = true;
-                args.SessionProperties.Add("modded", modded);
-            }
+                _value = true
+            };
+            args.SessionProperties.Add("modded", modded);
         }
     }
 }

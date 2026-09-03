@@ -1,5 +1,4 @@
 ﻿using AirlockAPI.Managers;
-using AirlockClient.Core;
 using AirlockClient.Handlers;
 using System.Collections;
 using TMPro;
@@ -10,30 +9,29 @@ using static AirlockClient.Data.Info;
 
 namespace AirlockClient.Managers
 {
-    public class ModStamp
+    public static class ModStamp
     {
-        static GameObject uiCameraObject;
-        static TextMeshProUGUI watermark;
-        static Camera uiCamera;
-        static GameObject canvasObject;
+        private static GameObject uiCameraObject;
+        private static TextMeshProUGUI watermark;
+        private static Camera uiCamera;
+        private static GameObject canvasObject;
 
-        public static void ApplyWatermark()
+        private static void ApplyWatermark()
         {
-            if (watermark == null && !IsVR)
-            {
-                watermark = new GameObject("Watermark").AddComponent<TextMeshProUGUI>();
-                watermark.transform.SetParent(GameObject.Find("3DHUD_Canvas").transform, false);
-                watermark.transform.localPosition = new Vector3(504.873f, 511.091f, 0);
-                watermark.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
-                watermark.enableWordWrapping = false;
-                watermark.alignment = TextAlignmentOptions.Top;
-                watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: {(int)NetworkManager.GetPing()} | FPS: {(int)(1 / Time.deltaTime)}";
+            if (watermark != null || IsVR) return;
+            
+            watermark = new GameObject("Watermark").AddComponent<TextMeshProUGUI>();
+            watermark.transform.SetParent(GameObject.Find("3DHUD_Canvas").transform, false);
+            watermark.transform.localPosition = new Vector3(504.873f, 511.091f, 0);
+            watermark.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
+            watermark.enableWordWrapping = false;
+            watermark.alignment = TextAlignmentOptions.Top;
+            watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: {(int)NetworkManager.GetPing()} | FPS: {(int)(1 / Time.deltaTime)}";
 
-				CoroutineHandler.Start(UpdateWatermark());
-            }
+            CoroutineHandler.Start(UpdateWatermark());
         }
 
-        public static IEnumerator UpdateWatermark()
+        private static IEnumerator UpdateWatermark()
         {
             while (watermark != null)
             {
@@ -45,12 +43,17 @@ namespace AirlockClient.Managers
         public static void CreateModStamp()
         {
             StorageManager.Instance.ModStamp = StorageManager.Instance.LoadModStamp("AirlockClient.Data.Sprite.ModStamp.png");
-            int uiLayer = LayerMask.NameToLayer("UI");
+            var uiLayer = LayerMask.NameToLayer("UI");
 
             if (IsVR)
             {
-                uiCameraObject = new GameObject("ModUICamera");
-                uiCameraObject.transform.parent = AirlockClientManager.SceneStorage.transform;
+                uiCameraObject = new GameObject("ModUICamera")
+                {
+                    transform =
+                    {
+                        parent = AirlockClientManager.SceneStorage.transform
+                    }
+                };
                 uiCamera = uiCameraObject.AddComponent<Camera>();
                 uiCamera.clearFlags = CameraClearFlags.Nothing;
                 uiCamera.cullingMask = 1 << uiLayer;
@@ -61,13 +64,18 @@ namespace AirlockClient.Managers
                 uiCamera.farClipPlane = 1.1f;
 
                 var listener = uiCameraObject.GetComponent<AudioListener>();
-                if (listener != null) GameObject.Destroy(listener);
+                if (listener != null) Object.Destroy(listener);
 
-                canvasObject = new GameObject("ModUICanvas");
-                canvasObject.transform.parent = AirlockClientManager.SceneStorage.transform;
-                canvasObject.layer = uiLayer;
+                canvasObject = new GameObject("ModUICanvas")
+                {
+                    transform =
+                    {
+                        parent = AirlockClientManager.SceneStorage.transform
+                    },
+                    layer = uiLayer
+                };
 
-                Canvas canvas = canvasObject.AddComponent<Canvas>();
+                var canvas = canvasObject.AddComponent<Canvas>();
                 canvas.renderMode = RenderMode.ScreenSpaceCamera;
                 canvas.worldCamera = uiCamera;
                 canvas.planeDistance = 1f;
@@ -76,8 +84,10 @@ namespace AirlockClient.Managers
                 canvasObject.AddComponent<GraphicRaycaster>();
             }
 
-            GameObject stampObj = new GameObject("ModStamp");
-            stampObj.layer = uiLayer;
+            var stampObj = new GameObject("ModStamp")
+            {
+                layer = uiLayer
+            };
 
             if (IsVR)
             {

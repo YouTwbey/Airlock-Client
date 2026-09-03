@@ -1,9 +1,11 @@
 ﻿using AirlockAPI.Data;
+using AirlockAPI.Handlers;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using HarmonyLib;
 using SG.Airlock.Network;
 
@@ -27,7 +29,7 @@ namespace AirlockClient.Patches
 
                     if (CurrentMode.Name == "Sandbox")
                     {
-                        ((SandboxManager)AirlockClientGamemode.Current).playerDidSpawn = true;
+                        ((SandboxManager)CustomGameHandler.Current).playerDidSpawn = true;
                         __instance.PState.IsSpectating = false;
                         __instance.PState.IsAlive = true;
                     }

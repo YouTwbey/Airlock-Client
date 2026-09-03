@@ -1,13 +1,17 @@
-﻿using AirlockClient.Attributes;
-using AirlockClient.Managers.Gamemode;
-using UnityEngine;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.XR;
-using MelonLoader;
+﻿using AirlockClient.AC;
+using AirlockClient.Attributes;
+using AirlockClient.Handlers;
 using AirlockClient.Managers;
-using AirlockClient.AC;
+using AirlockClient.Managers.Gamemode;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.XR;
+using System;
+using System;
+using System.Collections;
+using AirlockClient.Utils;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -18,21 +22,21 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
     {
         public static SubRoleData Data = new SubRoleData
         {
-            Name = "Bomber (Point)",
+            Name = "Bomber",
             RoleType = "Imposter",
             Description = "Explode others",
-            AC_Description = "Kill others around you including yourself",
-            AC_Color = Color.gray,
+            AC_Description = "When pointing, you will kill yourself but others near you.",
             Team = GameTeam.Impostor,
             Amount = 0
         };
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+			CoroutineHandler.Start(BomberCooldown());
         }
 
-        bool canExplode = true;
+        bool canExplode = false;
         bool gameEnded = false;
         public override void OnPlayerEjected(PlayerState ejectedPlayer, GameRole role)
         {
@@ -55,16 +59,22 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                         {
                             if (player.PState.IsAlive)
                             {
-                                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, player.PState);
+                                PlayerWithRole.KillPlayerWithAntiCheat(player.PState);
                             }
                         }
                     }
                 }
 
-                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
+                PlayerWithRole.KillPlayerWithAntiCheat(PlayerWithRole);
 
                 canExplode = false;
             }
+        }
+
+        public IEnumerator BomberCooldown()
+        {
+            yield return new WaitForSeconds(MoreRolesManager.BomberCooldownVar + 10);
+            canExplode = true;
         }
     }
 }

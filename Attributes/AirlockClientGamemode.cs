@@ -1,19 +1,22 @@
-﻿using AirlockAPI.Attributes;
-using AirlockAPI.Data;
+﻿using SG.Airlock;
 using AirlockAPI.Handlers;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSystem.IO;
-using System.Collections.Generic;
-using System.Linq;
+using Fusion;
+using SG.Airlock.Network;
 using static AirlockAPI.Managers.NetworkManager;
+using AirlockAPI.Attributes;
+using AirlockAPI.Data;
+using System.IO;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Il2CppSystem.IO;
 
 namespace AirlockClient.Attributes
 {
     public class AirlockClientGamemode : CustomGameHandler
     {
         public Dictionary<PlayerState, SubRole> AssignedSubRoles = new Dictionary<PlayerState, SubRole>();
+        public Dictionary<PlayerState, Modifier> AssignedModifiers = new Dictionary<PlayerState, Modifier>();
         public static List<PlayerRef> AirlockClientUsers = new List<PlayerRef>();
         SpawnManager spawn;
 

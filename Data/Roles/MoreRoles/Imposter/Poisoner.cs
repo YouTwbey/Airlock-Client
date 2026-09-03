@@ -5,6 +5,7 @@ using AirlockClient.Managers.Gamemode;
 using SG.Airlock;
 using SG.Airlock.Roles;
 using System.Collections;
+using AirlockClient.Utils;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
@@ -46,7 +47,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                     target.GetComponent<SubRole>().OnPlayerDied(PlayerWithRole);
                 }
 
-                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+                PlayerWithRole.KillPlayerWithAntiCheat(target);
             }
         }
     }

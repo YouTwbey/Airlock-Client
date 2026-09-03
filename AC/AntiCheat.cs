@@ -1,28 +1,29 @@
-﻿using AirlockAPI.Data;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using AirlockAPI.Data;
 using AirlockClient.Attributes;
-using AirlockClient.Data.Roles.MoreRoles.Broken;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
-using Il2CppFusion;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Network;
-using Il2CppSG.Airlock.Roles;
-using Il2CppSG.Airlock.UI.Moderation;
-using Il2CppSG.Platform;
+using Fusion;
+using System.IO;
+using AirlockClient.Utils;
 using Il2CppSystem.IO;
-using MelonLoader;
-using System;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
+using SG.Airlock;
+using SG.Airlock.Network;
+using SG.Airlock.Roles;
+using SG.Airlock.UI.Moderation;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 
 namespace AirlockClient.AC
 {
+    // rewritten to use extension methods for easier calling
+    //  i get it if you don't think this is a good idea but imo i would rather do it like this
     public class AntiCheat : MonoBehaviour
     {
         public static AntiCheat Instance;
@@ -77,7 +78,7 @@ namespace AirlockClient.AC
                 Chat = FindObjectOfType<ChatManager>();
                 encrypt = SHA256.Create();
 
-                MelonCoroutines.Start(FetchBlacklist());
+                StartCoroutine("FetchBlacklist");
             }
             else
             {
@@ -92,295 +93,6 @@ namespace AirlockClient.AC
             BodiesReported.Clear();
             AllowedBodySpawns.Clear();
             RoleTargets.Clear();
-        }
-
-        public static void KillPlayerWithAntiCheat(PlayerState killer, PlayerState target)
-        {
-            if (!Instance)
-            {
-                FindObjectOfType<NetworkedKillBehaviour>().KillPlayer(FindObjectOfType<AirlockPeer>(), target, killer.PlayerId, false);
-                return;
-            }
-
-            if (Instance.AllowedBodySpawns.Contains(target))
-            {
-                Instance.AllowedBodySpawns.Remove(target);
-            }
-
-            if (Instance.IsDead.Contains(target))
-            {
-                Instance.IsDead.Remove(target);
-            }
-
-            Instance.AllowedBodySpawns.Add(target);
-
-            if (!target.Guarded)
-            {
-                Instance.Kill.KillPlayer(Instance.Peer, target, killer.PlayerId, Instance.GetTrueRole(killer) == GameRole.Vigilante);
-            }
-            else
-            {
-                PlayShieldBreakWithAntiCheat(killer, target);
-            }
-        }
-
-        public static void PlayShieldBreakWithAntiCheat(PlayerState killer, PlayerState target)
-        {
-            if (!Instance)
-            {
-                NetworkedKillBehaviour Kill = FindObjectOfType<NetworkedKillBehaviour>();
-                Kill.RPC_GuardVFX(target.PlayerId, true, false, false);
-                Kill.RPC_GuardVFX(target.PlayerId, false, false, true);
-                target.Guarded = false;
-                return;
-            }
-
-            Instance.Kill.RPC_GuardVFX(target.PlayerId, true, false, false);
-            Instance.Kill.RPC_GuardVFX(target.PlayerId, false, false, true);
-            target.Guarded = false;
-        }
-
-        public static void InfectPlayerWithAntiCheat(PlayerState killer, PlayerState target)
-        {
-            if (!Instance)
-            {
-                FindObjectOfType<NetworkedKillBehaviour>().InfectPlayer(target, killer.PlayerId, GameRole.Infected, FindObjectOfType<AirlockPeer>());
-                return;
-            }
-
-            Instance.Kill.InfectPlayer(target, killer.PlayerId, GameRole.Infected, Instance.Peer);
-        }
-
-        public static void ChangeIsAliveWithAntiCheat(PlayerState player, bool isAlive)
-        {
-            if (Instance)
-            {
-                if (isAlive)
-                {
-                    if (Instance.IsDead.Contains(player))
-                    {
-                        Instance.IsDead.Remove(player);
-                    }
-                }
-                else
-                {
-                    if (!Instance.IsDead.Contains(player))
-                    {
-                        Instance.IsDead.Add(player);
-                    }
-                }
-            }
-
-            player.IsAlive = isAlive;
-        }
-
-        public static void ChangeHatWithAntiCheat(PlayerState player, int hatId)
-        {
-            if (Instance)
-            {
-                Instance.PreviousHat.Add(player, hatId);
-            }
-
-            player.HatId = hatId;
-        }
-
-        public static void ChangeSkinWithAntiCheat(PlayerState player, int SkinId)
-        {
-            if (Instance)
-            {
-                Instance.PreviousSkin.Add(player, SkinId);
-            }
-
-            player.SkinId = SkinId;
-        }
-
-        public static void ChangeGlovesWithAntiCheat(PlayerState player, int handsId)
-        {
-            if (Instance)
-            {
-                Instance.PreviousGlove.Add(player, handsId);
-            }
-
-            player.HandsId = handsId;
-        }
-
-        public static void CastSpellWithAntiCheat(Witch witch, PlayerState victim)
-        {
-            if (Instance)
-            {
-                if (!Instance.RoleTargets.ContainsKey(witch.PlayerWithRole))
-                {
-                    Instance.RoleTargets.Add(witch.PlayerWithRole, new List<PlayerState>());
-                }
-
-                Instance.RoleTargets[witch.PlayerWithRole].Add(victim);
-            }
-
-            witch.spellsCasted.Add(victim, victim.NetworkName.Value);
-        }
-
-        public static void RemoveSpellWithAntiCheat(Witch witch, PlayerState victim, bool toggleKill)
-        {
-            if (Instance)
-            {
-                if (Instance.RoleTargets.ContainsKey(witch.PlayerWithRole))
-                {
-                    if (Instance.RoleTargets[witch.PlayerWithRole].Contains(victim))
-                    {
-                        Instance.RoleTargets[witch.PlayerWithRole].Remove(victim);
-                    }
-                }
-            }
-
-            victim.NetworkName.Value = witch.spellsCasted[victim];
-            witch.spellsCasted.Remove(victim);
-
-            if (toggleKill)
-            {
-                victim.IsAlive = false;
-            }
-        }
-
-        public static void DousePlayerWithAntiCheat(Arsonist arsonist, PlayerState victim)
-        {
-            if (Instance)
-            {
-                if (!Instance.RoleTargets.ContainsKey(arsonist.PlayerWithRole))
-                {
-                    Instance.RoleTargets.Add(arsonist.PlayerWithRole, new List<PlayerState>());
-                }
-
-                Instance.RoleTargets[arsonist.PlayerWithRole].Add(victim);
-            }
-
-            arsonist.dousedPlayers.Add(victim, victim.NetworkName.Value);
-        }
-
-        public bool VerifyBodyReport(PlayerState reporter, PlayerState bodyReported, RpcInfo info)
-        {
-            int sender = info.Source;
-            bool IsCheating = false;
-            NetworkedBody body = GameObject.Find("NetworkedBody (" + bodyReported.PlayerId + ")").GetComponent<NetworkedBody>();
-            float distance = (body.transform.position - reporter.LocomotionPlayer.RigidbodyPosition).magnitude;
-
-            if (reporter.PlayerId != sender)
-            {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of body report data", true);
-                return false;
-            }
-
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
-            {
-                IsCheating = true;
-            }
-
-            if (bodyReported.IsAlive || !reporter.IsAlive)
-            {
-                IsCheating = true;
-            }
-            if (distance > 5)
-            {
-                IsCheating = true;
-            }
-            if (BodiesReported.Contains(bodyReported))
-            {
-                IsCheating = true;
-            }
-            else
-            {
-                if (!IsCheating)
-                {
-                    BodiesReported.Add(bodyReported);
-                }
-            }
-
-            if (IsCheating)
-            {
-                Alert(reporter, "suspicious report body data", false);
-            }
-
-            return !IsCheating;
-        }
-
-        public bool VerifyMeeting(PlayerState caller, RpcInfo info)
-        {
-            int sender = info.Source;
-            bool IsCheating = false;
-            int TotalMeetings = Button._emergencyMeetingsVar.Value;
-            float distance = (caller.LocomotionPlayer.RigidbodyPosition - Button.transform.position).magnitude;
-
-            if (caller.PlayerId != sender)
-            {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of meeting rpc", true);
-                return false;
-            }
-
-            if (!caller.IsAlive)
-            {
-                IsCheating = true;
-            }
-
-            if (distance > 5)
-            {
-                IsCheating = true;
-            }
-
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
-            {
-                IsCheating = true;
-            }
-
-            if (!MeetingsCalled.ContainsKey(caller))
-            {
-                MeetingsCalled.Add(caller, 0);
-            }
-
-            MeetingsCalled[caller]++;
-
-            if (MeetingsCalled[caller] > TotalMeetings)
-            {
-                IsCheating = true;
-            }
-
-            if (IsCheating)
-            {
-                Alert(caller, "suspicious meeting data", false);
-            }
-
-            return !IsCheating;
-        }
-
-        public bool VerifySpawnBody(PlayerState body, NetworkRigidbodyObsolete rb)
-        {
-            bool IsCheating = false;
-
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
-            {
-                IsCheating = true;
-            }
-
-            if (body.LocomotionPlayer.NetworkRigidbody != rb)
-            {
-                IsCheating = true;
-            }
-
-            if (!IsCheating)
-            {
-                if (!AllowedBodySpawns.Contains(body))
-                {
-                    IsCheating = true;
-                }
-                else
-                {
-                    AllowedBodySpawns.Remove(body);
-                }
-            }
-            else
-            {
-                Alert(body, "suspicious spawn body data", true);
-            }
-
-            return !IsCheating;
         }
 
         List<string> BlacklistedUsers = new List<string>();
@@ -436,7 +148,7 @@ namespace AirlockClient.AC
                 {
                     if (BlacklistedUsers.Contains(ModerationIDToSHA256(player)))
                     {
-                        Alert(State.SpawnManager.PlayerStates[player], "user is on blacklist", true);
+                        State.SpawnManager.PlayerStates[player].Alert( "user is on blacklist", true);
                     }
                 }
                 checkDelay = 60;
@@ -448,308 +160,25 @@ namespace AirlockClient.AC
 
             foreach (PlayerState state in State.SpawnManager.ActivePlayerStates)
             {
-                if (state != null)
+                if (state == null) continue;
+                if (!state.IsSpawned) continue;
+                if (!state.IsConnected) continue;
+                
+                if (!PreviousColor.ContainsKey(state))
                 {
-                    if (state.IsSpawned)
-                    {
-                        if (state.IsConnected)
-                        {
-                            if (!PreviousColor.ContainsKey(state))
-                            {
-                                PreviousColor.Add(state, state.ColorId);
-                                PreviousGlove.Add(state, state.HandsId);
-                                PreviousHat.Add(state, state.HatId);
-                                PreviousSkin.Add(state, state.SkinId);
-                            }
-
-                            VerifyState(state);
-                        }
-                    }
+                    PreviousColor.Add(state, state.ColorId);
+                    PreviousGlove.Add(state, state.HandsId);
+                    PreviousHat.Add(state, state.HatId);
+                    PreviousSkin.Add(state, state.SkinId);
                 }
+
+                state.VerifyState();
             }
         }
 
-        public void VerifyState(PlayerState player)
-        {
-            if (player.IsSpawned)
-            {
-                if (player.IsConnected)
-                {
-                    if (!CurrentMode.Modded && !ColorToName.ContainsValue(player.NetworkName.Value) && player.NetworkName.Value != "Color###")
-                    {
-                        string formattedName = Regex.Replace(player.PlayerModerationUsername, @"\d", "");
-                        if (formattedName != "" && !formattedName.Contains(player.NetworkName.Value))
-                        {
-                            if (player.GetComponent<SubRole>())
-                            {
-                                if (!player.GetComponent<SubRole>().IsDisplayingRole && player.NetworkName.Value != "DEPUTY")
-                                {
-                                    Alert(player, "invalid player username", true);
-                                }
-                            }
-                            else
-                            {
-                                Alert(player, "invalid player username", true);
-                            }
-                        }
-                    }
-
-                    if (!player.IsSpectating && !State.InLobbyState())
-                    {
-                        if (PreviousColor[player] != player.ColorId ||
-                            PreviousGlove[player] != player.HandsId ||
-                            PreviousHat[player] != player.HatId ||
-                            PreviousSkin[player] != player.SkinId)
-                        {
-                            Alert(player, "invalid cosmetics", true);
-                        }
-                    }
-
-                    if (player.IsSpectating || State.InLobbyState())
-                    {
-                        PreviousColor[player] = player.ColorId;
-                        PreviousGlove[player] = player.HandsId;
-                        PreviousHat[player] = player.HatId;
-                        PreviousSkin[player] = player.SkinId;
-                    }
-
-                    if (player.ActivePowerUps != PowerUps.None && !CurrentMode.Modded && CurrentMode.Name != "Infection")
-                    {
-                        Alert(player, "user has powerups at invalid time.", true);
-                    }
-
-                    if (player.LocomotionPlayer.NetworkRigidbody.Rigidbody.velocity.x > 10 || player.LocomotionPlayer.NetworkRigidbody.Rigidbody.velocity.z > 10)
-                    {
-                        //Punish(player, "speedhack detected: " + player.LocomotionPlayer.NetworkRigidbody.Rigidbody.velocity.ToString());
-                    }
-
-                    if (BannedUsers.Contains(player.PlayerModerationID.Value))
-                    {
-                        Alert(player, "user has been banned from the lobby.", true);
-                    }
-                }
-            }
-        }
-
-        public bool VerifyVent(PlayerState venter)
-        {
-            bool IsCheating = false;
-
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
-            {
-                if (GetTrueRole(venter) != GameRole.Crewmember || venter.ActivePowerUps != PowerUps.CanVent)
-                {
-                    IsCheating = true;
-                }
-            }
-            else
-            {
-                if (GetTrueRole(venter) != GameRole.Impostor && GetTrueRole(venter) != GameRole.Engineer)
-                {
-                    IsCheating = true;
-                }
-            }
-
-            if (IsCheating)
-            {
-                Alert(venter, "suspicious vent data", true);
-            }
-
-            return !IsCheating;
-        }
-
-        public bool VerifyVote(PlayerState voter, PlayerState voted, RpcInfo info)
-        {
-            int sender = info.Source;
-            bool IsCheating = false;
-
-            if (sender != voter.PlayerId)
-            {
-                Alert(State.SpawnManager.PlayerStates[sender], "misuse of vote rpc", true);
-            }
-
-            if (State.GameModeStateValue.GameMode == GameModes.Infection)
-            {
-                IsCheating = true;
-            }
-
-            if (IsCheating)
-            {
-                Alert(State.SpawnManager.PlayerStates[sender], "suspicious vote data", true);
-            }
-
-            return !IsCheating;
-        }
-
-        float GetCooldownForRole(GameRole role, bool whenAlive = true)
+        public float GetCooldownForRole(GameRole role, bool whenAlive = true)
         {
             return Role.GetRoleData(role).GetTargetedActionCooldown(whenAlive);
-        }
-
-        public bool VerifyKill(PlayerState killer, PlayerState target, int action)
-        {
-            bool IsCheating = false;
-
-            float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition).magnitude;
-            GameRole killerRole = GetTrueRole(killer);
-            GameRole targetRole = GetTrueRole(target);
-
-            if (killer == target)
-            {
-                IsCheating = true;
-            }
-
-            if (!CurrentMode.Modded)
-            {
-                if (TargetActionCheck.ContainsKey(killer))
-                {
-                    DateTime previousKill = TargetActionCheck[killer];
-                    double difference = (DateTime.Now - previousKill).TotalSeconds;
-
-                    switch (killerRole)
-                    {
-                        case GameRole.Revenger:
-                            if (difference < GetCooldownForRole(GameRole.Revenger, false) - 1)
-                            {
-                                IsCheating = true;
-                            }
-                            break;
-                        case GameRole.Crewmember:
-                            if (State._GameModeStateValue.GameMode == GameModes.Infection)
-                            {
-                                if (difference < GetCooldownForRole(GameRole.Crewmember) - 1 || killer.ActivePowerUps == PowerUps.None)
-                                {
-                                    IsCheating = true;
-                                }
-                            }
-                            else
-                            {
-                                if (difference < GetCooldownForRole(GameRole.Crewmember) - 1)
-                                {
-                                    IsCheating = true;
-                                }
-                            }
-                            break;
-                        default:
-                            if (difference < GetCooldownForRole(killerRole) - 1)
-                            {
-                                IsCheating = true;
-                            }
-                            break;
-                    }
-                }
-                else
-                {
-                    TargetActionCheck.Add(killer, DateTime.Now);
-                }
-            }
-
-            if (distance > 6 || !target.IsAlive)
-            {
-                IsCheating = true;
-            }
-
-            ProximityTargetedAction targetAction = (ProximityTargetedAction)action;
-
-            switch (targetAction)
-            {
-                case ProximityTargetedAction.None:
-                    IsCheating = true;
-                    break;
-
-                case ProximityTargetedAction.Kill:
-                    if (CurrentMode.Name == "Hide N Seek")
-                    {
-                        if (killerRole != GameRole.Infected || targetRole != GameRole.Crewmember || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
-                        {
-                            IsCheating = true;
-                        }
-                    }
-                    else
-                    {
-                        if (killerRole == GameRole.Impostor)
-                        {
-                            if (targetRole == GameRole.Impostor || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
-                            {
-                                IsCheating = true;
-                            }
-                        }
-                        else
-                        {
-                            if (killerRole != GameRole.Vigilante || State.GameModeStateValue.GameMode == GameModes.Infection || !State.InTaskState())
-                            {
-                                IsCheating = true;
-                            }
-                        }
-                    }
-
-                    if (!IsCheating)
-                    {
-                        AllowedBodySpawns.Add(target);
-                    }
-                    break;
-
-                case ProximityTargetedAction.Neutralize:
-                    if (killer.ActivePowerUps != PowerUps.Stun || targetRole != GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
-                    {
-                        IsCheating = true;
-                    }
-                    break;
-
-                case ProximityTargetedAction.Infect:
-                    if (killerRole != GameRole.Infected || targetRole == GameRole.Infected || State.GameModeStateValue.GameMode != GameModes.Infection || !State.InTaskState())
-                    {
-                        IsCheating = true;
-                    }
-                    break;
-
-                case ProximityTargetedAction.Guard:
-                    if (State.GameModeStateValue.GameMode == GameModes.Infection)
-                    {
-                        if (killer.ActivePowerUps != PowerUps.Guard || targetRole != GameRole.Crewmember || !State.InTaskState())
-                        {
-                            IsCheating = true;
-                        }
-                    }
-                    else
-                    {
-                        if (killerRole != GameRole.GuardianAngel || !State.InTaskState())
-                        {
-                            IsCheating = true;
-                        }
-                    }
-                    break;
-
-                case ProximityTargetedAction.Vote:
-                    if (killerRole != GameRole.Sheriff || State.GameModeStateValue.GameMode != GameModes.Sheriff || !State.InVotingState())
-                    {
-                        IsCheating = true;
-                    }
-                    break;
-
-                case ProximityTargetedAction.KillSelf:
-                    if (killerRole != GameRole.Revenger || State.GameModeStateValue.GameMode != GameModes.BuffGhosts || !State.InVotingState())
-                    {
-                        IsCheating = true;
-                    }
-
-                    if (!IsCheating)
-                    {
-                        AllowedBodySpawns.Add(target);
-                    }
-                    break;
-            }
-
-            if (!IsCheating)
-            {
-                TargetActionCheck[killer] = DateTime.Now;
-            }
-            else
-            {
-                Alert(killer, "suspicious kill data", false);
-            }
-
-            return !IsCheating;
         }
 
         public bool VerifyJoin(NetworkedLocomotionPlayer joiningPlayer, int color, int hat, int hands, int skin, string name, string moderationID, string moderationUsername, string accountID, bool is3D)
@@ -761,98 +190,26 @@ namespace AirlockClient.AC
                 IsCheating = true;
             }
 
-            joiningPlayer.PState.PlayerModerationID = GetActualModId(joiningPlayer.PState);
+            joiningPlayer.PState.PlayerModerationID = joiningPlayer.PState.GetActualModId();
 
             if (IsCheating)
             {
-                Alert(joiningPlayer.PState, "suspicious join data", true);
+                joiningPlayer.PState.Alert( "suspicious join data", true);
             }
 
             return !IsCheating;
         }
 
-        public GameRole GetTrueRole(PlayerState player)
-        {
-            foreach (Il2CppSystem.Collections.Generic.KeyValuePair<GameRole, Il2CppSystem.Collections.Generic.List<int>> roleEntry in Role.gameRoleToPlayerIds)
-            {
-                foreach (int id in roleEntry.Value)
-                {
-                    if (player.IsConnected)
-                    {
-                        if (id == player.PlayerId)
-                        {
-                            return roleEntry.Key;
-                        }
-                    }
-                }
-            }
-
-            return GameRole.NotSet;
-        }
-
         public bool VerifyModerationID(string modId)
         {
-            bool isValid = true;
+            bool isValid = !string.IsNullOrEmpty(modId);
 
-            if (string.IsNullOrEmpty(modId)) isValid = false;
             if (!modId.StartsWith("PS5_") && !modId.StartsWith("Steam_") && !modId.StartsWith("Meta_")) isValid = false;
 
             return isValid;
         }
-
-        public void Alert(PlayerState guilty, string reason, bool takeAction)
-        {
-            if (!VerifyModerationID(guilty.PlayerModerationID.Value))
-            {
-                guilty.PlayerModerationID = GetActualModId(guilty);
-                reason = "hidden moderation id";
-                takeAction = true;
-
-                Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
-                guilty.NetworkName.Value = "CHEATER";
-                BannedUsers.Add(guilty.PlayerModerationID.Value);
-                SendReportToDevelopers(guilty, reason);
-                return;
-            }
-
-            guilty.PlayerModerationID = GetActualModId(guilty);
-
-            if (takeAction)
-            {
-                if (!BannedUsers.Contains(guilty.PlayerModerationID.Value))
-                {
-                    Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
-                    guilty.NetworkName.Value = "CHEATER";
-                    BannedUsers.Add(guilty.PlayerModerationID.Value);
-                    SendReportToDevelopers(guilty, reason);
-                }
-                else
-                {
-                    Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") was caught cheating. Reason: " + reason + ". Banning user from lobby.");
-                    guilty.NetworkName.Value = "CHEATER";
-                }
-
-                if (guilty.PlayerId != 9)
-                {
-                    Moderation.Runner.Disconnect(guilty.PlayerId);
-                }
-                else
-                {
-                    SceneManager.LoadScene("Title");
-                }
-
-                return;
-            }
-
-            Logging.Warn("CHEATER DETECTED! " + guilty.NetworkName.Value + " (" + guilty.PlayerModerationUsername + ", " + guilty.PlayerModerationID.Value + ") is being suspected of cheating. Reason: " + reason + ".");
-        }
-
-        public string GetActualModId(PlayerState player)
-        {
-            player.PlayerModerationID.Value = State.Runner.GetPlayerUserId(player.PlayerId);
-            return player.PlayerModerationID.Value;
-        }
-
+        
+        // does this not work?
         public void SendReportToDevelopers(PlayerState guilty, string reason)
         {
             return;

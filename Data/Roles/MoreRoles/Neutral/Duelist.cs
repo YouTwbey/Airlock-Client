@@ -6,6 +6,7 @@ using Il2CppSG.Airlock;
 using Il2CppSG.Airlock.Roles;
 using MelonLoader;
 using System.Collections.Generic;
+using AirlockClient.Utils;
 using UnityEngine;
 
 
@@ -82,8 +83,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             if (playerToKill != null)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
-                AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
+                playerToKill.ChangeIsAliveWithAntiCheat(false);
 
                 playerToKill = null;
                 if (otherDuelist != null)
@@ -129,8 +130,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             if (playerToKill != null)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
-                AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
+                playerToKill.ChangeIsAliveWithAntiCheat(false);
                 playerToKill = null;
             }
         }

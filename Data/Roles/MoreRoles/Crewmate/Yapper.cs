@@ -5,30 +5,30 @@ using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using SG.Airlock.Roles;
 using System.Collections;
+using AirlockClient.Utils;
 using UnityEngine;
 
-namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
+namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 {
     /// <summary>
     /// Crewmate Role
     /// Person can not shut up, not speaking will result in their death.
     /// </summary>
-    public class Yapper : SubRole
+    public class Yapper : Modifier
     {
-        public static SubRoleData Data = new SubRoleData
+        public static ModifierData Data = new ModifierData
         {
             Name = "Yapper",
-            RoleType = "Crewmate",
+            ModifierType = "Neutral",
             Description = "Keep talk or die",
-            AC_Description = "Can't stop speaking",
-            AC_Color = new Color(179, 251, 255),
-            Team = GameTeam.Crewmember,
+            AC_Description = "If at any moment you stop talking, you will die.",
+            Team = GameTeam.Other,
             Amount = 0
         };
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueModifierDisplay(PlayerWithModifier, Data);
         }
 
 
@@ -38,7 +38,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         {
             if (ModdedGameStateManager.Instance.state.InTaskState() || ModdedGameStateManager.Instance.state.InVotingState())
             {
-                if (PlayerWithRole.MicrophoneOutput <= 0.1f && PlayerWithRole.IsAlive && !isCheckInProgress)
+                if (PlayerWithModifier.MicrophoneOutput <= 0.1f && PlayerWithModifier.IsAlive && !isCheckInProgress)
                 {
                     CoroutineHandler.Start(MicTimer());
                 }
@@ -51,9 +51,9 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 
             yield return new WaitForSeconds(1);
 
-            if (PlayerWithRole && PlayerWithRole.IsAlive && PlayerWithRole.MicrophoneOutput <= 0.1f)
+            if (PlayerWithModifier && PlayerWithModifier.IsAlive && PlayerWithModifier.MicrophoneOutput <= 0.1f)
             {
-                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
+                PlayerWithModifier.KillPlayerWithAntiCheat(PlayerWithModifier);
             }
 
             isCheckInProgress = false;

@@ -4,42 +4,41 @@ using SG.Airlock.Roles;
 
 using AirlockClient.Managers.Gamemode;
 using AirlockClient.AC;
-using UnityEngine;
+using AirlockClient.Utils;
 
-namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
+namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 {
     /// <summary>
     /// Crewmate Role
     /// Person can only speak quietly, speaking too loud will result in their death.
     /// </summary>
-    public class Silencer : SubRole
+    public class Muted : Modifier
     {
-        public static SubRoleData Data = new SubRoleData
+        public static ModifierData Data = new ModifierData
         {
-            Name = "Silencer",
-            RoleType = "Crewmate",
+            Name = "Muted",
+            ModifierType = "Neutral",
             Description = "Whisper only",
-            AC_Description = "Whispering only",
-            AC_Color = new Color(20, 255, 122),
-            Team = GameTeam.Crewmember,
+            AC_Description = "Talking too loud will result in your death.",
+            Team = GameTeam.Other,
             Amount = 0
         };
 
         void Start()
         {
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+            MoreRolesManager.QueueModifierDisplay(PlayerWithModifier, Data);
         }
 
         void Update()
         {
             if (ModdedGameStateManager.Instance.state.InTaskState() || ModdedGameStateManager.Instance.state.InVotingState())
             {
-                if (PlayerWithRole.MicrophoneOutput >= 0.5f && PlayerWithRole.IsAlive)
+                if (PlayerWithModifier.MicrophoneOutput >= 0.5f && PlayerWithModifier.IsAlive)
                 {
-                    AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
+                    PlayerWithModifier.KillPlayerWithAntiCheat(PlayerWithModifier);
                     if (ModdedGameStateManager.Instance.state.InVotingState())
                     {
-                        ModdedGameStateManager.Instance.state.VoteManager.RPC_Vote(PlayerWithRole.PlayerId, PlayerWithRole.PlayerId);
+                        ModdedGameStateManager.Instance.state.VoteManager.RPC_Vote(PlayerWithModifier.PlayerId, PlayerWithModifier.PlayerId);
                     }
                 }
             }

@@ -1,12 +1,15 @@
-﻿using AirlockClient.AC;
+using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Gamemode;
-using Il2CppSG.Airlock;
-using Il2CppSG.Airlock.Roles;
-using MelonLoader;
+using SG.Airlock;
+using SG.Airlock.Roles;
+
 using System.Collections.Generic;
+using AirlockClient.Utils;
+using Photon.Realtime;
 using UnityEngine;
+using static Fusion.Simulation;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -20,8 +23,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Name = "Assassin",
             RoleType = "Imposter",
             Description = "Kill Player:",
-            AC_Description = "Kill your target before a meeting",
-            AC_Color = new Color(150, 0, 0),
+            AC_Description = "Your goal is to kill your target before the first meeting. Target: ",
             Team = GameTeam.Impostor,
             Amount = 0
         };
@@ -32,17 +34,19 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 
             foreach (PlayerState player in ((MoreRolesManager)AirlockClientGamemode.Current).Crewmates)
             {
-                if (!player.GetComponent<Troll>()&& player.IsConnected && player != PlayerWithRole)
+                if (player.GetComponent<Troll>() == null && player.IsConnected && player != PlayerWithRole)
                 {
                     validIds.Add(player.PlayerId);
                 }
             }
 
             if (validIds.Count == 0) Destroy(this);
-
+            
             playerToKill = GameObject.Find("PlayerState (" + validIds[Random.Range(0, validIds.Count)].ToString() + ")").GetComponent<PlayerState>();
+
             PlayerWithRole.SoulLinkID = playerToKill.PlayerId;
-            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
+
+            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
         PlayerState playerToKill;
@@ -59,8 +63,28 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             if (playerToKill != null)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
                 playerToKill = null;
+            }
+        }
+
+        public static string GetColorName(int colorIndex)
+        {
+            switch (colorIndex)
+            {
+                case 0: return "Red";
+                case 1: return "Blue";
+                case 2: return "Green";
+                case 3: return "Pink";
+                case 4: return "Orange";
+                case 5: return "Yellow";
+                case 6: return "Black";
+                case 7: return "White";
+                case 8: return "Purple";
+                case 9: return "Brown";
+                case 10: return "Cyan";
+                case 11: return "Lime";
+                default: return "No Target";
             }
         }
     }

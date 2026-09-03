@@ -8,6 +8,7 @@ using UnityEngine;
 using AirlockAPI.Attributes;
 using static AirlockAPI.Managers.NetworkManager;
 using AirlockAPI.Data;
+using AirlockClient.Utils;
 using SG.Airlock.Network;
 
 namespace AirlockClient.Managers.Dev
@@ -236,7 +237,22 @@ namespace AirlockClient.Managers.Dev
 
                 if (isAdmin)
                 {
-                    newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(player.NetworkName.Value);
+                    var user = Encrypt(player.PlayerModerationID.Value);
+
+                    if (!AuthorityUsers.TryGetValue(user, out var role))
+                    {
+                        return;
+                    }
+                    /*
+                    if (role == "admin_b")
+                    {
+                        newName = "<color=orange><b>[VIP]</b></color> " + ApplyGradient(player.NetworkName.Value);
+                    }
+                    */
+                    else
+                    {
+                        newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(player.NetworkName.Value);
+                    }
                 }
                 else
                 {
@@ -274,6 +290,37 @@ namespace AirlockClient.Managers.Dev
 
             return rainbow;
         }
+        
+        static string ApplyGradient(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return "";
+
+            string gradient = "";
+            int len = text.Length;
+
+            Color32 startColor = new Color32(64, 64, 64, 255);
+            Color32 endColor = new Color32(255, 255, 255, 255);
+
+            for (int i = 0; i < len; i++)
+            {
+                float t = len > 1 ? (float)i / (len - 1) : 0f;
+                string hexColor = LerpToHex(startColor, endColor, t);
+                gradient += $"<color=#{hexColor}>{text[i]}</color>";
+            }
+
+            return gradient;
+        }
+
+        static string LerpToHex(Color32 a, Color32 b, float t)
+        {
+            byte r = (byte)Mathf.RoundToInt(Mathf.Lerp(a.r, b.r, t));
+            byte g = (byte)Mathf.RoundToInt(Mathf.Lerp(a.g, b.g, t));
+            byte bl = (byte)Mathf.RoundToInt(Mathf.Lerp(a.b, b.b, t));
+
+            return $"{r:X2}{g:X2}{bl:X2}";
+        }
+        
 
         public void HandleCommand(string command, PlayerRef sender)
         {
@@ -340,7 +387,7 @@ namespace AirlockClient.Managers.Dev
 
         public bool IsDeveloper(PlayerState player)
         {
-            string user = Encrypt(player.PlayerModerationID.Value);
+            string user = Encrypt(player.GetActualModId());
 
             if (AuthorityUsers.ContainsKey(user))
             {
@@ -351,12 +398,13 @@ namespace AirlockClient.Managers.Dev
 
         public bool IsVIP(PlayerState player)
         {
-            string user = Encrypt(player.PlayerModerationID.Value);
+            string user = Encrypt(player.GetActualModId());
 
             if (AuthorityUsers.ContainsKey(user))
             {
-                return AuthorityUsers[user] == "admin";
+                return AuthorityUsers[user] == "admin" || AuthorityUsers[user] == "admin_b";
             }
+            
             return false;
         }
 
