@@ -6,6 +6,7 @@ using AirlockClient.Managers.Gamemode;
 using SG.Airlock;
 
 using System.Collections;
+using AirlockClient.Utils;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.DeathMatch.Crewmates
@@ -35,7 +36,7 @@ namespace AirlockClient.Data.Roles.DeathMatch.Crewmates
             dead.IsAlive = true;
             _isReviving = false;
 
-            AntiCheat.PlayShieldBreakWithAntiCheat(dead, dead);
+            dead.PlayShieldBreakWithAntiCheat(dead);
 
             Logging.Debug_Log("Player Has Been Revived");
         }

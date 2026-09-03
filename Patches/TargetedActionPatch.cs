@@ -13,6 +13,8 @@ using System.Collections;
 using UnityEngine;
 using AirlockClient.Handlers;
 using AirlockClient.Attributes;
+using AirlockClient.Utils;
+
 // ReSharper disable InconsistentNaming
 
 namespace AirlockClient.Patches
@@ -27,7 +29,7 @@ namespace AirlockClient.Patches
 
             if (CurrentMode.IsHosting && !CurrentMode.Modded)
             {
-                if (!AntiCheat.Instance.VerifyKill(perp, target, action))
+                if (!perp.VerifyKill(target, action))
                 {
                     return false;
                 }

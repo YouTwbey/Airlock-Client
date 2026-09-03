@@ -19,6 +19,7 @@ using TMPro;
 using SG.Airlock.Localization;
 using Il2CppInterop.Runtime;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 
 namespace AirlockClient.Managers
 {
@@ -136,6 +137,7 @@ namespace AirlockClient.Managers
                         SceneStorage.AddComponent<PetManager>();
                         SceneStorage.AddComponent<ModdedGameStateManager>();
                         SceneStorage.AddComponent<CommandManager>();
+                        SceneStorage.AddComponent<StaticRefs>();
 
                         if (CurrentMode.Name == "Hide N Seek")
                         {

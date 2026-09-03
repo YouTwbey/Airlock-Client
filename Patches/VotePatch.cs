@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 using HarmonyLib;
 using Fusion;
 using SG.Airlock;
@@ -19,7 +20,7 @@ namespace AirlockClient.Patches
 
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifyVote(voter, voted, info);
+            return voter.VerifyVote(voted, info);
         }
 
         [HarmonyPatch(typeof(VoteManager), nameof(VoteManager.RPC_Vote), new System.Type[] { typeof(PlayerRef), typeof(RpcInfo) })]
@@ -30,7 +31,7 @@ namespace AirlockClient.Patches
 
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifyVote(voter, null, info);
+            return voter.VerifyVote(null, info);
         }
     }
 
@@ -45,7 +46,7 @@ namespace AirlockClient.Patches
             var bodyFound = GameObject.Find("PlayerState (" + foundPlayer + ")").GetComponent<PlayerState>();
 
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
-            return AntiCheat.Instance.VerifyBodyReport(caller, bodyFound, info);
+            return caller.VerifyBodyReport(bodyFound, info);
         }
 
         [HarmonyPatch(typeof(VoteManager), nameof(VoteManager.RPC_CallVote), new System.Type[] { typeof(PlayerRef), typeof(NetworkBool), typeof(RpcInfo) })]
@@ -56,7 +57,7 @@ namespace AirlockClient.Patches
 
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifyMeeting(caller, info);
+            return caller.VerifyMeeting(info);
         }
     }
 }

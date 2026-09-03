@@ -3,10 +3,9 @@ using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers.Debug;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Roles;
-
-using static UnityEngine.GraphicsBuffer;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
 {
@@ -38,7 +37,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             if (!spellsCasted.ContainsKey(target))
             {
                 spellsCasted[target] = target.NetworkName.Value;
-                AntiCheat.CastSpellWithAntiCheat(this, target);
+                PlayerWithRole.CastSpellWithAntiCheat(target);
             }
         }
 
@@ -49,7 +48,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             {
                 string OGName = spellsCasted[target];
 
-                AntiCheat.RemoveSpellWithAntiCheat(this, target, toggleKill);
+                PlayerWithRole.RemoveSpellWithAntiCheat(target, toggleKill);
 
                 // Note: Remove these two lines if you want it to keep the [†] as a sign of death from the witch post meeting
                 if (target.NetworkName.Value.Contains("[†]"))

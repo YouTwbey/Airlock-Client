@@ -1,5 +1,6 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Roles;
 
@@ -52,7 +53,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             if (ejectedPlayer == PlayerWithRole)
             {
-                ChangeIsAliveWithAntiCheat(PlayerWithRoleVoted, false);
+                PlayerWithRoleVoted.ChangeIsAliveWithAntiCheat(false);
             }
             else if (PlayerWithRoleSkipped)
             {

@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AirlockClient.Utils;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.DeathMatch.Impostors
@@ -41,7 +42,7 @@ namespace AirlockClient.Data.Roles.DeathMatch.Impostors
             dead.IsAlive = true;
             _isReviving = false;
 
-            AntiCheat.PlayShieldBreakWithAntiCheat(dead, dead);
+            dead.PlayShieldBreakWithAntiCheat(dead);
 
             Logging.Debug_Log("Player Has Been Revived");
         }

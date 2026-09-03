@@ -1,5 +1,6 @@
 ﻿using AirlockAPI.Data;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 using HarmonyLib;
 using SG.Airlock.Network;
 
@@ -12,7 +13,7 @@ namespace AirlockClient.Patches
         {
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifyVent(__instance.PState);
+            return __instance.PState.VerifyVent();
         }
     }
 
@@ -23,7 +24,7 @@ namespace AirlockClient.Patches
         {
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifyVent(__instance.PState);
+            return __instance.PState.VerifyVent();
         }
     }
 }

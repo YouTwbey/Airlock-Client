@@ -4,6 +4,7 @@ using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using AirlockClient.Data.Roles.HideNSeek.Imposter;
 using AirlockClient.Handlers;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -48,7 +49,7 @@ namespace AirlockClient.Managers.Gamemode
 
         public override bool OnTargetedAction(ref PlayerState killer, ref PlayerState victim, ref int action)
         {
-            AntiCheat.KillPlayerWithAntiCheat(killer, victim);
+            killer.KillPlayerWithAntiCheat(victim);
             return false;
         }
 

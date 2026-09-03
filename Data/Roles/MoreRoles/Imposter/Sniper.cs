@@ -3,6 +3,7 @@ using AirlockClient.Attributes;
 using AirlockClient.Handlers;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Roles;
 using SG.Airlock.XR;
@@ -37,7 +38,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             {
                 if (target != null)
                 {
-                    AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, target);
+                    PlayerWithRole.KillPlayerWithAntiCheat(target);
                 }
             }
         }

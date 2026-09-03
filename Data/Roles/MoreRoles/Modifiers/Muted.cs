@@ -4,6 +4,7 @@ using SG.Airlock.Roles;
 
 using AirlockClient.Managers.Gamemode;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 {
@@ -34,7 +35,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
             {
                 if (PlayerWithModifier.MicrophoneOutput >= 0.5f && PlayerWithModifier.IsAlive)
                 {
-                    AntiCheat.KillPlayerWithAntiCheat(PlayerWithModifier, PlayerWithModifier);
+                    PlayerWithModifier.KillPlayerWithAntiCheat(PlayerWithModifier);
                     if (ModdedGameStateManager.Instance.state.InVotingState())
                     {
                         ModdedGameStateManager.Instance.state.VoteManager.RPC_Vote(PlayerWithModifier.PlayerId, PlayerWithModifier.PlayerId);

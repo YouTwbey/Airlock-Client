@@ -21,6 +21,7 @@ using UnityEngine.InputSystem;
 using static AirlockAPI.Managers.NetworkManager;
 using Il2CppInterop.Runtime;
 using AirlockClient.Handlers;
+using AirlockClient.Utils;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -334,7 +335,7 @@ namespace AirlockClient.Managers.Gamemode
 
             if (victim.Guarded)
             {
-                AntiCheat.PlayShieldBreakWithAntiCheat(killer, victim);
+                killer.PlayShieldBreakWithAntiCheat(victim);
 
                 return false;
             }
@@ -361,7 +362,7 @@ namespace AirlockClient.Managers.Gamemode
                         }
                         else
                         {
-                            AntiCheat.KillPlayerWithAntiCheat(killer, killer);
+                            killer.KillPlayerWithAntiCheat(killer);
                             return false;
                         }
                     }

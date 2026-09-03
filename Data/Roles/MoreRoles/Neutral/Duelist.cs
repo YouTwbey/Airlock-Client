@@ -6,6 +6,7 @@ using SG.Airlock;
 using SG.Airlock.Roles;
 
 using System.Collections.Generic;
+using AirlockClient.Utils;
 using UnityEngine;
 
 
@@ -83,8 +84,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             if (this.PlayerWithRole.IsAlive && OtherDuelist.PlayerWithRole.IsAlive)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
-                AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
+                playerToKill.ChangeIsAliveWithAntiCheat(false);
 
                 playerToKill = null;
                 if (OtherDuelist != null)
@@ -129,8 +130,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
         {
             if (playerToKill != null)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
-                AntiCheat.ChangeIsAliveWithAntiCheat(playerToKill, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
+                playerToKill.ChangeIsAliveWithAntiCheat(false);
                 playerToKill = null;
             }
         }

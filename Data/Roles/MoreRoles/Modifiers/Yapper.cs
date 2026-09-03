@@ -5,6 +5,7 @@ using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
 using SG.Airlock.Roles;
 using System.Collections;
+using AirlockClient.Utils;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
@@ -52,7 +53,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 
             if (PlayerWithModifier && PlayerWithModifier.IsAlive && PlayerWithModifier.MicrophoneOutput <= 0.1f)
             {
-                AntiCheat.KillPlayerWithAntiCheat(PlayerWithModifier, PlayerWithModifier);
+                PlayerWithModifier.KillPlayerWithAntiCheat(PlayerWithModifier);
             }
 
             isCheckInProgress = false;

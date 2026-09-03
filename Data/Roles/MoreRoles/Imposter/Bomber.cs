@@ -10,6 +10,7 @@ using SG.Airlock.XR;
 using System;
 using System;
 using System.Collections;
+using AirlockClient.Utils;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
@@ -58,13 +59,13 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
                         {
                             if (player.PState.IsAlive)
                             {
-                                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, player.PState);
+                                PlayerWithRole.KillPlayerWithAntiCheat(player.PState);
                             }
                         }
                     }
                 }
 
-                AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, PlayerWithRole);
+                PlayerWithRole.KillPlayerWithAntiCheat(PlayerWithRole);
 
                 canExplode = false;
             }

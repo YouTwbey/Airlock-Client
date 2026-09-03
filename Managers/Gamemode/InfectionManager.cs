@@ -6,6 +6,7 @@ using SG.Airlock.Customization;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
 using AirlockClient.AC;
+using AirlockClient.Utils;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -58,14 +59,14 @@ namespace AirlockClient.Managers.Gamemode
                         {
                             if (state.HatId != chef)
                             {
-                                AntiCheat.ChangeHatWithAntiCheat(state, chef);
+                                state.ChangeHatWithAntiCheat(chef);
                             }
                         }
                         else
                         {
                             if (state.HatId != buritto)
                             {
-                                AntiCheat.ChangeHatWithAntiCheat(state, buritto);
+                                state.ChangeHatWithAntiCheat(buritto);
                             }
                         }
                     }

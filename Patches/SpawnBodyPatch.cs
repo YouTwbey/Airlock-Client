@@ -1,5 +1,6 @@
 ﻿using AirlockClient.AC;
 using AirlockAPI.Data;
+using AirlockClient.Utils;
 using HarmonyLib;
 using Fusion;
 using SG.Airlock;
@@ -15,7 +16,7 @@ namespace AirlockClient.Patches
         {
             if (!CurrentMode.IsHosting || CurrentMode.Modded) return true;
             
-            return AntiCheat.Instance.VerifySpawnBody(GameObject.Find("PlayerState (" + id.PlayerId + ")").GetComponent<PlayerState>(), rb);
+            return GameObject.Find("PlayerState (" + id.PlayerId + ")").GetComponent<PlayerState>().VerifySpawnBody(rb);
         }
     }
 }

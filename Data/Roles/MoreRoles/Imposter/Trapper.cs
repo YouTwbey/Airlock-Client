@@ -2,6 +2,7 @@
 using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -39,7 +40,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             {
                 if (bodyReported == trappedbody)
                 {
-                    AntiCheat.KillPlayerWithAntiCheat(PlayerWithRole, reportingPlayer);
+                    PlayerWithRole.KillPlayerWithAntiCheat(reportingPlayer);
                     trappedbody = null;
                 }
             }

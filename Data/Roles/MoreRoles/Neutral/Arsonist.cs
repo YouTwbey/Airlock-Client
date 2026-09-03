@@ -3,6 +3,7 @@ using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Utils;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -39,7 +40,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         public override void OnPlayerKilled(PlayerState playerKilled)
         {
-            AntiCheat.DousePlayerWithAntiCheat(this, playerKilled);
+            PlayerWithRole.DousePlayerWithAntiCheat(playerKilled);
         }
 
         public override void OnPlayerInput(XRRigInput input)

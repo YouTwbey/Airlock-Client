@@ -6,6 +6,8 @@ using SG.Airlock;
 using SG.Airlock.Roles;
 
 using System.Collections.Generic;
+using AirlockClient.Utils;
+using Photon.Realtime;
 using UnityEngine;
 using static Fusion.Simulation;
 
@@ -61,7 +63,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
         {
             if (playerToKill != null)
             {
-                AntiCheat.ChangeIsAliveWithAntiCheat(PlayerWithRole, false);
+                PlayerWithRole.ChangeIsAliveWithAntiCheat(false);
                 playerToKill = null;
             }
         }
