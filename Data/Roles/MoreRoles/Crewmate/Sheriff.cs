@@ -1,13 +1,14 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers.Gamemode;
-using SG.Airlock.Roles;
-
+using Il2CppSG.Airlock.Roles;
+using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
     /// <summary>
     /// Crewmate Role
-    /// Sheriff has to kill imposter. If they kill a crewmate, they will die and the crewmate lives.
+    /// Sherrif has to kill imposter. If they kill a crewmate, they will die and the crewmate lives.
     /// </summary>
     public class Sheriff : SubRole
     {
@@ -16,14 +17,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Sheriff",
             RoleType = "Crewmate",
             Description = "Kill Imposter",
-            AC_Description = "Kill the imposters to help the crew win.",
+            AC_Description = "Take out the imposters",
+            AC_Color = new Color(255, 255, 0),
             Team = GameTeam.Crewmember,
             Amount = 0
         };
 
         void Start()
         {
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data, "", GameRole.Vigilante);
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data, "", GameRole.Vigilante));
         }
     }
 }

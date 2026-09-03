@@ -1,9 +1,10 @@
 ﻿using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
-using SG.Airlock;
-using SG.Airlock.Roles;
-
+using Il2CppSG.Airlock;
+using Il2CppSG.Airlock.Roles;
+using MelonLoader;
+using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
 {
@@ -17,14 +18,15 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Name = "Magician",
             RoleType = "Crewmate",
             Description = "Go Invisible",
-            AC_Description = "You get to vanish once every time a meeting ends.",
+            AC_Description = "Can vanish every time a meeting ends",
+            AC_Color = Color.blue,
             Team = GameTeam.Crewmember,
             Amount = 0
         };
 
         void Start()
         {
-            MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
+            MelonCoroutines.Start(MoreRolesManager.DisplayRoleInfo(PlayerWithRole, this, Data));
         }
 
         bool canRecieveVanish;
