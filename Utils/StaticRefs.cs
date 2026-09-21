@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using AirlockClient.Managers.Lobby;
+using Fusion;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -10,16 +11,17 @@ namespace AirlockClient.Utils;
 /// </summary>
 public class StaticRefs : MonoBehaviour
 {
-    public ModerationManager Moderation;
-    public RoleManager Role;
-    public GameStateManager State;
-    public EmergencyButton Button;
-    public NetworkedKillBehaviour Kill;
-    public AirlockPeer Peer;
-    public ChatManager Chat;
-    public RoleManager RoleManager;
-    public NetworkRunner Runner;
+    public static ModerationManager Moderation;
+    public static RoleManager Role;
+    public static GameStateManager State;
+    public static EmergencyButton Button;
+    public static NetworkedKillBehaviour Kill;
+    public static AirlockPeer Peer;
+    public static ChatManager Chat;
+//  public RoleManager RoleManager; ah yes two role managers 10/10 code
+    public static NetworkRunner Runner;
     public static StaticRefs Instance;
+    public static SpawnManager Spawn;
 
     private void Start()
     {
@@ -33,6 +35,12 @@ public class StaticRefs : MonoBehaviour
         Button = FindObjectOfType<EmergencyButton>();
         Kill =  FindObjectOfType<NetworkedKillBehaviour>();
         Runner = FindObjectOfType<NetworkRunner>();
-        RoleManager = FindObjectOfType<RoleManager>();
+        //RoleManager = FindObjectOfType<RoleManager>(); 
+        Spawn = FindObjectOfType<SpawnManager>();
+    }
+
+    void Update()
+    {
+       SettingsMenuManager.OnUpdate();
     }
 }

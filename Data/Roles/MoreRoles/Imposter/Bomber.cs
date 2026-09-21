@@ -10,6 +10,8 @@ using SG.Airlock.XR;
 using System;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using AirlockClient.Managers.Lobby;
 using AirlockClient.Utils;
 using UnityEngine;
 
@@ -29,6 +31,18 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Team = GameTeam.Impostor,
             Amount = 0
         };
+        
+        public static List<AdvancedSettingDefinition> AdvancedSettings =
+        [
+            MoreRolesManager.DefaultAdvancedSettings[0],
+            new AdvancedSettingDefinition(
+                "Explode Cooldown",
+                data => BomberCooldownVar,
+                (roleKey, delta) =>
+                    MoreRolesManager.Instance.ChangeBomberCooldown(delta),
+                5
+            )
+        ];
 
         void Start()
         {
@@ -71,6 +85,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             }
         }
 
+        public static int BomberCooldownVar = 25;
+        
         public IEnumerator BomberCooldown()
         {
             yield return new WaitForSeconds(MoreRolesManager.BomberCooldownVar + 10);

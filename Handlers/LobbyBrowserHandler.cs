@@ -37,7 +37,8 @@ namespace AirlockClient.Handlers
         {
             All,
             Skeld_II,
-            Polus_Point
+            Polus_Point,
+            Mess_Hall
         }
 
         public static MapFilter mapFilter = MapFilter.All;

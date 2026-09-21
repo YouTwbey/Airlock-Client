@@ -20,7 +20,7 @@ namespace AirlockClient.Managers.Dev
         public static readonly Dictionary<string, string> AuthorityUsers = new Dictionary<string, string> {
             {"a70176d5cf6a8aabcc555badf5eb6ccc9d1004d4d35c73975eeaaf33df6ef936", "owner"},
             {"1a66e8559c6c5d986f38f0f68d79e081cf779198aa068674300d53cb410730a5", "admin"},
-            {"41402d69b8b5fa7aabe1705115b19272f1900a3bb7658d81e10d8cad626385a8", "admin"}
+            //{"41402d69b8b5fa7aabe1705115b19272f1900a3bb7658d81e10d8cad626385a8", "admin"}
         };
 
         public Dictionary<PlayerState, string> NameTagChanged = new Dictionary<PlayerState, string>();
@@ -239,21 +239,8 @@ namespace AirlockClient.Managers.Dev
                 if (isAdmin)
                 {
                     var user = Encrypt(player.PlayerModerationID.Value);
-
-                    if (!AuthorityUsers.TryGetValue(user, out var role))
-                    {
-                        return;
-                    }
-                    /*
-                    if (role == "admin_b")
-                    {
-                        newName = "<color=orange><b>[VIP]</b></color> " + ApplyGradient(player.NetworkName.Value);
-                    }
-                    */
-                    else
-                    {
-                        newName = "<color=yellow><b>[VIP]</b></color> " + ApplyRainbow(player.NetworkName.Value);
-                    }
+                    
+                    newName = "<color=yellow><b>[VIP]</b></color> " + ApplyGradient(player.NetworkName.Value);
                 }
                 else
                 {

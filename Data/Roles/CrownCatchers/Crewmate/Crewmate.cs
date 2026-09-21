@@ -2,11 +2,6 @@
 using AirlockClient.Managers.Gamemode;
 using SG.Airlock;
 using SG.Airlock.Roles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AirlockClient.Data.Roles.CrownCatchers.Crewmate
 {

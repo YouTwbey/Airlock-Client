@@ -1,12 +1,9 @@
-﻿using AirlockClient.AC;
-using AirlockClient.Managers;
+﻿using AirlockClient.Managers;
 using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 using static AirlockClient.Data.Info;
 using static UnityEngine.Object;
 

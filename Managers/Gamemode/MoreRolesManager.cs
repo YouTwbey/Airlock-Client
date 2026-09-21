@@ -14,6 +14,7 @@ using TMPro;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -21,6 +22,7 @@ using UnityEngine.InputSystem;
 using static AirlockAPI.Managers.NetworkManager;
 using Il2CppInterop.Runtime;
 using AirlockClient.Handlers;
+using AirlockClient.Managers.Lobby;
 using AirlockClient.Utils;
 
 namespace AirlockClient.Managers.Gamemode
@@ -28,6 +30,7 @@ namespace AirlockClient.Managers.Gamemode
     public class MoreRolesManager : AirlockClientGamemode
     {
         public static Dictionary<string, SubRoleData> SubRoleToData;
+        public static Dictionary<string, List<AdvancedSettingDefinition>> SubRoleToAdvancedSettings;
         public static Dictionary<string, System.Type> SubRoleToType;
         public static Dictionary<string, ModifierData> ModifierToData;
         public static Dictionary<string, System.Type> ModifierToType;
@@ -37,10 +40,21 @@ namespace AirlockClient.Managers.Gamemode
         public static RoleManager Rolemanager;
         public static SpawnManager Spawn;
         public static NetworkedKillBehaviour Killing;
+        public static MoreRolesManager Instance;
+
+        public static readonly List<AdvancedSettingDefinition> DefaultAdvancedSettings = new()
+        {
+            new AdvancedSettingDefinition(
+                "Chance",
+                data => data.Chance,
+                (roleKey, delta) => ChangeChance(roleKey, delta)
+            ),
+        };
 
         public static void FetchRoles()
         {
             SubRoleToData = new Dictionary<string, SubRoleData>();
+            SubRoleToAdvancedSettings = new Dictionary<string, List<AdvancedSettingDefinition>>();
             SubRoleToType = new Dictionary<string, System.Type>();
             ModifierToData = new Dictionary<string, ModifierData>();
             ModifierToType = new Dictionary<string, System.Type>();
@@ -70,6 +84,11 @@ namespace AirlockClient.Managers.Gamemode
                 {
                     SubRoleToData[type.Name] = data;
                     SubRoleToType[type.FullName] = type;
+
+                    FieldInfo advField = type.GetField("AdvancedSettings", BindingFlags.Public | BindingFlags.Static);
+                    SubRoleToAdvancedSettings[type.Name] = advField != null
+                        ? (List<AdvancedSettingDefinition>)advField.GetValue(null)
+                        : DefaultAdvancedSettings;
                 }
             }
 
@@ -126,6 +145,10 @@ namespace AirlockClient.Managers.Gamemode
             Rolemanager = FindObjectOfType<RoleManager>();
             Spawn = FindObjectOfType<SpawnManager>();
             Killing = FindObjectOfType<NetworkedKillBehaviour>();
+            Instance = this;
+            
+            SettingsMenuManager.BuildSettingsPages();
+            SettingsMenuManager.BuildAdvancedPages();
         }
 
         void Update()
@@ -169,9 +192,9 @@ namespace AirlockClient.Managers.Gamemode
                 roleName.text = subrole.ToString();
                 amount.text = "(1)";
 
-                decrease.add_onClick((Il2CppSystem.Action)(() => { ChangeRoleAmount(amount, subrole, -1); }));
+                decrease.add_onClick((Il2CppSystem.Action)(() => { ChangeRoleAmount(subrole, -1); }));
 
-                increase.add_onClick((Il2CppSystem.Action)(() => { ChangeRoleAmount(amount, subrole, 1); }));
+                increase.add_onClick((Il2CppSystem.Action)(() => { ChangeRoleAmount(subrole, 1); }));
             }
 
             GameObject template = UI.transform.Find("MoreRoles").Find("BG").Find("Roles").Find("ROLE_TEMPLATE")
@@ -187,8 +210,8 @@ namespace AirlockClient.Managers.Gamemode
             roleNameBE.text = "Bodies Eaten";
             amountBE.text = "(" + (MaxBodiesEatenCount == 0 ? 1 : MaxBodiesEatenCount).ToString() + ")";
 
-            decreaseBE.add_onClick((Il2CppSystem.Action)(() => { ChangeMaxBodiesEatenAmount(amountBE, -1); }));
-            increaseBE.add_onClick((Il2CppSystem.Action)(() => { ChangeMaxBodiesEatenAmount(amountBE, 1); }));
+            decreaseBE.add_onClick((Il2CppSystem.Action)(() => { ChangeMaxBodiesEatenAmount(-1); }));
+            increaseBE.add_onClick((Il2CppSystem.Action)(() => { ChangeMaxBodiesEatenAmount(1); }));
 
             GameObject bomberCooldownSetting = Instantiate(template, template.transform.parent);
             bomberCooldownSetting.name = "BOMBER_COOLDOWN";
@@ -202,8 +225,8 @@ namespace AirlockClient.Managers.Gamemode
             roleNameBC.text = "Bomber Coolown";
             amountBC.text = "(" + BomberCooldownVar.ToString() + ")";
 
-            decreaseBC.add_onClick((Il2CppSystem.Action)(() => { ChangeBomberCooldown(amountBC, -5); }));
-            increaseBC.add_onClick((Il2CppSystem.Action)(() => { ChangeBomberCooldown(amountBC, 5); }));
+            decreaseBC.add_onClick((Il2CppSystem.Action)(() => { ChangeBomberCooldown(-5); }));
+            increaseBC.add_onClick((Il2CppSystem.Action)(() => { ChangeBomberCooldown(5); }));
 
             GameObject ViperDisolveTimeSetting = Instantiate(template, template.transform.parent);
             ViperDisolveTimeSetting.name = "Viper Disolve Time";
@@ -217,9 +240,8 @@ namespace AirlockClient.Managers.Gamemode
             rolenameVDC.text = "Disolve Time";
             amountVDC.text = "(" + ViperDisolveTimeSetting.ToString() + ")";
 
-            decreaseVDC.add_onClick((Il2CppSystem.Action)(() => { ChangeDissolveTime(amountVDC, -5); }));
-            increaseVDC.add_onClick((Il2CppSystem.Action)(() => { ChangeDissolveTime(amountVDC, 5); }));
-
+            decreaseVDC.add_onClick((Il2CppSystem.Action)(() => { ChangeDissolveTime(-5); }));
+            increaseVDC.add_onClick((Il2CppSystem.Action)(() => { ChangeDissolveTime(5); }));
             GameObject WorkerTasksAssigned = Instantiate(template, template.transform.parent);
             WorkerTasksAssigned.name = "Worker Tasks Assigned";
             Button decreaseWTA = WorkerTasksAssigned.transform.Find("Decrease").GetComponent<Button>();
@@ -231,88 +253,82 @@ namespace AirlockClient.Managers.Gamemode
             rolenameWTA.text = "Disolve Time";
             amountWTA.text = "(" + WorkerTasksAssigned.ToString() + ")";
 
-            decreaseWTA.add_onClick((Il2CppSystem.Action)(() => { ChangeTotalAssignedTasks(amountWTA, -1); }));
-            increaseWTA.add_onClick((Il2CppSystem.Action)(() => { ChangeTotalAssignedTasks(amountWTA, 1); }));
+            decreaseWTA.add_onClick((Il2CppSystem.Action)(() => { ChangeTotalAssignedTasks(-1); }));
+            increaseWTA.add_onClick((Il2CppSystem.Action)(() => { ChangeTotalAssignedTasks(1); }));
             Template.SetActive(false);
             UI.SetActive(false);
         }
 
-        void ChangeRoleAmount(TextMeshProUGUI subRoleAmount, string role, int changeBy)
+        public void ChangeRoleAmount(string role, int changeBy)
         {
-            SubRoleData data = SubRoleToData[role];
+            var data = SubRoleToData[role];
             data.Amount += changeBy;
 
-            if (data.Amount == -1)
+            data.Amount = data.Amount switch
             {
-                data.Amount = 10;
-            }
-            else if (data.Amount == 11)
-            {
-                data.Amount = 0;
-            }
-
-            subRoleAmount.text = "(" + data.Amount.ToString() + ")";
+                < 0 => 10,
+                > 10 => 0,
+                _ => data.Amount
+            };
         }
 
-        void ChangeMaxBodiesEatenAmount(TextMeshProUGUI MaxBodiesEaten, int changeby)
+        public static void ChangeChance(string role, int changeBy)
         {
-            MaxBodiesEatenCount += changeby;
-            if (MaxBodiesEatenCount < 1)
-            {
-                MaxBodiesEatenCount = 5;
-            }
-            else if (MaxBodiesEatenCount > 5)
-            {
-                MaxBodiesEatenCount = 1;
-            }
+            var data = SubRoleToData[role];
+            data.Chance += changeBy;
 
-            MaxBodiesEaten.text = "(" + MaxBodiesEatenCount.ToString() + ")";
+            data.Chance = data.Chance switch
+            {
+                < 0 => 100,
+                > 100 => 0,
+                _ => data.Chance
+            };
         }
 
-        void ChangeBomberCooldown(TextMeshProUGUI BomberTime, int changeby)
+        public void ChangeMaxBodiesEatenAmount(int changeBy)
         {
-            BomberCooldownVar += changeby;
-            if (BomberCooldownVar < 0)
+            Vulture.MaxBodiesEatenCount += changeBy;
+            Vulture.MaxBodiesEatenCount = Vulture.MaxBodiesEatenCount switch
             {
-                BomberCooldownVar = 60;
-            }
-            else if (BomberCooldownVar > 60)
-            {
-                BomberCooldownVar = 0;
-            }
-
-            BomberTime.text = "(" + BomberCooldownVar.ToString() + ")";
+                < 1 => 5,
+                > 5 => 1,
+                _ => Vulture.MaxBodiesEatenCount
+            };
         }
 
-        void ChangeDissolveTime(TextMeshProUGUI DisolveTime, int changeby)
+        public void ChangeBomberCooldown(int changeBy = 5)
         {
-            Viper.SecondsUntilDisolve += changeby;
-            if (Viper.SecondsUntilDisolve < 5)
+            Bomber.BomberCooldownVar += changeBy;
+            
+            Bomber.BomberCooldownVar = Bomber.BomberCooldownVar switch
             {
-                Viper.SecondsUntilDisolve = 60;
-            }
-
-            if (Viper.SecondsUntilDisolve > 60)
-            {
-                Viper.SecondsUntilDisolve = 5;
-            }
-
-            DisolveTime.text = "(" + Viper.SecondsUntilDisolve.ToString() + ")";
+                < 0 => 60,
+                > 60 => 0,
+                _ => Bomber.BomberCooldownVar
+            };
         }
 
-        void ChangeTotalAssignedTasks(TextMeshProUGUI TasksAssigned, int changeby)
+        public void ChangeDissolveTime(int changeBy = 5)
         {
-            TasksAssignedCount += changeby;
-            if (TasksAssignedCount < 3)
+            Viper.SecondsUntilDisolve += changeBy;
+            
+            Viper.SecondsUntilDisolve = Viper.SecondsUntilDisolve switch
             {
-                TasksAssignedCount = 15;
-            }
-            else if (TasksAssignedCount > 15)
-            {
-                TasksAssignedCount = 3;
-            }
+                < 5 => 60,
+                > 60 => 5,
+                _ => Viper.SecondsUntilDisolve
+            };
+        }
 
-            TasksAssigned.text = "(" + TasksAssignedCount.ToString() + ")";
+        public void ChangeTotalAssignedTasks(int changeBy)
+        {
+            Worker.TasksAssignedCount += changeBy;
+            Worker.TasksAssignedCount = Worker.TasksAssignedCount switch
+            {
+                < 3 => 15,
+                > 15 => 3,
+                _ => Worker.TasksAssignedCount
+            };
         }
 
         public override bool OnPlayerVoted(ref PlayerState voter, ref PlayerState voted)
@@ -347,7 +363,7 @@ namespace AirlockClient.Managers.Gamemode
 
                 if (role.PlayerWithRole.PlayerId == killer.PlayerId)
                 {
-                    if (killer.GetComponent<Sheriff>())
+                    if (killer.GetComponent<Sheriff>() && killer.KnownGameRole != GameRole.Sheriff)
                     {
                         if (targetRole == GameRole.Impostor)
                         {
@@ -367,7 +383,7 @@ namespace AirlockClient.Managers.Gamemode
                         }
                     }
 
-                    if (killer.GetComponent<Witch>())
+                    if (killer.GetComponent<Witch>() && killer.KnownGameRole != GameRole.Sheriff)
                     {
                         if (victim.GetComponent<Bait>() == null)
                         {
@@ -382,7 +398,7 @@ namespace AirlockClient.Managers.Gamemode
                         return false;
                     }
 
-                    if (killer.GetComponent<Poisoner>())
+                    if (killer.GetComponent<Poisoner>() && killer.KnownGameRole != GameRole.Sheriff)
                     {
                         role.OnPlayerKilled(victim);
                         role.OnPlayerAction(action);
@@ -397,7 +413,7 @@ namespace AirlockClient.Managers.Gamemode
                     role.OnPlayerKilled(victim);
                     role.OnPlayerAction(action);
                 }
-                else if (role.PlayerWithRole.PlayerId == victim.PlayerId)
+                else if (role.PlayerWithRole.PlayerId == victim.PlayerId && role.PlayerWithRole.KnownGameRole != GameRole.Sheriff)
                 {
                     Armor armorer = victim.GetComponent<Armor>();
                     if (armorer)
@@ -1029,4 +1045,3 @@ namespace AirlockClient.Managers.Gamemode
         }
     }
 }
-
