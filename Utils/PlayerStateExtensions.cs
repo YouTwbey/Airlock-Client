@@ -50,22 +50,43 @@ public static class PlayerStateExtensions
         return SubRole.All.FirstOrDefault(role => role.PlayerWithRole == playerState);
     }
 
+    static string FormatName(string name)
+    {
+        name = name.Replace(@"\d", "");
+        char[] hideChars =
+        {
+            '_',
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9'
+        };
+
+        foreach (char charToHide in hideChars) name = name.Replace(charToHide.ToString(), "");
+
+        return name;
+    }
+
     public static void VerifyState(this PlayerState playerState)
     {
         if (!playerState.IsSpawned) return;
         if (!playerState.IsConnected) return;
         if (Anticheat == null) return;
 
-        if (!CurrentMode.Modded && !AntiCheat.Instance.ColorToName.ContainsValue(playerState.NetworkName.Value) &&
-            playerState.NetworkName.Value != "Color###")
+        if (!CurrentMode.Modded && !AntiCheat.Instance.ColorToName.ContainsValue(playerState.NetworkName.Value) && playerState.NetworkName.Value != "Color###")
         {
-            var formattedName = playerState.PlayerModerationUsername.Replace(@"\d", "");
+            var formattedName = FormatName(playerState.PlayerModerationUsername);
             if (formattedName != "" && !formattedName.Contains(playerState.NetworkName.Value))
             {
                 if (playerState.GetComponent<SubRole>())
                 {
-                    if (!playerState.GetComponent<SubRole>().IsDisplayingRole &&
-                        playerState.NetworkName.Value != "DEPUTY")
+                    if (!playerState.GetComponent<SubRole>().IsDisplayingRole && playerState.NetworkName.Value != "DEPUTY")
                     {
                         Alert(playerState,"invalid player username", true);
                     }
@@ -593,8 +614,7 @@ public static class PlayerStateExtensions
 
         bool IsCheating = false;
 
-        float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition)
-            .magnitude;
+        float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition).magnitude;
         GameRole killerRole = killer.GetTrueRole();
         GameRole targetRole = target.GetTrueRole();
 
