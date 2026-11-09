@@ -146,11 +146,8 @@ namespace AirlockClient.Managers.Gamemode
             Spawn = FindObjectOfType<SpawnManager>();
             Killing = FindObjectOfType<NetworkedKillBehaviour>();
             Instance = this;
-            
-            SettingsMenuManager.BuildSettingsPages();
-            SettingsMenuManager.BuildAdvancedPages();
         }
-
+        
         void Update()
         {
             if (UI)
@@ -171,7 +168,7 @@ namespace AirlockClient.Managers.Gamemode
                 }
             }
         }
-
+        /*
         void SetupUI()
         {
             GameObject Template = UI.transform.Find("MoreRoles").Find("BG").Find("Roles").Find("ROLE_TEMPLATE")
@@ -258,6 +255,7 @@ namespace AirlockClient.Managers.Gamemode
             Template.SetActive(false);
             UI.SetActive(false);
         }
+        */
 
         public void ChangeRoleAmount(string role, int changeBy)
         {
@@ -271,10 +269,36 @@ namespace AirlockClient.Managers.Gamemode
                 _ => data.Amount
             };
         }
+        
+        public void ChangeModifierAmount(string modifier, int changeBy)
+        {
+            var data = ModifierToData[modifier];
+            data.Amount += changeBy;
+
+            data.Amount = data.Amount switch
+            {
+                < 0 => 10,
+                > 10 => 0,
+                _ => data.Amount
+            };
+        }
 
         public static void ChangeChance(string role, int changeBy)
         {
             var data = SubRoleToData[role];
+            data.Chance += changeBy;
+
+            data.Chance = data.Chance switch
+            {
+                < 0 => 100,
+                > 100 => 0,
+                _ => data.Chance
+            };
+        }
+        
+        public static void ChangeModifierChance(string role, int changeBy)
+        {
+            var data = ModifierToData[role];
             data.Chance += changeBy;
 
             data.Chance = data.Chance switch
@@ -639,7 +663,8 @@ namespace AirlockClient.Managers.Gamemode
             Logging.Debug_Log($"[AssignModifier] Done — assigned {assigned}/{data.Amount} of {modifier.Name}");
         }
 
-
+        //todo: remove
+        /*
         void OnGUI()
         {
             if (!State.InLobbyState()) return;
@@ -838,6 +863,7 @@ namespace AirlockClient.Managers.Gamemode
 
             GUILayout.EndVertical();
         }
+        */
 
 
         public override bool OnMeetingCalled(ref PlayerState reportingPlayer)

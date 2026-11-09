@@ -21,7 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             RoleType = "Neutral",
             Description = "Death = Win",
             AC_Description = "You need to be killed to win.",
-            Team = GameTeam.Other,
+            Team = GameTeam.Crewmember,
             Amount = 0
         };
 
@@ -34,8 +34,11 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
 
         public override void OnPlayerDied(PlayerState killer)
         {
-            killing.AlterRole(GameRole.Sheriff, PlayerWithRole.PlayerId, 0);
-            state.EndGame(GameTeam.Other);
+            if (killer.KnownGameRole != GameRole.Sheriff)
+            {
+                killing.AlterRole(GameRole.Sheriff, PlayerWithRole.PlayerId, 0);
+                state.EndGame(GameTeam.Other);
+            }
         }
     }
 }

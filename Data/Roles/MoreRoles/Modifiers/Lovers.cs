@@ -1,4 +1,5 @@
-﻿using AirlockClient.Attributes;
+﻿using System;
+using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.MoreRoles.Imposter;
 using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
@@ -9,6 +10,7 @@ using SG.Airlock.Roles;
 
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 {
@@ -19,6 +21,7 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
     public class Lover : Modifier
     {
         public static SpawnManager spawnManager;
+        public static Lover Instance;
         public static ModifierData Data = new ModifierData
         {
             Name = "Lover",
@@ -66,6 +69,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
             }
 
             MoreRolesManager.QueueModifierDisplay(PlayerWithModifier, Data);
+
+            Instance = this;
         }
 
         OtherLover otherLover;
@@ -73,14 +78,21 @@ namespace AirlockClient.Data.Roles.MoreRoles.Modifiers
 
     public class OtherLover : Modifier
     {
+        public static OtherLover Instance;
         public static ModifierData Data = new ModifierData
         {
             Name = "Lover",
             Description = "Protect user:",
             Team = GameTeam.Other,
             AC_Description = "<size=0>OTHER_MODIFIER</size>",
-            Amount = 0
+            Amount = 0,
+            ShowInSettings = false
         };
+
+        private void Start()
+        {
+            Instance = this;
+        }
 
         public Lover mainLover;
     }

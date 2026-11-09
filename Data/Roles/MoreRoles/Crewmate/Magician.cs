@@ -42,6 +42,14 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             {
                 canRecieveVanish = true;
             }
+            
+            if (!ModdedGameStateManager.Instance.state.InTaskState())
+            {
+                if (PlayerWithRole.IsAlive)
+                {
+                    PlayerWithRole.ActivePowerUps = PowerUps.None;
+                }
+            }
         }
     }
 }

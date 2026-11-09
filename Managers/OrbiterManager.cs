@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 namespace AirlockClient.Managers
 {
+    
+    /// <summary>
+    /// TODO: whatever this is
+    /// </summary>
     public class OrbiterManager : MonoBehaviour
     {
         private Vector3 startPosition;

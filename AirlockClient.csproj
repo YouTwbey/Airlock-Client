@@ -118,6 +118,7 @@
     <Compile Include="Patches\Network\FixSabotagePatch.cs" />
     <Compile Include="Patches\Network\IncrementTaskPatch.cs" />
     <Compile Include="Patches\Network\KickPatch.cs" />
+    <Compile Include="Patches\Network\MournSoulMate.cs" />
     <Compile Include="Patches\Network\ReportPlayerPatch.cs" />
     <Compile Include="Patches\Network\RequestPowerupPatch.cs" />
     <Compile Include="Patches\Network\RpcRecievedPatch.cs" />
@@ -438,6 +439,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Among Us 3D\BepInEx\interop\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Data\Sprite\ModifierButton.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

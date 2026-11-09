@@ -6,6 +6,7 @@ using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Managers.Lobby;
 using AirlockClient.Utils;
 using static AirlockClient.Utils.PlayerStateExtensions;
 using BepInEx.Unity.IL2CPP.Utils;
@@ -43,6 +44,8 @@ namespace AirlockClient.Patches
                         }
                     })
                 );
+
+                AirlockClientManager.Instance.StartCoroutine(SettingsMenuManager.DelayPatchSettings());
             }
 
             if (CurrentMode.Modded)
@@ -75,7 +78,7 @@ namespace AirlockClient.Patches
                     }
                 }
 
-                //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);
+                //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);'
             }
 
             AirlockClientGamemode.RPC_AirlockClientVerification();

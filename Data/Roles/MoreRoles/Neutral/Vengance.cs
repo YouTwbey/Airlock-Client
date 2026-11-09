@@ -24,7 +24,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Description = "If This Role is Voted out the person they voted dies",
             AC_Description = "If the Vengeance gets voted out the person they voted gets ejected/killed as well.",
             Team = GameTeam.Crewmember,
-            Amount = 0
+            Amount = 0,
+            ShowInSettings = false
         };
         void Start()
         {

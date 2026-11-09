@@ -41,6 +41,9 @@ namespace AirlockClient.Managers
         public AudioClip DangerMusic4;
         public AudioClip DangerMusic5;
         public AudioClip SeekerMusic;
+        
+        // Lobby Buttons
+        public Sprite ModifiersButton;
 
         private void Start()
         {
@@ -66,6 +69,7 @@ namespace AirlockClient.Managers
             if (InfectedIcon == null) InfectedIcon = LoadSprite("AirlockClient.Data.Sprite.InfectedIcon.png");
             if (DeathMatchIcon == null) DeathMatchIcon = LoadSprite("AirlockClient.Data.Sprite.DeathMatchIcon.png");
             if (CrownRunnersIcon == null) CrownRunnersIcon = LoadSprite("AirlockClient.Data.Sprite.CrownRunnersTemp.png");
+            if (ModifiersButton == null) ModifiersButton = LoadSprite("AirlockClient.Data.Sprite.ModifierButton.png");
 
             if (DangerMeter0 == null) DangerMeter0 = LoadSprite("AirlockClient.Data.Sprite.0.png");
             if (DangerMeter1 == null) DangerMeter1 = LoadSprite("AirlockClient.Data.Sprite.1.png");
