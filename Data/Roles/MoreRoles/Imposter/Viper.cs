@@ -4,6 +4,7 @@ using SG.Airlock;
 using SG.Airlock.Roles;
 
 using System.Collections.Generic;
+using AirlockClient.Managers.Lobby;
 using UnityEngine;
 
 namespace AirlockClient.Data.Roles.MoreRoles.Imposter
@@ -23,12 +24,24 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Amount = 0
         };
 
+        public static List<AdvancedSettingDefinition> AdvancedSettings =
+        [
+            MoreRolesManager.DefaultAdvancedSettings[0],
+            new AdvancedSettingDefinition(
+                "Dissolve Time",
+                data => SecondsUntilDisolve,
+                (roleKey, delta) =>
+                    MoreRolesManager.Instance.ChangeDissolveTime(delta),
+                5
+            )
+        ];
+
         void Start()
         {
             MoreRolesManager.QueueRoleDisplay(PlayerWithRole, this, Data);
         }
 
-        public static float SecondsUntilDisolve = 15;
+        public static int SecondsUntilDisolve = 15;
         List<NetworkedBody> bodiesToDisolve = new List<NetworkedBody>();
         public override void OnPlayerKilled(PlayerState playerKilled)
         {

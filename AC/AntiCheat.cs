@@ -1,29 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
-using AirlockAPI.Data;
-using AirlockClient.Attributes;
-using AirlockClient.Data.Roles.MoreRoles.Imposter;
-using AirlockClient.Data.Roles.MoreRoles.Neutral;
 using AirlockClient.Managers.Debug;
-using Fusion;
-using System.IO;
+using AirlockClient.Managers;
 using AirlockClient.Utils;
-using Il2CppSystem.IO;
+using BepInEx.Unity.IL2CPP.Utils;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
-using SG.Airlock.UI.Moderation;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
+using static AirlockClient.Utils.PlayerStateExtensions;
 
 namespace AirlockClient.AC
 {
-    // rewritten to use extension methods for easier calling
-    //  i get it if you don't think this is a good idea but imo i would rather do it like this
     public class AntiCheat : MonoBehaviour
     {
         public static AntiCheat Instance;
@@ -62,7 +51,7 @@ namespace AirlockClient.AC
         public NetworkedKillBehaviour Kill;
         public AirlockPeer Peer;
         public ChatManager Chat;
-        SHA256 encrypt;
+        //SHA256 encrypt;
 
         void Start()
         {
@@ -76,9 +65,7 @@ namespace AirlockClient.AC
                 Kill = FindObjectOfType<NetworkedKillBehaviour>();
                 Peer = FindObjectOfType<AirlockPeer>();
                 Chat = FindObjectOfType<ChatManager>();
-                encrypt = SHA256.Create();
-
-                StartCoroutine("FetchBlacklist");
+                //encrypt = SHA256.Create();
             }
             else
             {
@@ -94,10 +81,10 @@ namespace AirlockClient.AC
             AllowedBodySpawns.Clear();
             RoleTargets.Clear();
         }
-
+        /* Kept for futher ref though we probably no longer need it
         List<string> BlacklistedUsers = new List<string>();
         const string BlacklistUrl = "https://raw.githubusercontent.com/YouTwbey/Airlock-Client/main/AC/blacklisted_user_list.txt";
-
+        
         System.Collections.IEnumerator FetchBlacklist()
         {
             while (gameObject != null)
@@ -121,7 +108,31 @@ namespace AirlockClient.AC
                 yield return new WaitForSecondsRealtime(300);
             }
         }
+        */
+        
+        private const string ServerBaseUrl = "https://teammesshall-server.tail381a40.ts.net";
+        
+        public static System.Collections.IEnumerator CheckBanned(string steamId, Action<bool> onResult)
+        {
+            string url = $"{ServerBaseUrl}/api/isuserbanned/{steamId}";
 
+            UnityWebRequest www = UnityWebRequest.Get(url);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Logging.Error($"Failed to check ban status for {steamId}: {www.error}");
+                onResult(false);
+                yield break;
+            }
+
+            string body = www.downloadHandler.text.Trim();
+
+            bool banned = bool.TryParse(body, out var parsed) && parsed;
+
+            onResult(banned);
+        }
+        /*
         string ModerationIDToSHA256(PlayerRef player)
         {
             string playerId = State.Runner.GetPlayerUserId(player);
@@ -139,25 +150,10 @@ namespace AirlockClient.AC
         }
 
         int checkDelay;
-
+        */
+        
         void Update()
         {
-            if (checkDelay == 0)
-            {
-                foreach (PlayerRef player in State.Runner.ActivePlayers.ToArray())
-                {
-                    if (BlacklistedUsers.Contains(ModerationIDToSHA256(player)))
-                    {
-                        State.SpawnManager.PlayerStates[player].Alert( "user is on blacklist", true);
-                    }
-                }
-                checkDelay = 60;
-            }
-            else
-            {
-                checkDelay -= 1;
-            }
-
             foreach (PlayerState state in State.SpawnManager.ActivePlayerStates)
             {
                 if (state == null) continue;
@@ -181,7 +177,7 @@ namespace AirlockClient.AC
             return Role.GetRoleData(role).GetTargetedActionCooldown(whenAlive);
         }
 
-        public bool VerifyJoin(NetworkedLocomotionPlayer joiningPlayer, int color, int hat, int hands, int skin, string name, string moderationID, string moderationUsername, string accountID, bool is3D)
+        public bool VerifyJoin(NetworkedLocomotionPlayer joiningPlayer, int color, int hat, int hands, int skin, string Name, string moderationID, string moderationUsername, string accountID, bool is3D)
         {
             bool IsCheating = false;
 
@@ -194,7 +190,7 @@ namespace AirlockClient.AC
 
             if (IsCheating)
             {
-                joiningPlayer.PState.Alert( "suspicious join data", true);
+                Alert(joiningPlayer.PState, "suspicious join data", true);
             }
 
             return !IsCheating;
@@ -210,10 +206,9 @@ namespace AirlockClient.AC
         }
         
         // does this not work?
-        public void SendReportToDevelopers(PlayerState guilty, string reason)
+        public static void SendReportToDevelopers(PlayerState guilty, string id, string reason)
         {
-            return;
-
+            /*
             ReportPlayerPanel Reporting = FindObjectOfType<ReportPlayerPanel>(true);
             
             if (Reporting != null)
@@ -222,6 +217,45 @@ namespace AirlockClient.AC
                 Reporting._playerReportAE.ReportCategory = "[AIRLOCK CLIENT | ANTI CHEAT] Category: Cheating/Hacking. Reason provided from Airlock Client: " + reason + ".";
                 Reporting.SubmitReport();
             }
+            */
+            
+            AirlockClientManager.Instance.StartCoroutine(PostCheaterReport(guilty, id, reason));
+        }
+
+        private static System.Collections.IEnumerator PostCheaterReport(PlayerState guilty, string id, string reason)
+        {
+            string json = BuildReportJson(guilty, id, reason);
+
+            UnityWebRequest www = new UnityWebRequest($"{ServerBaseUrl}/api/cheater-reports", "POST");
+            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(json);
+            www.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.SetRequestHeader("Content-Type", "application/json");
+
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                Logging.Error($"Failed to send cheater report: {www.error}");
+            }
+            else
+            {
+                Logging.Debug_Log("Cheater report sent successfully.");
+            }
+        }
+
+        private static string BuildReportJson(PlayerState guilty, string ID, string reason)
+        {
+            string Escape(string s) => s?.Replace("\\", "\\\\").Replace("\"", "\\\"") ?? "";
+
+            string timestamp = DateTimeOffset.UtcNow.ToString("o");
+
+            return "{"
+                   + $"\"Username\":\"{Escape(guilty.NetworkName.Value)}\","
+                   + $"\"ID\":\"{Escape(ID)}\","
+                   + $"\"Reason\":\"{Escape(reason)}\","
+                   + $"\"Timestamp\":\"{timestamp}\""
+                   + "}";
         }
     }
 }

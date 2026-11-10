@@ -1,4 +1,5 @@
-﻿using AirlockClient.Managers.Dev;
+﻿using System;
+using AirlockClient.Managers.Dev;
 using AirlockClient.Managers.Gamemode;
 using Il2CppInterop.Runtime.Injection;
 using SG.Airlock;
@@ -19,7 +20,9 @@ using TMPro;
 using SG.Airlock.Localization;
 using Il2CppInterop.Runtime;
 using AirlockClient.AC;
+using AirlockClient.Managers.Debug;
 using AirlockClient.Utils;
+using UnityEngine.Networking;
 
 namespace AirlockClient.Managers
 {
@@ -329,6 +332,13 @@ namespace AirlockClient.Managers
                 manager.yPosition = yPositions[i];
                 manager.isActive = i == 0;
             }
+        }
+
+        public static void SendGameState(bool Modded, string modeName)
+        {
+            if (!Modded) return;
+            
+            
         }
     }
 }

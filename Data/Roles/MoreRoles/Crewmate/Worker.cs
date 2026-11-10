@@ -12,7 +12,9 @@ using SG.Airlock.XR;
 using System.Runtime.InteropServices;
 
 using System;
+using System.Collections.Generic;
 using System.Threading;
+using AirlockClient.Managers.Lobby;
 using Unity;
 using static UnityEngine.Object;
 
@@ -30,6 +32,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
         public bool Tasks = true;
         public int InstaComplete = 3;
         public MinigameManager Task;
+        public static int TasksAssignedCount = 3;
+        
         public static SubRoleData Data = new SubRoleData
         {
             Name = "Worker",
@@ -39,6 +43,18 @@ namespace AirlockClient.Data.Roles.MoreRoles.Crewmate
             Team = GameTeam.Crewmember,
             Amount = 0
         };
+        
+        public static List<AdvancedSettingDefinition> AdvancedSettings =
+        [
+            MoreRolesManager.DefaultAdvancedSettings[0],
+            new AdvancedSettingDefinition(
+                "Tasks Assigned",
+                data => TasksAssignedCount,
+                (roleKey, delta) =>
+                    MoreRolesManager.Instance.ChangeTotalAssignedTasks(delta),
+                1
+            )
+        ];
 
         void Start()
         {

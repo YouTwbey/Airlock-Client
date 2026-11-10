@@ -1,6 +1,8 @@
-﻿using AirlockClient.Attributes;
+﻿using System.Collections.Generic;
+using AirlockClient.Attributes;
 using AirlockClient.Managers;
 using AirlockClient.Managers.Gamemode;
+using AirlockClient.Managers.Lobby;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -28,6 +30,20 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Team = GameTeam.Crewmember,
             Amount = 0
         };
+        
+        public static List<AdvancedSettingDefinition> AdvancedSettings =
+        [
+            MoreRolesManager.DefaultAdvancedSettings[0],
+            new AdvancedSettingDefinition(
+                "Bodies to Win",
+                data => MaxBodiesEatenCount,
+                (roleKey, delta) =>
+                    MoreRolesManager.Instance.ChangeMaxBodiesEatenAmount(delta),
+                1
+            )
+        ];
+        
+        public static int MaxBodiesEatenCount = 3;
 
         void Start()
         {

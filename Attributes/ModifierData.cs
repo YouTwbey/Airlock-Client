@@ -13,5 +13,6 @@ namespace AirlockClient.Attributes
         public Color AC_Color = Color.white;
         public string AC_Description;
         public GameTeam Team;
+        public bool ShowInSettings = true;
     }
 }

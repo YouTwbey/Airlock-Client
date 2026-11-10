@@ -23,7 +23,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Imposter
             Description = "Mute others",
             AC_Description = "Mute one other person for the rest of the game",
             Team = GameTeam.Impostor,
-            Amount = 0
+            Amount = 0,
+            ShowInSettings = false // TODO: Fix this bullshit and Reenable
         };
 
         void Start()

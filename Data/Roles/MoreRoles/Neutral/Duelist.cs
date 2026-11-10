@@ -103,7 +103,8 @@ namespace AirlockClient.Data.Roles.MoreRoles.Neutral
             Description = "Other Duelist:",
             AC_Description = "<size=0>OTHER_ROLE</size>",
             Team = GameTeam.Crewmember,
-            Amount = 0
+            Amount = 0,
+            ShowInSettings = false
         };
 
         public Duelist MainDuelist;

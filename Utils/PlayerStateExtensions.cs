@@ -25,7 +25,7 @@ public static class PlayerStateExtensions
     private static GameStateManager GetState()
     {
         if (Anticheat && Anticheat.State != null) return Anticheat.State;
-        if (StaticRefs.Instance && StaticRefs.Instance.State != null) return StaticRefs.Instance.State;
+        if (StaticRefs.Instance && StaticRefs.State != null) return StaticRefs.State;
         return null;
     }
 
@@ -50,29 +50,50 @@ public static class PlayerStateExtensions
         return SubRole.All.FirstOrDefault(role => role.PlayerWithRole == playerState);
     }
 
+    static string FormatName(string name)
+    {
+        name = name.Replace(@"\d", "");
+        char[] hideChars =
+        {
+            '_',
+            '0',
+            '1',
+            '2',
+            '3',
+            '4',
+            '5',
+            '6',
+            '7',
+            '8',
+            '9'
+        };
+
+        foreach (char charToHide in hideChars) name = name.Replace(charToHide.ToString(), "");
+
+        return name;
+    }
+
     public static void VerifyState(this PlayerState playerState)
     {
         if (!playerState.IsSpawned) return;
         if (!playerState.IsConnected) return;
         if (Anticheat == null) return;
 
-        if (!CurrentMode.Modded && !AntiCheat.Instance.ColorToName.ContainsValue(playerState.NetworkName.Value) &&
-            playerState.NetworkName.Value != "Color###")
+        if (!CurrentMode.Modded && !AntiCheat.Instance.ColorToName.ContainsValue(playerState.NetworkName.Value) && playerState.NetworkName.Value != "Color###")
         {
-            var formattedName = playerState.PlayerModerationUsername.Replace(@"\d", "");
+            var formattedName = FormatName(playerState.PlayerModerationUsername);
             if (formattedName != "" && !formattedName.Contains(playerState.NetworkName.Value))
             {
                 if (playerState.GetComponent<SubRole>())
                 {
-                    if (!playerState.GetComponent<SubRole>().IsDisplayingRole &&
-                        playerState.NetworkName.Value != "DEPUTY")
+                    if (!playerState.GetComponent<SubRole>().IsDisplayingRole && playerState.NetworkName.Value != "DEPUTY")
                     {
-                        playerState.Alert("invalid player username", true);
+                        Alert(playerState,"invalid player username", true);
                     }
                 }
                 else
                 {
-                    playerState.Alert("invalid player username", true);
+                    Alert(playerState,"invalid player username", true);
                 }
             }
         }
@@ -84,7 +105,7 @@ public static class PlayerStateExtensions
                 Anticheat.PreviousHat[playerState] != playerState.HatId ||
                 Anticheat.PreviousSkin[playerState] != playerState.SkinId)
             {
-                playerState.Alert("invalid cosmetics", true);
+                Alert(playerState,"invalid cosmetics", true);
             }
         }
 
@@ -98,7 +119,7 @@ public static class PlayerStateExtensions
 
         if (playerState.ActivePowerUps != PowerUps.None && !CurrentMode.Modded && CurrentMode.Name != "Infection")
         {
-            playerState.Alert("user has powerups at invalid time.", true);
+            Alert(playerState,"user has powerups at invalid time.", true);
         }
 
         if (playerState.LocomotionPlayer.NetworkRigidbody.Rigidbody.velocity.x > 10 ||
@@ -109,7 +130,7 @@ public static class PlayerStateExtensions
 
         if (Anticheat.BannedUsers.Contains(playerState.PlayerModerationID.Value))
         {
-            playerState.Alert("user has been banned from the lobby.", true);
+            Alert(playerState,"user has been banned from the lobby.", true);
         }
     }
 
@@ -136,7 +157,7 @@ public static class PlayerStateExtensions
 
         if (IsCheating)
         {
-            playerState.Alert("suspicious vent data", true);
+            Alert(playerState,"suspicious vent data", true);
         }
 
         return !IsCheating;
@@ -144,7 +165,7 @@ public static class PlayerStateExtensions
 
     public static GameRole GetTrueRole(this PlayerState playerState)
     {
-        foreach (var roleEntry in StaticRefs.Instance.Role.gameRoleToPlayerIds)
+        foreach (var roleEntry in StaticRefs.Role.gameRoleToPlayerIds)
         {
             foreach (var id in roleEntry.Value)
             {
@@ -159,11 +180,11 @@ public static class PlayerStateExtensions
         return GameRole.NotSet;
     }
 
-    public static void Alert(this PlayerState playerState, string reason, bool takeAction)
+    public static void Alert(PlayerState playerState, string reason, bool takeAction)
     {
         if (!Anticheat.VerifyModerationID(playerState.PlayerModerationID.Value))
         {
-            playerState.PlayerModerationID.Value = playerState.GetActualModId();
+            var id = playerState.GetActualModId();
             reason = "hidden moderation id";
             takeAction = true;
 
@@ -171,12 +192,11 @@ public static class PlayerStateExtensions
                          playerState.PlayerModerationUsername + ", " + playerState.PlayerModerationID.Value +
                          ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
             playerState.NetworkName.Value = "CHEATER";
-            Anticheat.BannedUsers.Add(playerState.PlayerModerationID.Value);
-            Anticheat.SendReportToDevelopers(playerState, reason);
+            AntiCheat.SendReportToDevelopers(playerState, id, reason);
             return;
         }
 
-        playerState.PlayerModerationID.Value = playerState.GetActualModId();
+        var id2 = playerState.GetActualModId();
 
         if (takeAction)
         {
@@ -186,8 +206,7 @@ public static class PlayerStateExtensions
                              playerState.PlayerModerationUsername + ", " + playerState.PlayerModerationID.Value +
                              ") was caught cheating. Reason: " + reason + ". Reporting and banning user from lobby.");
                 playerState.NetworkName.Value = "CHEATER";
-                Anticheat.BannedUsers.Add(playerState.PlayerModerationID.Value);
-                Anticheat.SendReportToDevelopers(playerState, reason);
+                AntiCheat.SendReportToDevelopers(playerState, id2, reason);
             }
             else
             {
@@ -218,9 +237,9 @@ public static class PlayerStateExtensions
     {
         if (playerState == null) return null;
         
-        if (StaticRefs.Instance.Runner == null) return playerState.PlayerModerationID?.Value;
+        if (StaticRefs.Runner == null) return playerState.PlayerModerationID?.Value;
 
-        string userId = StaticRefs.Instance.Runner.GetPlayerUserId(playerState.LocomotionPlayer.PlayerID);
+        string userId = StaticRefs.Runner.GetPlayerUserId(playerState.LocomotionPlayer.PlayerID);
         if (string.IsNullOrEmpty(userId)) return playerState.PlayerModerationID?.Value;
 
         return userId;
@@ -282,7 +301,7 @@ public static class PlayerStateExtensions
         }
         else
         {
-            body.Alert("suspicious spawn body data", true);
+            Alert(body,"suspicious spawn body data", true);
         }
 
         return !IsCheating;
@@ -299,7 +318,7 @@ public static class PlayerStateExtensions
 
         if (caller.PlayerId != sender && info.Source.IsValid)
         {
-            GetPlayerStateById(sender)?.Alert("misuse of meeting rpc", true);
+            Alert(GetPlayerStateById(sender),"misuse of meeting rpc", true);
             return false;
         }
 
@@ -332,7 +351,7 @@ public static class PlayerStateExtensions
 
         if (IsCheating)
         {
-            caller.Alert("suspicious meeting data", false);
+            Alert(caller,"suspicious meeting data", false);
         }
 
         return !IsCheating;
@@ -348,7 +367,7 @@ public static class PlayerStateExtensions
 
         if (sender != voter.PlayerId && info.Source.IsValid)
         {
-            GetPlayerStateById(sender)?.Alert("misuse of vote rpc", true);
+            Alert(GetPlayerStateById(sender),"misuse of vote rpc", true);
         }
 
         if (state.GameModeStateValue.GameMode == GameModes.Infection)
@@ -358,7 +377,7 @@ public static class PlayerStateExtensions
 
         if (IsCheating)
         {
-            GetPlayerStateById(sender)?.Alert("suspicious vote data", true);
+            Alert(GetPlayerStateById(sender),"suspicious vote data", true);
         }
 
         return !IsCheating;
@@ -374,7 +393,7 @@ public static class PlayerStateExtensions
         var bodyObj = GameObject.Find("NetworkedBody (" + bodyReported.PlayerId + ")");
         if (bodyObj == null)
         {
-            GetPlayerStateById(sender)?.Alert("suspicious report body data (missing body)", true);
+            Alert(GetPlayerStateById(sender),"suspicious report body data (missing body)", true);
             return false;
         }
         NetworkedBody body = bodyObj.GetComponent<NetworkedBody>();
@@ -382,7 +401,7 @@ public static class PlayerStateExtensions
 
         if (reporter.PlayerId != sender && info.Source.IsValid)
         {
-            GetPlayerStateById(sender)?.Alert("misuse of body report data", true);
+            Alert(GetPlayerStateById(sender),"misuse of body report data", true);
             return false;
         }
 
@@ -418,7 +437,7 @@ public static class PlayerStateExtensions
 
         if (IsCheating)
         {
-            reporter.Alert("suspicious report body data", false);
+            Alert(reporter,"suspicious report body data", false);
         }
 
         return !IsCheating;
@@ -595,8 +614,7 @@ public static class PlayerStateExtensions
 
         bool IsCheating = false;
 
-        float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition)
-            .magnitude;
+        float distance = (killer.LocomotionPlayer.RigidbodyPosition - target.LocomotionPlayer.RigidbodyPosition).magnitude;
         GameRole killerRole = killer.GetTrueRole();
         GameRole targetRole = target.GetTrueRole();
 
@@ -777,7 +795,7 @@ public static class PlayerStateExtensions
         }
         else
         {
-            killer.Alert("suspicious kill data", false);
+            Alert(killer,"suspicious kill data", false);
         }
 
         return !IsCheating;
