@@ -1,4 +1,4 @@
-﻿using AirlockAPI.Data;
+using AirlockAPI.Data;
 using AirlockClient.Managers;
 using Fusion;
 using HarmonyLib;
