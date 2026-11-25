@@ -8,6 +8,7 @@ using SG.Airlock.UI;
 using SG.Airlock.UI.TitleScreen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static AirlockClient.Data.Info;
@@ -21,8 +22,15 @@ using SG.Airlock.Localization;
 using Il2CppInterop.Runtime;
 using AirlockClient.AC;
 using AirlockClient.Managers.Debug;
+using AirlockClient.Patches.Network.Photon;
 using AirlockClient.Utils;
+using Photon.Realtime;
+using SG.Airlock.Settings;
+using SG.Platform;
+using SG.Platform.Oculus;
+using SG.Platform.Steam;
 using UnityEngine.Networking;
+using Object = UnityEngine.Object;
 
 namespace AirlockClient.Managers
 {
@@ -91,6 +99,7 @@ namespace AirlockClient.Managers
 
             if (SceneName == "Title")
             {
+                this.gameObject.AddComponent<TitleScreenHandler>();
                 CurrentMode.IsHosting = false;
 
                 hostingMenu = FindObjectsOfType<HostPrivateMenu>(true).ToList();
@@ -154,18 +163,27 @@ namespace AirlockClient.Managers
                     if (CurrentMode.IsHosting)
                     {
                         SceneStorage.AddComponent<AntiCheat>();
+                        SceneStorage.AddComponent<CommandManager>();
                     }
+                }
+
+                if (!CurrentMode.IsHosting && CurrentMode.Modded)
+                {
+                    SceneStorage.AddComponent<ModdedGameStateManager>();
+                    SceneStorage.AddComponent<CommandManager>();
+                    SceneStorage.AddComponent<StaticRefs>();
                 }
             }
 
             previousSceneName = sceneName;
+            
         }
 
         void OnGUI()
         {
             LobbyBrowserHandler.OnGUI();
         }
-
+        
         void Update()
         {
             if (SceneName == "Title")
@@ -174,7 +192,7 @@ namespace AirlockClient.Managers
                 {
                     CurrentMode.IsHosting = GameObject.Find("Host Private Menu");
                 }
-
+                
                 if (!LobbyBrowserHandler.browseAdded)
                 {
                     GameObject playOnline = GameObject.Find("PlayOnlineMenu");
@@ -199,7 +217,7 @@ namespace AirlockClient.Managers
                         LobbyBrowserHandler.browseAdded = true;
                     }
                 }
-
+                
                 if (LobbyBrowserHandler.waitingForBrowseChange)
                 {
                     GameObject menu = GameObject.Find("QuickMatchHostMenu");

@@ -77,8 +77,15 @@ namespace AirlockClient.Patches
                         CommandManager.Instance.requiresUpdate = true;
                     }
                 }
-
                 //if (PetManager.Instance) PetManager.Instance.AssignDebugPet(__instance);'
+            }
+
+            if (!CurrentMode.IsHosting)
+            {
+                if (CommandManager.Instance == null)
+                {
+                    
+                }
             }
 
             AirlockClientGamemode.RPC_AirlockClientVerification();

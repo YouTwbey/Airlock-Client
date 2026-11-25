@@ -1,6 +1,7 @@
 ﻿using AirlockAPI.Managers;
 using AirlockClient.Handlers;
 using System.Collections;
+using MessHallAPI.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,7 +27,7 @@ namespace AirlockClient.Managers
             watermark.transform.localScale = new Vector3(0.7f, 0.7f, 0.7f);
             watermark.enableWordWrapping = false;
             watermark.alignment = TextAlignmentOptions.Top;
-            watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: {(int)NetworkManager.GetPing()} | FPS: {(int)(1 / Time.deltaTime)}";
+            watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: nil | FPS: {(int)(1 / Time.deltaTime)}";
 
             CoroutineHandler.Start(UpdateWatermark());
         }
@@ -35,7 +36,7 @@ namespace AirlockClient.Managers
         {
             while (watermark != null)
             {
-                watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: {(int)NetworkManager.GetPing()} | FPS: {(int)(1 / Time.deltaTime)}";
+                watermark.text = $"<color=yellow>AIRLOCK CLIENT (V{Version})</color>\nMod by <color=red>YouTubey</color>\nPing: nil | FPS: {(int)(1 / Time.deltaTime)}";
                 yield return new WaitForSeconds(1);
             }
         }

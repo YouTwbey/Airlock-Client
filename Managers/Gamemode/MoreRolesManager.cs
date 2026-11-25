@@ -1,5 +1,4 @@
-﻿using AirlockAPI.Attributes;
-using AirlockAPI.Data;
+﻿using AirlockAPI.Data;
 using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Core;
@@ -19,11 +18,11 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 using UnityEngine.InputSystem;
-using static AirlockAPI.Managers.NetworkManager;
 using Il2CppInterop.Runtime;
 using AirlockClient.Handlers;
 using AirlockClient.Managers.Lobby;
 using AirlockClient.Utils;
+using MessHallAPI.Networking;
 
 namespace AirlockClient.Managers.Gamemode
 {
@@ -114,7 +113,6 @@ namespace AirlockClient.Managers.Gamemode
             if (ModdedGameStateManager.Instance == null)
             {
                 Logging.Warn("ModdedGameStateManager.Instance is null");
-                return true;
             }
 
             return true;
@@ -122,10 +120,10 @@ namespace AirlockClient.Managers.Gamemode
 
         public static void RPC_SendSubRole(int playerId, string role)
         {
-            SendRpc("SendSubRole", playerId, role);
+            NetworkManager.InvokeRPC("Airlock Client","SendSubRole", playerId, role);
         }
 
-        [AirlockRpc("SendSubRole", RpcTarget.All, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.All, RPCCaller.HostOnly)]
         public static void SendSubRole(string role)
         {
             if (System.Type.GetType("AirlockClient.Data.Roles.MoreRoles." + role) != null)

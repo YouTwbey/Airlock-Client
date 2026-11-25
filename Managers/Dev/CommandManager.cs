@@ -2,31 +2,30 @@
 using SG.Airlock;
 using SG.Airlock.UI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using UnityEngine;
-using AirlockAPI.Attributes;
-using static AirlockAPI.Managers.NetworkManager;
 using AirlockAPI.Data;
 using AirlockClient.Utils;
+using MessHallAPI.Networking;
 using SG.Airlock.Network;
 
 namespace AirlockClient.Managers.Dev
 {
     public class CommandManager : MonoBehaviour
     {
-        public static List<string> QueuedCommands = new List<string>();
+        private static List<string> QueuedCommands = [];
         public static CommandManager Instance;
-        public static readonly Dictionary<string, string> AuthorityUsers = new Dictionary<string, string> {
+        private static readonly Dictionary<string, string> AuthorityUsers = new Dictionary<string, string> {
             {"a70176d5cf6a8aabcc555badf5eb6ccc9d1004d4d35c73975eeaaf33df6ef936", "owner"},
             {"1a66e8559c6c5d986f38f0f68d79e081cf779198aa068674300d53cb410730a5", "admin"},
-            //{"41402d69b8b5fa7aabe1705115b19272f1900a3bb7658d81e10d8cad626385a8", "admin"}
         };
 
-        public Dictionary<PlayerState, string> NameTagChanged = new Dictionary<PlayerState, string>();
+        private Dictionary<PlayerState, string> NameTagChanged = new Dictionary<PlayerState, string>();
         public UINameTagsDrawer NameTagDrawer;
 
-        void Start()
+        private void Start()
         {
             if (Instance == null)
             {
@@ -43,40 +42,19 @@ namespace AirlockClient.Managers.Dev
         {
             if (QueuedCommands.Count != 0)
             {
-                foreach (string message in QueuedCommands)
+                foreach (var msg in from message in QueuedCommands let msg = message where message.Contains("UpdateNameTagList") select message.Replace("UpdateNameTagList_[", "") into msg select msg.Replace("]", ""))
                 {
-                    string msg = message;
-                    if (message.Contains("UpdateNameTagList"))
+                    if (msg.Contains(","))
                     {
-                        msg = message.Replace("UpdateNameTagList_[", "");
-                        msg = msg.Replace("]", "");
+                        var playerIds = msg.Split(',');
 
-                        if (msg.Contains(","))
+                        Instance.NameTagChanged.Clear();
+
+                        foreach (var playerId in playerIds)
                         {
-                            string[] playerIds = msg.Split(',');
-
-                            Instance.NameTagChanged.Clear();
-
-                            foreach (string playerId in playerIds)
-                            {
-                                if (int.TryParse(playerId, out int id))
-                                {
-                                    PlayerState state = GameObject.Find("PlayerState (" + id + ")").GetComponent<PlayerState>();
-
-                                    if (Instance.IsVIP(state))
-                                    {
-                                        ApplyNametag(state, true);
-                                    }
-                                    else
-                                    {
-                                        ApplyNametag(state);
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            PlayerState state = GameObject.Find("PlayerState (" + msg + ")").GetComponent<PlayerState>();
+                            if (!int.TryParse(playerId, out var id)) continue;
+                            
+                            var state = GameObject.Find("PlayerState (" + id + ")").GetComponent<PlayerState>();
 
                             if (Instance.IsVIP(state))
                             {
@@ -88,17 +66,28 @@ namespace AirlockClient.Managers.Dev
                             }
                         }
                     }
+                    else
+                    {
+                        var state = GameObject.Find("PlayerState (" + msg + ")").GetComponent<PlayerState>();
+
+                        if (Instance.IsVIP(state))
+                        {
+                            ApplyNametag(state, true);
+                        }
+                        else
+                        {
+                            ApplyNametag(state);
+                        }
+                    }
                 }
 
                 QueuedCommands.Clear();
             }
 
-            if (NameTagChanged.Count != 0)
+            if (NameTagChanged.Count == 0) return;
             {
-                foreach (PlayerState state in NameTagChanged.Keys)
+                foreach (var state in NameTagChanged.Keys.Where(state => state.IsSpawned))
                 {
-                    if (!state.IsSpawned) continue;
-
                     if (state.IsConnected)
                     {
                         if (NameTagDrawer == null)
@@ -112,7 +101,7 @@ namespace AirlockClient.Managers.Dev
                             NameTagDrawer._nametagCharacterLimit = 999999;
                         }
 
-                        string newName = NameTagChanged[state];
+                        var newName = NameTagChanged[state];
                         if (state.LocomotionPlayer._nameTag._storedName == newName) continue;
                         state.LocomotionPlayer.SetNameTagName(newName);
                         state.LocomotionPlayer.OnNetworkNameChange(newName);
@@ -127,55 +116,48 @@ namespace AirlockClient.Managers.Dev
 
         public static void RPC_SendUpdatedNameTagList()
         {
-            if (CurrentMode.IsHosting)
+            if (!CurrentMode.IsHosting) return;
+            
+            Instance.requiresUpdate = false;
+            var command = "UpdateNameTagList_[";
+
+            if (Instance.NameTagChanged.Keys.Count == 1)
             {
-                Instance.requiresUpdate = false;
-                string command = "UpdateNameTagList_[";
-
-                if (Instance.NameTagChanged.Keys.Count == 1)
-                {
-                    foreach (PlayerState user in Instance.NameTagChanged.Keys)
-                    {
-                        command += user.PlayerId;
-                    }
-                }
-                else
-                {
-                    foreach (PlayerState user in Instance.NameTagChanged.Keys)
-                    {
-                        command += user.PlayerId + ",";
-                    }
-                }
-
-                command += "]";
-
-                SendRpc("SendUpdatedNameTagList", command);
+                command = Instance.NameTagChanged.Keys.Aggregate(command, (current, user) => current + user.PlayerId);
             }
+            else
+            {
+                command = Instance.NameTagChanged.Keys.Aggregate(command, (current, user) => current + (user.PlayerId + ","));
+            }
+
+            command += "]";
+
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey", "SendUpdatedNameTagList", command);
         }
 
-        [AirlockRpc("SendUpdatedNameTagList", RpcTarget.AllInclusive, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.AllInclusive, RPCCaller.HostOnly)]
         public static void SendUpdatedNameTagList(string cmd)
         {
             QueuedCommands.Add(cmd);
         }
 
-        public static void RPC_ApplyDeveloperNameTag(int playerId)
+        private static void RPC_ApplyDeveloperNameTag(int playerId)
         {
-            SendRpc("ApplyDevNameTag", -1, playerId);
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey","ApplyDevNameTag", playerId);
         }
 
-        [AirlockRpc("ApplyDevNameTag", RpcTarget.AllInclusive, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.AllInclusive, RPCCaller.HostOnly)]
         public static void ApplyDeveloperNameTag(int playerId)
         {
             Instance.ApplyNametag(ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[playerId], false);
         }
 
-        public static void RPC_ApplyAdminNameTag(int playerId)
+        private static void RPC_ApplyAdminNameTag(int playerId)
         {
-            SendRpc("ApplyAdminNameTag", -1, playerId);
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey","ApplyAdminNameTag", playerId);
         }
 
-        [AirlockRpc("ApplyAdminNameTag", RpcTarget.AllInclusive, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.AllInclusive, RPCCaller.HostOnly)]
         public static void ApplyAdminNameTag(int playerId)
         {
             Instance.ApplyNametag(ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[playerId], true);
@@ -183,18 +165,18 @@ namespace AirlockClient.Managers.Dev
 
         public static void RPC_SendCommand(string cmd)
         {
-            SendRpc("SendCommand", cmd);
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey","SendCommand", cmd);
         }
 
-        [AirlockRpc("SendCommand", RpcTarget.Host, RpcCaller.All)]
-        public static void SendCommand(string cmd, AirlockRpcInfo info)
+        [MessHallRPC(RPCTarget.Host, RPCCaller.Anyone)]
+        public static void SendCommand(string cmd, [RPCInfo] MessHallRpcInfo info)
         {
             Instance.HandleCommand(cmd, info.Sender);
         }
 
-        public static bool CheckAuthoryValidation(PlayerState player)
+        public static bool CheckAuthorityValidation(PlayerState player)
         {
-            if (Instance.IsDeveloper(player))
+            if (IsDeveloper(player))
             {
                 return true;
             }
@@ -208,103 +190,100 @@ namespace AirlockClient.Managers.Dev
             }
         }
 
-        public static void RPC_ApplyMatID(int playerId, int id)
+        private static void RPC_ApplyMatID(int playerId, int id)
         {
-            SendRpc("ApplyMatID", -1, playerId, id);
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey","ApplyMatID",playerId, id);
         }
 
-        [AirlockRpc("ApplyMatID", RpcTarget.AllInclusive, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.AllInclusive, RPCCaller.HostOnly)]
         public static void ApplyMatID(int playerId, int id)
         {
-            NetworkedLocomotionPlayer player = ModdedGameStateManager.Instance.state.SpawnManager.Avatars[playerId];
+            var player = ModdedGameStateManager.Instance.state.SpawnManager.Avatars[playerId];
             player.SetInstancedMatColorID(id);
         }
 
         public void ApplyNametag(PlayerState player, bool isAdmin = false)
         {
-            if (!NameTagChanged.ContainsKey(player))
+            if (NameTagChanged.ContainsKey(player)) return;
+            
+            if (isAdmin)
             {
-                if (isAdmin)
-                {
-                    if (!IsVIP(player)) return;
-                }
-                else
-                {
-                    if (!IsDeveloper(player)) return;
-                }
-
-                FindObjectOfType<UINameTagsDrawer>(true)._nametagCharacterLimit = 999999;
-                string newName = "";
-
-                if (isAdmin)
-                {
-                    var user = Encrypt(player.PlayerModerationID.Value);
-                    
-                    newName = "<color=yellow><b>[VIP]</b></color> " + ApplyGradient(player.NetworkName.Value);
-                }
-                else
-                {
-                    newName = "<color=blue><b>[DEV]</b></color> " + ApplyRainbow(player.NetworkName.Value);
-                }
-
-                NameTagChanged.Add(player, newName);
-                requiresUpdate = true;
+                if (!IsVIP(player)) return;
             }
+            else
+            {
+                if (!IsDeveloper(player)) return;
+            }
+
+            FindObjectOfType<UINameTagsDrawer>(true)._nametagCharacterLimit = 999999;
+            var newName = "";
+
+            if (isAdmin)
+            {
+                newName = "<color=yellow><b>[VIP]</b></color> " + ApplyGradient(player.NetworkName.Value);
+            }
+            else
+            {
+                newName = "<color=blue><b>[DEV]</b></color> " + ApplyRainbow(player.NetworkName.Value);
+            }
+
+            NameTagChanged.Add(player, newName);
+            requiresUpdate = true;
         }
 
-        static string HSVToHex(float h, float s = 1f, float v = 1f)
+        private static string HSVToHex(float h, float s = 1f, float v = 1f)
         {
-            Color color = Color.HSVToRGB(h, s, v);
-            int r = Mathf.RoundToInt(color.r * 255f);
-            int g = Mathf.RoundToInt(color.g * 255f);
-            int b = Mathf.RoundToInt(color.b * 255f);
+            var color = Color.HSVToRGB(h, s, v);
+            var r = Mathf.RoundToInt(color.r * 255f);
+            var g = Mathf.RoundToInt(color.g * 255f);
+            var b = Mathf.RoundToInt(color.b * 255f);
             return $"{r:X2}{g:X2}{b:X2}";
         }
 
-        static string ApplyRainbow(string text)
+        private static string ApplyRainbow(string text)
         {
-            string rainbow = "";
+            var rainbow = "";
             if (string.IsNullOrEmpty(text))
                 return "";
 
-            int len = text.Length;
+            var len = text.Length;
 
-            for (int i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
-                float hue = (float)i / len;
-                string hexColor = HSVToHex(hue);
+                var hue = (float)i / len;
+                var hexColor = HSVToHex(hue);
                 rainbow += $"<color=#{hexColor}>{text[i]}</color>";
             }
 
             return rainbow;
         }
-        
-        static string ApplyGradient(string text)
+
+        private static string ApplyGradient(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return "";
 
-            string gradient = "";
-            int len = text.Length;
+            var gradient = "";
+            var len = text.Length;
 
-            Color32 startColor = new Color32(64, 64, 64, 255);
-            Color32 endColor = new Color32(255, 255, 255, 255);
+            var startColor = new Color32(64, 64, 64, 255);
+            var endColor = new Color32(255, 255, 255, 255);
 
-            for (int i = 0; i < len; i++)
+            for (var i = 0; i < len; i++)
             {
-                float t = len > 1 ? (float)i / (len - 1) : 0f;
-                string hexColor = LerpToHex(startColor, endColor, t);
+                var t = len > 1 ? (float)i / (len - 1) : 0f;
+                var hexColor = LerpToHex(startColor, endColor, t);
                 gradient += $"<color=#{hexColor}>{text[i]}</color>";
             }
 
             return gradient;
         }
 
-        static string LerpToHex(Color32 a, Color32 b, float t)
+        private static string LerpToHex(Color32 a, Color32 b, float t)
         {
-            byte r = (byte)Mathf.RoundToInt(Mathf.Lerp(a.r, b.r, t));
-            byte g = (byte)Mathf.RoundToInt(Mathf.Lerp(a.g, b.g, t));
-            byte bl = (byte)Mathf.RoundToInt(Mathf.Lerp(a.b, b.b, t));
+            var r = (byte)Mathf.RoundToInt(Mathf.Lerp(a.r, b.r, t));
+            var g = (byte)Mathf.RoundToInt(Mathf.Lerp(a.g, b.g, t));
+            var bl = (byte)Mathf.RoundToInt(Mathf.Lerp(a.b, b.b, t));
 
             return $"{r:X2}{g:X2}{bl:X2}";
         }
@@ -312,36 +291,33 @@ namespace AirlockClient.Managers.Dev
 
         public void HandleCommand(string command, PlayerRef sender)
         {
-            if (CanUserRunCommand(command, sender))
+            if (!CanUserRunCommand(command, sender)) return;
+            var cmd = FormatCommand(command);
+            var caller = ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[sender.PlayerId];
+
+            if (command.Contains("DEV"))
             {
-                string cmd = FormatCommand(command);
-                PlayerState caller = ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[sender.PlayerId];
-
-                if (command.Contains("DEV"))
+                if (cmd.Contains("ApplyNametag"))
                 {
-                    if (cmd.Contains("ApplyNametag"))
-                    {
-                        RPC_ApplyDeveloperNameTag(sender.PlayerId);
-                    }
-                    if (cmd.Contains("SetMatID"))
-                    {
-                        RPC_ApplyMatID(sender.PlayerId, int.Parse(cmd.Replace("_SetMatID_", "")));
-                    }
+                    RPC_ApplyDeveloperNameTag(sender.PlayerId);
                 }
-
-                if (command.Contains("ADMIN"))
+                if (cmd.Contains("SetMatID"))
                 {
-                    if (cmd.Contains("ApplyNametag"))
-                    {
-                        RPC_ApplyAdminNameTag(sender.PlayerId);
-                    }
+                    RPC_ApplyMatID(sender.PlayerId, int.Parse(cmd.Replace("_SetMatID_", "")));
                 }
+            }
+
+            if (!command.Contains("ADMIN")) return;
+            
+            if (cmd.Contains("ApplyNametag"))
+            {
+                RPC_ApplyAdminNameTag(sender.PlayerId);
             }
         }
 
-        public bool CanUserRunCommand(string command, PlayerRef sender)
+        private bool CanUserRunCommand(string command, PlayerRef sender)
         {
-            PlayerState player = ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[sender.PlayerId];
+            var player = ModdedGameStateManager.Instance.state.SpawnManager.PlayerStates[sender.PlayerId];
 
             if (command.StartsWith("ADMINCOMMAND"))
             {
@@ -363,7 +339,7 @@ namespace AirlockClient.Managers.Dev
 
         public void CheckAuthorityForNameTag(PlayerState player)
         {
-            if (Instance.IsDeveloper(player))
+            if (IsDeveloper(player))
             {
                 RPC_ApplyDeveloperNameTag(player.PlayerId);
             }
@@ -373,20 +349,20 @@ namespace AirlockClient.Managers.Dev
             }
         }
 
-        public bool IsDeveloper(PlayerState player)
+        private static bool IsDeveloper(PlayerState player)
         {
-            string user = Encrypt(player.GetActualModId());
+            var user = Encrypt(player.GetActualModId());
 
-            if (AuthorityUsers.ContainsKey(user))
+            if (AuthorityUsers.TryGetValue(user, out var authorityUser))
             {
-                return AuthorityUsers[user] == "owner";
+                return authorityUser == "owner";
             }
             return false;
         }
 
-        public bool IsVIP(PlayerState player)
+        private bool IsVIP(PlayerState player)
         {
-            string user = Encrypt(player.GetActualModId());
+            var user = Encrypt(player.GetActualModId());
 
             if (AuthorityUsers.ContainsKey(user))
             {
@@ -396,7 +372,7 @@ namespace AirlockClient.Managers.Dev
             return false;
         }
 
-        public string FormatCommand(string input)
+        private static string FormatCommand(string input)
         {
             if (input.Contains("ADMIN"))
             {
@@ -414,18 +390,17 @@ namespace AirlockClient.Managers.Dev
             return input;
         }
 
-        public string Encrypt(string input)
+        private static string Encrypt(string input)
         {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = Encoding.UTF8.GetBytes(input);
-                byte[] hash = sha256.ComputeHash(bytes);
+            using var sha256 = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha256.ComputeHash(bytes);
 
-                StringBuilder sb = new StringBuilder();
-                foreach (byte b in hash)
-                    sb.Append(b.ToString("x2"));
-                return sb.ToString();
-            }
+            var sb = new StringBuilder();
+            foreach (var b in hash)
+                sb.Append(b.ToString("x2"));
+            
+            return sb.ToString();
         }
     }
 }

@@ -48,7 +48,7 @@ namespace AirlockClient.Managers.Gamemode
             ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleFloatSettings.SheriffSpeedMultiplier, 1.25f);
             ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.MaxEngineers, 10);
             ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.MaxTimeInVentsEngineer, 3);
-            ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.VentUseCooldownEngineer, 0);
+            ModdedGameStateManager.Instance.SetRoleSetting(Data.Enums.RoleIntSettings.VentUseCooldownEngineer, 0); // bruh
             foreach (PlayerState player in Spawn.ActivePlayerStates)
             {
                 if (!player.IsConnected)

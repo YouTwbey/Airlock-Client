@@ -2,12 +2,11 @@
 using AirlockAPI.Handlers;
 using Fusion;
 using SG.Airlock.Network;
-using static AirlockAPI.Managers.NetworkManager;
-using AirlockAPI.Attributes;
 using AirlockAPI.Data;
 using System.Collections.Generic;
 using System.Linq;
 using Il2CppSystem.IO;
+using MessHallAPI.Networking;
 
 namespace AirlockClient.Attributes
 {
@@ -20,11 +19,11 @@ namespace AirlockClient.Attributes
 
         public static void RPC_AirlockClientVerification()
         {
-            SendRpc("AirlockClientVerification");
+            NetworkManager.InvokeRPC("com.airlockclient.youtubey", "AirlockClientVerification");
         }
 
-        [AirlockRpc("AirlockClientVerification", RpcTarget.Host, RpcCaller.All)]
-        public static void AirlockClientVerification(AirlockRpcInfo info)
+        [MessHallRPC(RPCTarget.Host, RPCCaller.Anyone)]
+        public static void AirlockClientVerification([RPCInfo] MessHallRpcInfo info)
         {
             AirlockClientUsers.Add(info.Sender);
         }

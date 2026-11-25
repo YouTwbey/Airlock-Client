@@ -1,10 +1,10 @@
-﻿using AirlockAPI.Attributes;
-using AirlockClient.AC;
+﻿using AirlockClient.AC;
 using AirlockClient.Attributes;
 using AirlockClient.Data.Roles.HideNSeek.Crewmate;
 using AirlockClient.Data.Roles.HideNSeek.Imposter;
 using AirlockClient.Handlers;
 using AirlockClient.Utils;
+using MessHallAPI.Networking;
 using SG.Airlock;
 using SG.Airlock.Network;
 using SG.Airlock.Roles;
@@ -12,7 +12,6 @@ using SG.Airlock.Sabotage;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
-using static AirlockAPI.Managers.NetworkManager;
 using static AirlockClient.Data.Enums;
 
 namespace AirlockClient.Managers.Gamemode
@@ -81,10 +80,10 @@ namespace AirlockClient.Managers.Gamemode
 
         public static void RPC_GameEnd()
         {
-            SendRpc("GameEnd");
+            NetworkManager.InvokeRPC("Airlock Client","GameEnd");
         }
 
-        [AirlockRpc("GameEnd", RpcTarget.All, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.All, RPCCaller.HostOnly)]
         public static void GameEnd()
         {
             DangerMeterHandler.DeInit();
@@ -98,10 +97,10 @@ namespace AirlockClient.Managers.Gamemode
 
         public static void RPC_SetSeeker(int playerId, bool isSeeker, int seekerId = -1)
         {
-            SendRpc("SetSeeker", -1, playerId, isSeeker, seekerId);
+            NetworkManager.InvokeRPC("Airlock Client", "SetSeeker", playerId, isSeeker, seekerId);
         }
 
-        [AirlockRpc("SetSeeker", RpcTarget.All, RpcCaller.Host)]
+        [MessHallRPC(RPCTarget.All, RPCCaller.HostOnly)]
         public static void SetSeeker(int playerId, bool isSeeker, int seekerId = -1)
         {
             if (!isSeeker)

@@ -1,5 +1,4 @@
-﻿using AirlockAPI.Attributes;
-using AirlockAPI.Data;
+﻿using AirlockAPI.Data;
 using AirlockClient.Attributes;
 using AirlockClient.Data;
 using AirlockClient.Handlers;
@@ -10,9 +9,9 @@ using SG.Airlock.Roles;
 using SG.Airlock.Settings;
 
 using System.Collections.Generic;
+using MessHallAPI.Networking;
 using UnityEngine;
 using UnityEngine.Networking;
-using static AirlockAPI.Managers.NetworkManager;
 
 namespace AirlockClient.Managers
 {
@@ -24,11 +23,11 @@ namespace AirlockClient.Managers
 
         public static void RPC_JoinedModdedGame(int playerId)
         {
-            SendRpc("JoinedModdedGame", playerId);
+            NetworkManager.InvokeRPC("Airlock Client","JoinedModdedGame", playerId);
         }
 
-        [AirlockRpc("JoinedModdedGame", RpcTarget.All, RpcCaller.Host)]
-        public static void JoinedModdedGame()
+        [MessHallRPC(RPCTarget.All, RPCCaller.HostOnly)]
+        public static void JoinedModdedGame([RPCTarget] int playerId)
         {
             AirlockClientManager.SceneStorage.AddComponent<PetManager>();
             AirlockClientManager.SceneStorage.AddComponent<CommandManager>();
@@ -213,7 +212,7 @@ namespace AirlockClient.Managers
             return null;
         }
 
-        public IntSettingsItem GetRoleSetting(Enums.RoleIntSettings setting)
+        public IntSettingsItem GetRoleSetting(Enums.RoleIntSettings setting) // ????? whats the fucking purpose of getting it?
         {
             foreach (IntSettingsItem set in GameObject.Find("RoleCustomizationSettings").GetComponent<MatchCustomizationSettings>().LocalIntSettings)
             {

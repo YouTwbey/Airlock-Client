@@ -3,6 +3,7 @@ using BepInEx;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
+using SG.Airlock.UI.TitleScreen;
 using UnityEngine;
 using static AirlockClient.Data.Info;
 using static UnityEngine.Object;

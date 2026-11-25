@@ -12,7 +12,7 @@ namespace AirlockClient.Patches
         {
             if (!CurrentMode.IsHosting || !CurrentMode.Modded) return;
 
-            AirlockClientManager.SendGameState(CurrentMode.IsHosting && CurrentMode.Modded, CurrentMode.Name);
+            //AirlockClientManager.SendGameState(CurrentMode.IsHosting && CurrentMode.Modded, CurrentMode.Name);
         }
     }
 }
